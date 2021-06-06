@@ -1,5 +1,10 @@
+body{
+  background-color:#F5F5F5;
+}
+
 .App {
   text-align: center;
+
 }
 
 .App-logo {
@@ -13,6 +18,8 @@
   }
 }
 
+
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -22,6 +29,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  
 }
 
 .App-link {
@@ -35,4 +43,49 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.navicon{
+  fill: currentColor;
+  width: 1.5em;
+  height: 1.5em;
+  display: inline-block;
+  font-size: 1.5rem;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.activecolor{
+  color:#159D74;
+}
+
+.nonactivecolor{
+  color:#5C5C5C
+}
+
+.background-activeicon{
+  background-color: #159D74;
+}
+
+.activesize{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 600!important;
+}
+
+.font{
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+.MuiList-padding{
+  margin-top: 28px!important;
+}
+
+.MuiListItem-root{
+  padding-top: 11px!important;
+  padding-bottom: 11px!important;
+}
+
+.MuiPopover-paper{
+  top:30!important;
 }

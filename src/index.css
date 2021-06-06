@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: "ProximaNovaBold";
+  src: local("ProximaNovaBold"),
+   url("./assets/fonts/ProximaNova/proximanova-bold.otf") format("truetype");
+  font-weight: bold;
+  }
