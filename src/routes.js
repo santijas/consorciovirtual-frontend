@@ -4,6 +4,7 @@ import { NavBar } from './components/NavBar'
 import { Login } from './views/Login'
 import { Header } from './components/Header'
 import { Usuarios } from './views/Usuarios'
+import { Departamentos } from './views/Departamentos'
 
 
 export const Routes = () => {
@@ -16,7 +17,7 @@ export const Routes = () => {
                     <Route><Header/></Route> 
                     <Route><NavBar/></Route> 
                     <Route path="/usuarios"><Usuarios/></Route>
-                    <Route path="/departamentos">xD</Route>
+                    <Route path="/departamentos"><Departamentos/></Route>
             </div></Route>
             </Switch>
         </Router>
