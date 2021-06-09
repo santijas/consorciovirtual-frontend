@@ -30,7 +30,11 @@ const useStyles = makeStyles({
         marginRight: 5
     },
     menuUser:{
-        padding: "100!important"
+        marginTop: 55,
+        marginLeft: 50
+    },
+    boton: {
+        textTransform: "none"
     }
   });
 
@@ -42,17 +46,19 @@ export const Header = () =>{
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
-        console.log(event)
     };
 
     const handleClose = () => {
         setAnchorEl(null);
-        history.push("/")
     };
 
     const filterFirstLetters = (name) => {
         return name.match(/\b(\w)/g).join('')
     }   
+
+    const goToLogin = () =>{
+        history.push("/")
+    }
 
         return (
             <header className={classes.root}>
@@ -61,7 +67,7 @@ export const Header = () =>{
                 </Typography>
                 <div className={classes.loguedUser} >
                         <Avatar className={classes.avatar}>{filterFirstLetters(nombre)}</Avatar>
-                        <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                        <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                             {nombre}
                         </Button>
                         <Menu
@@ -72,7 +78,7 @@ export const Header = () =>{
                             onClose={handleClose}
                             className={classes.menuUser}
                         >
-                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                            <MenuItem onClick={ goToLogin } >Logout</MenuItem>
                         </Menu>
                 </div>
 

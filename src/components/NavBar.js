@@ -54,54 +54,54 @@ export const NavBar = () => {
 
         <List>
             <ListItem button key="Usuarios" onClick={() => handleSelectMenu("usuarios")}>
-              <ListItemIcon>{selected==="usuarios"? <ActiveUser class="navicon activecolor"/> : <NonActiveUser class="navicon"/> }</ListItemIcon>
+              <ListItemIcon>{selected==="usuarios"? <ActiveUser className="navicon activecolor"/> : <NonActiveUser className="navicon"/> }</ListItemIcon>
               <span className={`${(selected==="usuarios")? "activecolor activesize": "font"}`}>Usuarios</span>
             </ListItem>
 
             <ListItem button key="Departamentos" onClick={() => handleSelectMenu("departamentos")}>
-              <ListItemIcon>{selected==="departamentos" ? <ActiveApartment class="navicon"/> : <NonActiveApartment class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="departamentos" ? <ActiveApartment className="navicon"/> : <NonActiveApartment className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="departamentos")? "activecolor activesize": "font"}`}>Departamentos</span>
             </ListItem>
 
             <ListItem button key="Anuncios" onClick={() => handleSelectMenu("anuncios")}>
-              <ListItemIcon>{selected==="anuncios" ? <ActiveAnnouncement class="navicon"/> : <NonActiveAnnouncement class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="anuncios" ? <ActiveAnnouncement className="navicon"/> : <NonActiveAnnouncement className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="anuncios")? "activecolor activesize": "font"}`}>Anuncios</span>
             </ListItem>
 
             <ListItem button key="Reclamos" onClick={() => handleSelectMenu("reclamos")}>
-              <ListItemIcon>{selected==="reclamos" ? <ActiveClaims class="navicon"/> : <NonActiveClaims class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="reclamos" ? <ActiveClaims className="navicon"/> : <NonActiveClaims className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="reclamos")? "activecolor activesize": "font"}`}>Reclamos</span>
             </ListItem>
 
             
             <ListItem button key="Solicitudes técnicas" onClick={() => handleSelectMenu("solicitudes")}>
-              <ListItemIcon>{selected==="solicitudes" ? <ActiveRequest class="navicon"/> : <NonActiveRequest class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="solicitudes" ? <ActiveRequest className="navicon"/> : <NonActiveRequest className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="solicitudes")? "activecolor activesize": "font"}`}>Solicitudes Técnicas</span>
             </ListItem>
 
             <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("inquilinos")}>
-              <ListItemIcon>{selected==="inquilinos" ? <ActiveInquiline class="navicon"/> : <NonActiveInquiline class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="inquilinos" ? <ActiveInquiline className="navicon"/> : <NonActiveInquiline className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="inquilinos")? "activecolor activesize": "font"}`}>Inquilinos</span>
             </ListItem>
 
             <ListItem button key="Gastos" onClick={() => handleSelectMenu("gastos")}>
-              <ListItemIcon>{selected==="gastos" ? <ActiveGastos class="navicon"/> : <NonActiveGastos class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="gastos" ? <ActiveGastos className="navicon"/> : <NonActiveGastos className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="gastos")? "activecolor activesize": "font"}`}>Gastos</span>
             </ListItem>
             
             <ListItem button key="Expensas" onClick={() => handleSelectMenu("expensas")}>
-              <ListItemIcon>{selected==="expensas" ? <ActiveExpenses class="navicon"/> : <NonActiveExpenses class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="expensas" ? <ActiveExpenses className="navicon"/> : <NonActiveExpenses className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="expensas")? "activecolor activesize": "font"}`}>Expensas</span>
             </ListItem>
 
             
             <ListItem button key="Documentos" onClick={() => handleSelectMenu("documentos")}>
-              <ListItemIcon>{selected==="documentos" ? <ActiveDocuments class="navicon"/> : <NonActiveDocuments class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="documentos" ? <ActiveDocuments className="navicon"/> : <NonActiveDocuments className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="documentos")? "activecolor activesize": "font"}`}>Documentos</span>
             </ListItem>
 
             <ListItem button key="Chat" onClick={() => handleSelectMenu("chat")}>
-              <ListItemIcon>{selected==="chat" ? <ActiveChat class="navicon"/> : <NonActiveChat class="navicon"/>}</ListItemIcon>
+              <ListItemIcon>{selected==="chat" ? <ActiveChat className="navicon"/> : <NonActiveChat className="navicon"/>}</ListItemIcon>
               <span className={`${(selected==="chat")? "activecolor activesize": "font"}`}>Chat</span>
             </ListItem>
 
