@@ -16,7 +16,6 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import Pagination from '@material-ui/lab/Pagination';
-import { Paginador } from '../components/Paginador';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -25,81 +24,6 @@ const useStyles1 = makeStyles((theme) => ({
     },
   }));
   
-  function TablePaginationActions(props) {
-    const classes = useStyles1();
-    const theme = useTheme();
-    const { count, page, rowsPerPage, onChangePage } = props;
-  
-    const handleFirstPageButtonClick = (event) => {
-      onChangePage(event, 0);
-    };
-  
-    const handleBackButtonClick = (event) => {
-      onChangePage(event, page - 1);
-    };
-  
-    const handleNextButtonClick = (event) => {
-      onChangePage(event, page + 1);
-    };
-  
-    const handleLastPageButtonClick = (event) => {
-      onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    };
-  
-    return (
-      <div className={classes.root}>
-        <IconButton
-          onClick={handleFirstPageButtonClick}
-          disabled={page === 0}
-          aria-label="first page"
-        >
-          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-        </IconButton>
-        <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
-          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-        </IconButton>
-        <IconButton
-          onClick={handleNextButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="next page"
-        >
-          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-        </IconButton>
-        <IconButton
-          onClick={handleLastPageButtonClick}
-          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-          aria-label="last page"
-        >
-          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-        </IconButton>
-      </div>
-    );
-  }
-
-  // PAGINADOR CHICO ----------------------------------------------------------------
-
-  const useStyles2 = makeStyles((theme) => ({
-    root: {
-      flexShrink: 0,
-      '& > *': {
-        marginTop: theme.spacing(2)
-      },
-      justifyContent: 'flex-end',
-    },
-  }));
-  
-  export default function PaginationRounded({datos,handleChangePage,TablePaginationActions}) {
-    const classes = useStyles2();
-  
-    return (
-      <div className={classes.root}>
-        
-        {/* <Pagination count={10} variant="outlined" shape="rounded" /> */}
-      </div>
-    );
-  }
-
-  // ---------------------------------------------------------------------------------
 
 export const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -110,7 +34,8 @@ export const StyledTableCell = withStyles((theme) => ({
     fontSize: 14,
   },
   root: {
-    padding: 30
+    padding: 30,
+    border: "none"
   }
 }))(TableCell);
 
@@ -128,7 +53,6 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
     border: "none",
-    boxShadow: "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
     borderSpacing: "0 1em",
     borderCollapse: "separate"
   },
@@ -138,35 +62,25 @@ const useStyles = makeStyles({
     backgroundColor: "#F5F5F5",
   },
   head:{
-      border:"none",
+      borderBottom:"none",
       padding: "0 0 0 30px"
   }
 });
 
 
-TablePaginationActions.propTypes = {
-    count: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
-    page: PropTypes.number.isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-  };
 
 export const Tabla = ({datos,headers,ColumnasCustom}) =>{
     const classes = useStyles();
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [posicionInicial, setPosicionInicial] = useState(0);
-    const cantidadAMostrar = 1
-  
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, datos.length - page * rowsPerPage);
-  
-    // const handleBackButtonClick = (event) => {
-    //   setPosicionInicial(posicionInicial - cantidadAMostrar);
-    // };
-  
-    // const handleNextButtonClick = (event) => {
-    //   setPosicionInicial(posicionInicial + cantidadAMostrar);
-    // };
+    const [page, setPage] = useState(1);
+    const pageSize = 4
+    const totalItems = datos.length
+    
+    let totalPages = Math.ceil(totalItems / pageSize);
+    let endIndex =  pageSize - (totalItems - pageSize * (page -1))
+
+    const handleChange = (event, value) => {
+      setPage(value);
+    };
 
     return (
     <TableContainer className={classes.container} component={Paper}>
@@ -179,55 +93,25 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
           </TableRow>
         </TableHead>
         <TableBody>
-          {(rowsPerPage > 0
-            ? datos.slice(posicionInicial, posicionInicial + cantidadAMostrar)
-            // datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          {(pageSize > 0
+            ? (page===1? datos.slice( 0, pageSize) : datos.slice( (page-1)  * pageSize, (page-1) * pageSize + pageSize))
             : datos)
             .map((dato) => (
-                    // <StyledTableRow key={dato.id}>
-                    //     <StyledTableCell component="th" scope="row">{dato.nombre +" "+ dato.apellido}</StyledTableCell>
-                    //     <StyledTableCell component="th" scope="row">{dato.correo}</StyledTableCell>
-                    //     <StyledTableCell component="th" scope="row">{dato.dni}</StyledTableCell>
-                    //     <StyledTableCell component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-                    //     <StyledTableCell component="th" scope="row">Propietario</StyledTableCell>
-                    // </StyledTableRow>
                     ColumnasCustom(dato)
               )
             )}
 
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
+          {page === totalPages && endIndex !== 0 && (
+            <TableRow style={{ height: 91 * (endIndex)}}>
               <TableCell colSpan={6} />
             </TableRow>
           )}
         </TableBody>
-        <TableFooter style={{ width: '100%',display: 'flex', alignItems: 'right'}} colSpan={3}>
-          {/* <TableRow > */}
-            {/* <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={3}
-              count={datos.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            /> */}
-            
-          {/* </TableRow> */}
+        <TableFooter>
+             
         </TableFooter>
-      <Paginador posicionInicial={posicionInicial} 
-            setPosicionInicial={setPosicionInicial} 
-            cantidadAMostrar={cantidadAMostrar} 
-            cantidadTotal={datos.length}/>
       </Table>
-      {/* <PaginationRounded datos={Math.ceil(datos.length/cantidadAMostrar)} onChange={handleChangePage} ActionsComponent={TablePaginationActions} /> */}
-      {/* <Pagination count={Math.ceil(datos.length/cantidadAMostrar)} shape="rounded"  handleBackButtonClick={handleBackButtonClick} handleNextButtonClick={handleNextButtonClick} ActionsComponent={TablePaginationActions}/> */}
-      
+      <Pagination count={totalPages} page={page} defaultPage={1} onChange={handleChange}/>
     </TableContainer>
     )
 }
