@@ -15,6 +15,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
+import Pagination from '@material-ui/lab/Pagination';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -74,7 +75,31 @@ const useStyles1 = makeStyles((theme) => ({
     );
   }
 
-const StyledTableCell = withStyles((theme) => ({
+  // PAGINADOR CHICO ----------------------------------------------------------------
+
+  const useStyles2 = makeStyles((theme) => ({
+    root: {
+      flexShrink: 0,
+      '& > *': {
+        marginTop: theme.spacing(2),
+      },
+    },
+  }));
+  
+  export default function PaginationRounded({datos}) {
+    const classes = useStyles2();
+  
+    return (
+      <div className={classes.root}>
+        <Pagination count={datos} shape="rounded" />
+        {/* <Pagination count={10} variant="outlined" shape="rounded" /> */}
+      </div>
+    );
+  }
+
+  // ---------------------------------------------------------------------------------
+
+export const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: "#F5F5F5F5",
     color: "black",
@@ -87,7 +112,7 @@ const StyledTableCell = withStyles((theme) => ({
   }
 }))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
+export const StyledTableRow = withStyles((theme) => ({
   root: {
     backgroundColor: "#FFFFFF",
     borderRadius: 2,
@@ -124,10 +149,10 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
   };
 
-export const Tabla = ({datos,headers}) =>{
+export const Tabla = ({datos,headers,ColumnasCustom}) =>{
     const classes = useStyles();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
   
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, datos.length - page * rowsPerPage);
   
@@ -155,17 +180,18 @@ export const Tabla = ({datos,headers}) =>{
             ? datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : datos)
             .map((dato) => (
-                    <StyledTableRow key={dato.id}>
-                        <StyledTableCell component="th" scope="row">{dato.nombre +" "+ dato.apellido}</StyledTableCell>
-                        <StyledTableCell component="th" scope="row">{dato.correo}</StyledTableCell>
-                        <StyledTableCell component="th" scope="row">{dato.dni}</StyledTableCell>
-                        <StyledTableCell component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-                        <StyledTableCell component="th" scope="row">Propietario</StyledTableCell>
-                    </StyledTableRow>
-            )
+                    // <StyledTableRow key={dato.id}>
+                    //     <StyledTableCell component="th" scope="row">{dato.nombre +" "+ dato.apellido}</StyledTableCell>
+                    //     <StyledTableCell component="th" scope="row">{dato.correo}</StyledTableCell>
+                    //     <StyledTableCell component="th" scope="row">{dato.dni}</StyledTableCell>
+                    //     <StyledTableCell component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
+                    //     <StyledTableCell component="th" scope="row">Propietario</StyledTableCell>
+                    // </StyledTableRow>
+                    ColumnasCustom(dato)
+              )
             )}
 
-        {emptyRows > 0 && (
+          {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>
               <TableCell colSpan={6} />
             </TableRow>
@@ -173,7 +199,7 @@ export const Tabla = ({datos,headers}) =>{
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TablePagination
+            {/* <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={3}
               count={datos.length}
@@ -186,7 +212,8 @@ export const Tabla = ({datos,headers}) =>{
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
-            />
+            /> */}
+            <PaginationRounded datos={datos.length}/>
           </TableRow>
         </TableFooter>
       </Table>
