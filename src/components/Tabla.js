@@ -16,6 +16,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import Pagination from '@material-ui/lab/Pagination';
+import { Paginador } from '../components/Paginador';
 
 const useStyles1 = makeStyles((theme) => ({
     root: {
@@ -81,17 +82,18 @@ const useStyles1 = makeStyles((theme) => ({
     root: {
       flexShrink: 0,
       '& > *': {
-        marginTop: theme.spacing(2),
+        marginTop: theme.spacing(2)
       },
+      justifyContent: 'flex-end',
     },
   }));
   
-  export default function PaginationRounded({datos}) {
+  export default function PaginationRounded({datos,handleChangePage,TablePaginationActions}) {
     const classes = useStyles2();
   
     return (
       <div className={classes.root}>
-        <Pagination count={datos} shape="rounded" />
+        
         {/* <Pagination count={10} variant="outlined" shape="rounded" /> */}
       </div>
     );
@@ -153,17 +155,18 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
     const classes = useStyles();
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [posicionInicial, setPosicionInicial] = useState(0);
+    const cantidadAMostrar = 1
   
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, datos.length - page * rowsPerPage);
   
-    const handleChangePage = (event, newPage) => {
-      setPage(newPage);
-    };
+    // const handleBackButtonClick = (event) => {
+    //   setPosicionInicial(posicionInicial - cantidadAMostrar);
+    // };
   
-    const handleChangeRowsPerPage = (event) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    };
+    // const handleNextButtonClick = (event) => {
+    //   setPosicionInicial(posicionInicial + cantidadAMostrar);
+    // };
 
     return (
     <TableContainer className={classes.container} component={Paper}>
@@ -177,7 +180,8 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            ? datos.slice(posicionInicial, posicionInicial + cantidadAMostrar)
+            // datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : datos)
             .map((dato) => (
                     // <StyledTableRow key={dato.id}>
@@ -197,8 +201,8 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
             </TableRow>
           )}
         </TableBody>
-        <TableFooter>
-          <TableRow>
+        <TableFooter style={{ width: '100%',display: 'flex', alignItems: 'right'}} colSpan={3}>
+          {/* <TableRow > */}
             {/* <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={3}
@@ -213,10 +217,17 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
               onChangeRowsPerPage={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
             /> */}
-            <PaginationRounded datos={datos.length}/>
-          </TableRow>
+            
+          {/* </TableRow> */}
         </TableFooter>
+      <Paginador posicionInicial={posicionInicial} 
+            setPosicionInicial={setPosicionInicial} 
+            cantidadAMostrar={cantidadAMostrar} 
+            cantidadTotal={datos.length}/>
       </Table>
+      {/* <PaginationRounded datos={Math.ceil(datos.length/cantidadAMostrar)} onChange={handleChangePage} ActionsComponent={TablePaginationActions} /> */}
+      {/* <Pagination count={Math.ceil(datos.length/cantidadAMostrar)} shape="rounded"  handleBackButtonClick={handleBackButtonClick} handleNextButtonClick={handleNextButtonClick} ActionsComponent={TablePaginationActions}/> */}
+      
     </TableContainer>
     )
 }
