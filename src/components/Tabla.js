@@ -76,37 +76,43 @@ const useStyles1 = makeStyles((theme) => ({
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F5F5F5F5",
     color: "black",
-
   },
   body: {
     fontSize: 14,
   },
+  root: {
+    padding: 30
+  }
 }))(TableCell);
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-
-    
+    backgroundColor: "#FFFFFF",
+    borderRadius: 2,
+    padding: 22,
+    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)"
   },
 }))(TableRow);
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
 
 
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
     border: "none",
+    boxShadow: "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+    borderSpacing: "0 1em",
+    borderCollapse: "separate"
   },
   container:{
-    marginTop: 30
+    marginTop: 30,
+    boxShadow: "none",
+    backgroundColor: "#F5F5F5",
   },
   head:{
-      border:"none"
+      border:"none",
+      padding: "0 0 0 30px"
   }
 });
 
@@ -147,16 +153,17 @@ export const Tabla = ({datos,headers}) =>{
         <TableBody>
           {(rowsPerPage > 0
             ? datos.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : datos
-            ).map((dato) => (
-            <StyledTableRow key={dato.id}>
-              <StyledTableCell component="th" scope="row">{dato.nombre +" "+ dato.apellido}</StyledTableCell>
-              <StyledTableCell component="th" scope="row">{dato.correo}</StyledTableCell>
-              <StyledTableCell component="th" scope="row">{dato.dni}</StyledTableCell>
-              <StyledTableCell component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-              <StyledTableCell component="th" scope="row">Propietario</StyledTableCell>
-            </StyledTableRow>
-            ))}
+            : datos)
+            .map((dato) => (
+                    <StyledTableRow key={dato.id}>
+                        <StyledTableCell component="th" scope="row">{dato.nombre +" "+ dato.apellido}</StyledTableCell>
+                        <StyledTableCell component="th" scope="row">{dato.correo}</StyledTableCell>
+                        <StyledTableCell component="th" scope="row">{dato.dni}</StyledTableCell>
+                        <StyledTableCell component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
+                        <StyledTableCell component="th" scope="row">Propietario</StyledTableCell>
+                    </StyledTableRow>
+            )
+            )}
 
         {emptyRows > 0 && (
             <TableRow style={{ height: 53 * emptyRows }}>

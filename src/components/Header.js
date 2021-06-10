@@ -2,6 +2,7 @@ import { Avatar, Button, makeStyles, Menu, MenuItem, Typography } from '@materia
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
+import { Desplegable } from '../assets/icons';
 
 const useStyles = makeStyles({
     root: {
@@ -35,6 +36,23 @@ const useStyles = makeStyles({
     },
     boton: {
         textTransform: "none"
+    },
+    contenedorBoton:{
+        display: "flex",
+        justifyContent:"center",
+        alignContent:"center",
+        alignItems:"center"
+    },
+    nombreTipo:{
+        display:"flex",
+        flexDirection:"column"
+    },
+    span:{
+        textAlign:"left",
+        fontSize: 12
+    },
+    desplegable:{
+        marginLeft:10
     }
   });
 
@@ -68,7 +86,13 @@ export const Header = () =>{
                 <div className={classes.loguedUser} >
                         <Avatar className={classes.avatar}>{filterFirstLetters(nombre)}</Avatar>
                         <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                            {nombre}
+                          <div className={classes.contenedorBoton}> 
+                                <div className={classes.nombreTipo}>
+                                    {nombre} 
+                                    <span className={classes.span}>Administrador</span>
+                                </div> 
+                                <Desplegable className={classes.desplegable}/>
+                        </div>
                         </Button>
                         <Menu
                             id="simple-menu"

@@ -202,7 +202,13 @@ export const ActiveApartment = (props) => {
     )
   } 
 
-  
+  export const Desplegable = (props) => {
+    return (
+      <SvgIcon {...props} viewBox="0 0 32 32">
+        <path d="M1 1L5 5L9 1" stroke="#159D74" strokeWidth="1.5"/>
+      </SvgIcon>
+    )
+  } 
 
   
 
