@@ -23,8 +23,8 @@ class UsuarioService{
     }
 
     async getAllUsers() {
-        const listaUsuariosJSON = await axios.get(`${REST_SERVER_URL}/usuarios`)
-        return listaUsuariosJSON.data
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/usuarios`)
+        return listaJSON.data
     }
 
 }

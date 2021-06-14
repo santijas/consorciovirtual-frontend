@@ -5,6 +5,7 @@ import { usuarioService } from '../services/usuarioService';
 import { Busqueda } from '../components/Busqueda'
 import { BotonPrimario } from '../components/BotonPrimario'
 import { useHistory } from 'react-router-dom';
+import { solicitudService } from '../services/solicitudService';
 
 
 const useStyles = makeStyles ({
@@ -33,53 +34,52 @@ const useStyles = makeStyles ({
 
   });
 
-const headers = ["Nombre y apellido", "E-mail", "DNI", "Actividad", "Tipo de Cuenta"]
+const headers = ["Solicitud", "Autor", "Título", "Actividad", "Estado"]
 
 const ColumnasCustom = (dato) => <StyledTableRow key={dato.id}>
   <StyledTableCell  component="th" scope="row">
     <div className="contenedorColumna">
-      <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
-      <span >2° A</span>
+      <span className="tableBold">{dato.id}</span>
+      <span >{dato.fecha}</span>
     </div>
   </StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.dni}</StyledTableCell>
+  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">Propietario</StyledTableCell>
+  <StyledTableCell className="tableBold" component="th" scope="row">{dato.estado}</StyledTableCell>
 </StyledTableRow>
 
-export const Usuarios = () =>{
+export const Solicitudes = () =>{
     const classes = useStyles();
-    const [usuarios, setUsuarios] = useState([])
+    const [solicitudes, setSolicitudes] = useState([])
     let history = useHistory()
 
-    const fetchAllUsers = async (textoBusqueda) =>{
-      const usuariosEncontrados = await usuarioService.getAllUsers()
-      setUsuarios(usuariosEncontrados)
+    const fetchAllSolicitudes = async (textoBusqueda) =>{
+      const solicitudesEncontradas = await solicitudService.getAllSolicitudes()
+      setSolicitudes(solicitudesEncontradas)
     }
 
     const newUser = () =>{
-      history.push("/usuario/create")
+      history.push("/solicitud/1")
     }
     
 
     useEffect( ()  =>  {
-      fetchAllUsers("")
+      fetchAllSolicitudes("")
     },[])
 
     return (
         <div className={classes.root} >
            <Typography component="h2" variant="h5" className={classes.tittle}>
-             Usuarios
+             Solicitudes técnicas
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-             <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={fetchAllUsers} />
+             <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={fetchAllSolicitudes} />
              <div>
-               <span className={classes.cantidadObject} > {usuarios.length} usuarios </span>
-             <BotonPrimario tituloBoton="Agregar usuario" funcion={newUser}/>
+               <span className={classes.cantidadObject} > {solicitudes.length} solicitudes técnicas </span>
+             <BotonPrimario tituloBoton="Agregar solicitud técnica" funcion={newUser}/>
             </div>
            </div>
-            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom}/>
          </div>
 
     )

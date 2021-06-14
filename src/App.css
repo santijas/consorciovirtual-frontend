@@ -4,7 +4,7 @@ body{
 
 .App {
   text-align: center;
-
+  flex: 1
 }
 
 .App-logo {
@@ -18,7 +18,13 @@ body{
   }
 }
 
+body, html {
+  height: 100%;
+}
 
+#root {
+  display: flex;
+}
 
 .App-header {
   background-color: #282c34;
@@ -88,4 +94,22 @@ body{
 
 .MuiPopover-paper{
   top:30!important;
+}
+
+.tableBold{
+  font-weight: 600!important;
+}
+
+.tableNormal{
+  font-style: normal!important;
+  font-weight: normal!important;
+  font-size: 14px!important;
+  line-height: 18px!important;
+  color: rgba(0, 0, 0, 0.40)!important;
+}
+
+
+.contenedorColumna{
+  display: flex;
+  flex-direction: column;
 }

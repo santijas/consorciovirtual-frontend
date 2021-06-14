@@ -6,6 +6,7 @@ import { Desplegable } from '../assets/icons';
 
 const useStyles = makeStyles({
     root: {
+      flex: 1,
       background: "white",
       width: "100%",
       position: "relative",
@@ -49,7 +50,8 @@ const useStyles = makeStyles({
     },
     span:{
         textAlign:"left",
-        fontSize: 12
+        fontSize: 12,
+        fontWeight: 300
     },
     desplegable:{
         marginLeft:10
@@ -94,6 +96,7 @@ export const Header = () =>{
                                 <Desplegable className={classes.desplegable}/>
                         </div>
                         </Button>
+                        
                         <Menu
                             id="simple-menu"
                             anchorEl={anchorEl}

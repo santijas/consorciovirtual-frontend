@@ -63,7 +63,8 @@ const useStyles = makeStyles({
   },
   head:{
       borderBottom:"none",
-      padding: "0 0 0 30px"
+      padding: "0 0 0 30px",
+      color: "rgba(0, 0, 0, 0.45)"
   }
 });
 
@@ -72,7 +73,7 @@ const useStyles = makeStyles({
 export const Tabla = ({datos,headers,ColumnasCustom}) =>{
     const classes = useStyles();
     const [page, setPage] = useState(1);
-    const pageSize = 4
+    const pageSize = 5
     const totalItems = datos.length
     
     let totalPages = Math.ceil(totalItems / pageSize);
