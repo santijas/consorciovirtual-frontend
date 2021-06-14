@@ -73,11 +73,11 @@ export const Usuarios = () =>{
              Usuarios
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-             <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={fetchAllUsers} />
-             <div>
+              <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={fetchAllUsers} />
+              <div>
                <span className={classes.cantidadObject} > {usuarios.length} usuarios </span>
-             <BotonPrimario tituloBoton="Agregar usuario" funcion={newUser}/>
-            </div>
+              <BotonPrimario tituloBoton="Agregar usuario" funcion={newUser}/>
+              </div>
            </div>
             <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom}/>
          </div>
