@@ -3,8 +3,9 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
 import { usuarioService } from '../services/usuarioService';
 import { Busqueda } from '../components/Busqueda'
-import { BotonPrimario } from '../components/BotonPrimario'
+import { StyledButtonPrimary } from '../components/Buttons'
 import { useHistory } from 'react-router-dom';
+import { getQueriesForElement } from '@testing-library/react';
 
 
 const useStyles = makeStyles ({
@@ -35,8 +36,16 @@ const useStyles = makeStyles ({
 
 const headers = ["Nombre y apellido", "E-mail", "DNI", "Actividad", "Tipo de Cuenta"]
 
-const ColumnasCustom = (dato) => 
-<StyledTableRow key={dato.id}>
+
+const ColumnasCustom = (dato) => {
+let history= useHistory()
+
+const getUser = (id) =>{
+  history.push(`/usuario/${id}`)
+}
+
+return (
+<StyledTableRow key={dato.id} onClick={() => getUser(dato.username)} className="pointer">
   <StyledTableCell  component="th" scope="row">
     <div className="contenedorColumna">
       <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
@@ -48,7 +57,8 @@ const ColumnasCustom = (dato) =>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
   <StyledTableCell className="tableBold" component="th" scope="row">Propietario</StyledTableCell>
 </StyledTableRow>
-
+)
+}
 export const Usuarios = () =>{
     const classes = useStyles();
     const [usuarios, setUsuarios] = useState([])
@@ -60,7 +70,7 @@ export const Usuarios = () =>{
     }
 
     const newUser = () =>{
-      history.push("/usuario/create")
+      history.push("/newuser")
     }
     
 
@@ -77,7 +87,7 @@ export const Usuarios = () =>{
               <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={fetchAllUsers} />
               <div>
                <span className={classes.cantidadObject} > {usuarios.length} usuarios </span>
-              <BotonPrimario tituloBoton="Agregar usuario" funcion={newUser}/>
+              <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
               </div>
            </div>
             <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom}/>

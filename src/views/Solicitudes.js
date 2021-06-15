@@ -3,9 +3,9 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
 import { usuarioService } from '../services/usuarioService';
 import { Busqueda } from '../components/Busqueda'
-import { BotonPrimario } from '../components/BotonPrimario'
 import { useHistory } from 'react-router-dom';
 import { solicitudService } from '../services/solicitudService';
+import { StyledButtonPrimary } from '../components/Buttons'
 
 
 const useStyles = makeStyles ({
@@ -76,7 +76,7 @@ export const Solicitudes = () =>{
              <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={fetchAllSolicitudes} />
              <div>
                <span className={classes.cantidadObject} > {solicitudes.length} solicitudes técnicas </span>
-             <BotonPrimario tituloBoton="Agregar solicitud técnica" funcion={newUser}/>
+             <StyledButtonPrimary >Agregar solicitud técnica</StyledButtonPrimary>
             </div>
            </div>
             <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom}/>

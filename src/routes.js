@@ -19,7 +19,8 @@ export const Routes = () => {
                     <Route><Header/></Route> 
                     <Route><NavBar/></Route> 
                     <Route path="/usuarios"><Usuarios/></Route>
-                    <Route path="/usuario/create"><AltaUsuario creacion={true} /></Route>
+                    <Route path="/newuser"><AltaUsuario creacion={true} edicion={false}/></Route>
+                    <Route path="/usuario/:id"><AltaUsuario creacion={false} edicion={true} /></Route>
                     <Route path="/departamentos"><Departamentos/></Route>
                     <Route path="/solicitudes"><Solicitudes/></Route>
             </div></Route>

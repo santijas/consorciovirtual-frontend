@@ -3,7 +3,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
 import { departamentoService } from '../services/departamentoService';
 import { Busqueda } from '../components/Busqueda'
-import { BotonPrimario } from '../components/BotonPrimario'
+import { StyledButtonPrimary } from '../components/Buttons'
 import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles ({
@@ -72,7 +72,7 @@ export const Departamentos = () =>{
                 <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={fetchAllDepartamentos} />
                 <div>
                 <span className={classes.cantidadObject} > {departamentos.length} departamentos </span>
-                <BotonPrimario tituloBoton="Agregar departamento" funcion={newDepto}/>
+                <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
                 </div>
             </div>
             <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom}/>
