@@ -5,7 +5,6 @@ import { usuarioService } from '../services/usuarioService';
 import { Busqueda } from '../components/Busqueda'
 import { StyledButtonPrimary } from '../components/Buttons'
 import { useHistory } from 'react-router-dom';
-import { getQueriesForElement } from '@testing-library/react';
 
 
 const useStyles = makeStyles ({

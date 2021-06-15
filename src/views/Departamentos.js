@@ -31,18 +31,18 @@ const useStyles = makeStyles ({
   const headers = ["Departamento", "Propietario", "Inquilino", "Actividad", "Estado de cuenta"]
 
   const ColumnasCustom = (dato) => <StyledTableRow key={dato.id}>
-    <StyledTableCell component="th" scope="row">{dato.piso}º{dato.letraNro}</StyledTableCell>
-    <StyledTableCell component="th" scope="row">{dato.propietario}</StyledTableCell>
-    <StyledTableCell component="th" scope="row">{dato.inquilino}</StyledTableCell>
-    <StyledTableCell component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
+    <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º{dato.letraNro}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
     { estadoDeCuenta(dato.estadoCuenta) }
   </StyledTableRow>
 
   const estadoDeCuenta = (estado) => {
-    return estado === true?
-    <StyledTableCell component="th" scope="row">Pagado</StyledTableCell> 
+    return estado?
+    <StyledTableCell className="tableBold" component="th" scope="row">Pagado</StyledTableCell> 
     :
-    <StyledTableCell component="th" scope="row">Pendiente</StyledTableCell>
+    <StyledTableCell className="tableBold"  component="th" scope="row">Pendiente</StyledTableCell>
   }
 
 export const Departamentos = () =>{

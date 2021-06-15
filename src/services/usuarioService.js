@@ -27,6 +27,12 @@ class UsuarioService{
         return listaJSON.data
     }
 
+
+    usuariosPrueba = [
+        new Usuario(1, "Jorge", "Bilboa"),
+        new Usuario(1, "Miguel", "Cervantes"),
+        new Usuario(1, "Patricio", "Dalton"),
+    ]
 }
 
 export const usuarioService = new UsuarioService()
