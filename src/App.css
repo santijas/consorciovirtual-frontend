@@ -1,10 +1,12 @@
 body{
-  background-color:#F5F5F5;
+  background-color:#F5F5F5!important;
 }
 
 .App {
+  display: flex;
   text-align: center;
-  flex: 1
+  flex: 1;
+  flex-direction: column;
 }
 
 .App-logo {
@@ -19,11 +21,14 @@ body{
 }
 
 body, html {
-  height: 100%;
+  margin: 0;
+  height: calc(100% - 1em);
 }
 
 #root {
   display: flex;
+  flex: 1;
+  height: 100%;
 }
 
 .App-header {

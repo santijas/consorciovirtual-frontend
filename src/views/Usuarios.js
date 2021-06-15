@@ -35,7 +35,8 @@ const useStyles = makeStyles ({
 
 const headers = ["Nombre y apellido", "E-mail", "DNI", "Actividad", "Tipo de Cuenta"]
 
-const ColumnasCustom = (dato) => <StyledTableRow key={dato.id}>
+const ColumnasCustom = (dato) => 
+<StyledTableRow key={dato.id}>
   <StyledTableCell  component="th" scope="row">
     <div className="contenedorColumna">
       <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>

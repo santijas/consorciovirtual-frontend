@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { withRouter } from 'react-router-dom'
-import { useHistory } from "react-router-dom";
-import { withStyles, makeStyles, useTheme } from '@material-ui/core/styles';
+import React, { useState } from 'react'
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,21 +7,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { IconButton, TableFooter, TablePagination } from '@material-ui/core';
-import PropTypes from 'prop-types';
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import LastPageIcon from '@material-ui/icons/LastPage';
-import FirstPageIcon from '@material-ui/icons/FirstPage';
+import { TableFooter } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
-const useStyles1 = makeStyles((theme) => ({
-    root: {
-      flexShrink: 0,
-      marginLeft: theme.spacing(2.5),
-    },
-  }));
-  
 
 export const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -65,6 +51,10 @@ const useStyles = makeStyles({
       borderBottom:"none",
       padding: "0 0 0 30px",
       color: "rgba(0, 0, 0, 0.45)"
+  },
+  paginator:{
+    display:"flex",
+    justifyContent:"flex-end"
   }
 });
 
@@ -103,7 +93,7 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
             )}
 
           {page === totalPages && endIndex !== 0 && (
-            <TableRow style={{ height: 91 * (endIndex)}}>
+            <TableRow style={{ height: 112.7 * (endIndex)}}>
               <TableCell colSpan={6} />
             </TableRow>
           )}
@@ -112,7 +102,7 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
              
         </TableFooter>
       </Table>
-      <Pagination count={totalPages} page={page} defaultPage={1} onChange={handleChange}/>
+      <Pagination className={classes.paginator} count={totalPages} page={page} defaultPage={1} onChange={handleChange}/>
     </TableContainer>
     )
 }

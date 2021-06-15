@@ -1,6 +1,5 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useState } from 'react'
-import { Search } from '../assets/icons'
 
 const useStyles = makeStyles({
     inputIcono: {

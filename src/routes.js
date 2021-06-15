@@ -15,11 +15,11 @@ export const Routes = () => {
         <Router>    
               <Switch>
               <Route exact={true} path="/"><Login/></Route>
-              <Route><div>
+              <Route><div className="App">
                     <Route><Header/></Route> 
                     <Route><NavBar/></Route> 
                     <Route path="/usuarios"><Usuarios/></Route>
-                    <Route path="/usuario/create"><AltaUsuario/></Route>
+                    <Route path="/usuario/create"><AltaUsuario creacion={true} /></Route>
                     <Route path="/departamentos"><Departamentos/></Route>
                     <Route path="/solicitudes"><Solicitudes/></Route>
             </div></Route>

@@ -5,8 +5,8 @@ import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles ({
     root:{
-        color: "white",
-        background: "#159D74",
+        color: "#BB0E0E",
+        background: "rgba(187, 14 ,14 ,15%)",
         padding: "10px 24px",
         borderRadius: 2,
         textTransform: "none"
@@ -14,7 +14,7 @@ const useStyles = makeStyles ({
   });
 
 
-export const BotonPrimario = ({tituloBoton, funcion, style}) =>{
+export const BotonSecundario = ({tituloBoton, funcion, style}) =>{
     const classes = useStyles();
 
 

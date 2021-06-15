@@ -6,7 +6,6 @@ import { Desplegable } from '../assets/icons';
 
 const useStyles = makeStyles({
     root: {
-      flex: 1,
       background: "white",
       width: "100%",
       position: "relative",
