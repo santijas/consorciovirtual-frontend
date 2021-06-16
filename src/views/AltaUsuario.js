@@ -6,6 +6,7 @@ import { Usuario } from '../domain/usuario';
 import { Link, Avatar, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { usuarioService } from "../services/usuarioService";
 import { Historial } from '../components/Historial'
+import { Chevron } from '../assets/icons';
 
 const useStyles = makeStyles ({
     root: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles ({
         color: "#159D74",
         textAlign:"left",
         marginBottom: 20,
-        cursor: "pointer"
+        cursor: "pointer",
     },
     form:{
         display:"flex",
@@ -93,9 +94,11 @@ const useStyles = makeStyles ({
     botonesDisabled:{
         background: "rgba(0, 0, 0 ,10%)",
     },
+    chevron:{
+        fontSize: "12px",
+        marginRight: 8
+    }
   });
-
-const linkWord = "< Volver a usuarios"
 
 const tiposDeUsuario = [
     {
@@ -167,7 +170,8 @@ export const AltaUsuario = ({edicion, creacion}) =>{
         <div className={classes.root} >
             <div className={classes.contenedorForm}>
                 <Link className={classes.link} onClick={backToUsers}>
-                    {linkWord}
+                    <Chevron className={classes.chevron}/>
+                    Volver a usuarios
                 </Link>
                 { creacion &&
                     <Typography component="h2" variant="h5" className={classes.tittle}>

@@ -1,4 +1,5 @@
 import { Box, Typography, Avatar, makeStyles } from '@material-ui/core';
+import {avatarColours} from '../utils/avatarColours';
 
 const useStyles = makeStyles((theme) => ({
     tittle:{
@@ -37,8 +38,8 @@ export const Historial = ({usuariosHistorial}) => {
                     </Typography>
                     <Box display="flex" flexDirection="column" mt={5}>
                         {usuariosHistorial.map((user) => (
-                            <Box display="flex" mb={3}>
-                                <Avatar className={classes.avatar}>{filterFirstLetters(user.nombre+ " " + user.apellido)}</Avatar>
+                            <Box display="flex" mb={3}> 
+                                <Avatar style={{backgroundColor: avatarColours(user.nombre)} }  className={classes.avatar}>{filterFirstLetters(user.nombre+ " " + user.apellido)}</Avatar>
                                 <Box display="flex" flexDirection="column">
                                     <span className={classes.spanAvatar}>{user.nombre} {user.apellido}</span>
                                     <span className={classes.spanFecha}>12/03/2021 - 17:13 hs</span>

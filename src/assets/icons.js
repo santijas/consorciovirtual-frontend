@@ -218,5 +218,13 @@ export const ActiveApartment = (props) => {
     )
   } 
 
+  export const Chevron = (props) => {
+    return (
+      <SvgIcon {...props} viewBox="0 0 10 10" preserveAspectRatio="xMaxYMax meet">
+          <path d="M7.89771 9.35227L7.10221 10.1478L2.95446 6.00002L7.10221 1.85227L7.8977 2.64777L4.54545 6.00002L7.89771 9.35227Z" fill="#159D74" />
+          <path d="M7.89771 9.35227L7.10221 10.1478L2.95446 6.00002L7.10221 1.85227L7.8977 2.64777L4.54545 6.00002L7.89771 9.35227Z" fill="#159D74"/>
+      </SvgIcon>
+    )
+  } 
 
-  
+
