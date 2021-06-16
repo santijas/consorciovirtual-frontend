@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Usuario } from '../domain/usuario';
 import { Link, Avatar, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { usuarioService } from "../services/usuarioService";
 import { Historial } from '../components/Historial'
 import { Chevron } from '../assets/icons';
+import { Usuario } from '../domain/usuario';
+import update from 'immutability-helper';
 
 const useStyles = makeStyles ({
     root: {
@@ -121,7 +122,7 @@ const tiposDeUsuario = [
 
 export const AltaUsuario = ({edicion, creacion}) =>{
     const classes = useStyles();
-    const [usuario, setUsuario] = useState([])
+    const [usuario, setUsuario] = useState('')
     const [tipoUsuario, setTipoUsuario] = useState()
     const [campoEditado, setCampoEditado] = useState(false)
     let history = useHistory()
@@ -129,32 +130,30 @@ export const AltaUsuario = ({edicion, creacion}) =>{
 
     const fetchUsuario = async () =>{
         try{
-            let usuario
+            let unUsuario
             if(creacion){
-                usuario = new Usuario()
+                unUsuario = new Usuario()
             } else{
-                usuario = await usuarioService.getUser(params.id)
+                unUsuario = await usuarioService.getUser(params.id)
             }
-            setUsuario(usuario) 
+            setUsuario(unUsuario) 
             }
         catch{
 
         }
     }
 
-  
-
     const actualizarValor = (event) => {
-        setUsuario({
-            ...usuario,
-            [event.target.id]: event.target.value
+        
+        const newState = update(usuario, {
+            [event.target.id]: { $set: event.target.value}
         })
+        setUsuario(newState)
         setCampoEditado(true)
     }
 
     const backToUsers = () =>{
         history.push("/usuarios")
-        console.log(usuario)
     }
 
     const handleChangeType = (event) => {
@@ -165,8 +164,26 @@ export const AltaUsuario = ({edicion, creacion}) =>{
         fetchUsuario()
     },[])
 
+    const crearUsuario = async () => {
+        try{
+            if(validarUsuario()){
+                await usuarioService.createUser(usuario)
+
+            }else{
+               
+            }
+        } catch (error) {
+
+        }
+    }
+
+    const validarUsuario = () =>{
+        return true
+    }
+
 
     return (
+        
         <div className={classes.root} >
             <div className={classes.contenedorForm}>
                 <Link className={classes.link} onClick={backToUsers}>
@@ -184,36 +201,36 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                     Modificar usuario
                     </Typography>
                 }
-
+        
                 <form className={classes.form} noValidate autoComplete="off">
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>Nombre</span>
-                        <TextField className={classes.inputs} id="nombre" value={usuario.nombre} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
+                        <TextField className={classes.inputs} id="nombre" value={usuario.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span} >Apellido</span>
-                        <TextField className={classes.inputs} id="apellido" value={usuario.apellido} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
+                        <TextField className={classes.inputs} id="apellido" value={usuario.apellido || ''} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
                     </div>
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>DNI</span>
-                        <TextField className={classes.inputs} id="dni" value={usuario.dni} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" />
+                        <TextField className={classes.inputs} id="dni" value={usuario.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" />
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>E-mail</span>
-                        <TextField className={classes.inputs} id="email" value={usuario.email} onChange={(event) => actualizarValor(event)} name="email"  variant="outlined" />
+                        <TextField className={classes.inputs} id="correo" value={usuario.correo || ''} onChange={(event) => actualizarValor(event)} name="correo"  variant="outlined" />
                     </div>
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>Fecha de nacimiento</span>
-                        <TextField className={classes.inputs} id="fechaNacimiento" value={usuario.fechaNacimiento} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
+                        <TextField className={classes.inputs} id="fechaNacimiento" value={usuario.fechaNacimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Tipo de usuario</span>
-                        <TextField className={classes.inputs} id="tipoUsuario" select onChange={handleChangeType} value={tipoUsuario} variant="outlined" >
+                        <TextField className={classes.inputs} id="tipoUsuario" select onChange={handleChangeType} value={tipoUsuario || ''} variant="outlined" >
                                 {tiposDeUsuario.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                 {option.label}
@@ -235,13 +252,14 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                         <span className={classes.inputsDisabled}>B</span>
                     </div>
                     }
-                </form>         
+                </form> 
+                      
             </div>
 
             <div className={classes.buttonLog}>
                 { creacion &&
                 <div className={classes.contenedorBotones}>
-                    <StyledButtonPrimary className={classes.botones}>Crear usuario</StyledButtonPrimary>
+                    <StyledButtonPrimary className={classes.botones} onClick={() => crearUsuario() } >Crear usuario</StyledButtonPrimary>
                     <StyledButtonSecondary className={classes.botones} onClick={ backToUsers }>Cancelar</StyledButtonSecondary>
                 </div>
                 }

@@ -1,8 +1,6 @@
 export class Expensa {
 
-    constructor(id, idDepartamento, idUsuario,
-        idDocumento, valorTotalExpensa, valorExpensaExtraordinaria,
-        valorExpensaDepartamento, periodo, fechaDePago ){ 
+    constructor(id, idDepartamento, idUsuario, idDocumento, valorTotalExpensa, valorExpensaExtraordinaria, valorExpensaDepartamento, periodo, fechaDePago ){ 
       this.id = id
       this.idDepartamento = idDepartamento
       this.idDocumento = idDocumento

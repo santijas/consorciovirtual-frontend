@@ -5,6 +5,7 @@ import { usuarioService } from '../services/usuarioService';
 import { Busqueda } from '../components/Busqueda'
 import { StyledButtonPrimary } from '../components/Buttons'
 import { useHistory } from 'react-router-dom';
+import { gastoService } from '../services/gastoService';
 
 
 const useStyles = makeStyles ({
@@ -45,11 +46,11 @@ const getUser = (id) =>{
 
 return (
 <StyledTableRow key={dato.id} onClick={() => getUser(dato.username)} className="pointer">
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.fecha}</StyledTableCell>
+  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.periodo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
+  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.rubro}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">{dato.monto}</StyledTableCell>
+  <StyledTableCell className="tableBold" component="th" scope="row">{dato.importe}</StyledTableCell>
 </StyledTableRow>
 )
 }
@@ -59,7 +60,7 @@ export const Gastos = () =>{
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
-      const gastosEncontrados = [] //await gastosService.getAll()
+      const gastosEncontrados = gastoService.gastosVista
       setGastos(gastosEncontrados)
     }
 

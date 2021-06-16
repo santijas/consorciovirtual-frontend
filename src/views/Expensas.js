@@ -3,7 +3,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
 import { expensaService } from '../services/expensaService';
 import { Busqueda } from '../components/Busqueda'
-import { StyledButtonPrimary } from '../components/Buttons'
+import { StyledButtonPrimary, StyledButtonSecondary } from '../components/Buttons'
 import { useHistory } from 'react-router-dom';
 
 
@@ -29,6 +29,9 @@ const useStyles = makeStyles ({
     },
     departamento:{
       display:"flex"
+    },
+    botonAnular:{
+      marginLeft: 8
     }
 
   });
@@ -68,8 +71,8 @@ export const Expensas = () =>{
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
-      const gastosEncontrados = await expensaService.getAllExpensas()
-      setExpensas(gastosEncontrados)
+      const expensasEncontradas = await expensaService.getAllExpensas()
+      setExpensas(expensasEncontradas)
     }
 
     const newUser = () =>{
@@ -90,7 +93,8 @@ export const Expensas = () =>{
               <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
               <div>
                <span className={classes.cantidadObject} > {expensas.length} expensas </span>
-              <StyledButtonPrimary onClick={newUser} >Agregar expensa</StyledButtonPrimary>
+              <StyledButtonPrimary onClick={newUser} >Calcular expensas</StyledButtonPrimary>
+              <StyledButtonSecondary className={classes.botonAnular} onClick={newUser}>Anular expensas</StyledButtonSecondary>
               </div>
            </div>
             <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom}/>

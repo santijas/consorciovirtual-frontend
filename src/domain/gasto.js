@@ -1,11 +1,11 @@
 export class Gasto {
     
-    constructor(id, tipo, titulo, monto, fecha){ 
+    constructor(id, rubro, titulo, importe, periodo){ 
       this.id = id
-      this.tipo = tipo
+      this.rubro = rubro
       this.titulo = titulo
-      this.monto = monto
-      this.fecha = fecha
+      this.importe = importe
+      this.periodo = periodo
     }
 
 

@@ -22,9 +22,15 @@ class UsuarioService{
         return this.usuarioAJson(usuarioJson.data)
     }
 
-    async getAllUsers() {
-        const listaJSON = await axios.get(`${REST_SERVER_URL}/usuarios`)
+    async getAllUsers(palabraBuscada) {
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/usuarios`, {params:{ palabraBuscada }})
         return listaJSON.data
+    }
+
+
+    async createUser(user){
+        console.log(user.toJSON())
+        await axios.put((`${REST_SERVER_URL}/usuario/create`), user.toJSON())
     }
 
 

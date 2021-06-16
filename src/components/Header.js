@@ -3,6 +3,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { Desplegable } from '../assets/icons';
+import { avatarColours } from '../utils/avatarColours';
 
 const useStyles = makeStyles({
     root: {
@@ -85,7 +86,7 @@ export const Header = () =>{
                      Consorcio Virtual
                 </Typography>
                 <div className={classes.loguedUser} >
-                        <Avatar className={classes.avatar}>{filterFirstLetters(nombre)}</Avatar>
+                        <Avatar style={{backgroundColor: avatarColours(nombre)}} className={classes.avatar} >{filterFirstLetters(nombre)}</Avatar>
                         <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                           <div className={classes.contenedorBoton}> 
                                 <div className={classes.nombreTipo}>
