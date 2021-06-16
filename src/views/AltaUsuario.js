@@ -41,7 +41,7 @@ const useStyles = makeStyles ({
     form:{
         display:"flex",
         flexWrap: "wrap",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         marginTop: 30,
         
     },
@@ -55,7 +55,6 @@ const useStyles = makeStyles ({
         flex: "50%",
         maxWidth: 400,
         marginBottom: 50,
-        marginRight: 200,
     },
     contenedorInputDerecha:{
         display: "flex",
@@ -163,10 +162,6 @@ export const AltaUsuario = ({edicion, creacion}) =>{
         fetchUsuario()
     },[])
 
-    const test = async () =>{
-       let usuariosTest = await usuarioService.getAllUsers
-       return usuariosTest
-    }
 
     return (
         <div className={classes.root} >
@@ -238,7 +233,7 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                     }
                 </form>         
             </div>
-            
+
             <div className={classes.buttonLog}>
                 { creacion &&
                 <div className={classes.contenedorBotones}>
