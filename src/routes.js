@@ -8,6 +8,7 @@ import { Departamentos } from './views/Departamentos'
 import { Solicitudes } from './views/Solicitudes'
 import { AltaUsuario } from './views/AltaUsuario'
 import { Gastos } from './views/Gastos'
+import { Expensas } from './views/Expensas'
 
 
 export const Routes = () => {
@@ -25,6 +26,7 @@ export const Routes = () => {
                     <Route path="/departamentos"><Departamentos/></Route>
                     <Route path="/solicitudes"><Solicitudes/></Route>
                     <Route path="/gastos"><Gastos/></Route>
+                    <Route path="/expensas"><Expensas/></Route>
             </div></Route>
             </Switch>
         </Router>
