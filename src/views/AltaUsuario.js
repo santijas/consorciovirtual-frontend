@@ -238,6 +238,7 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                     }
                 </form>         
             </div>
+            
             <div className={classes.buttonLog}>
                 { creacion &&
                 <div className={classes.contenedorBotones}>
