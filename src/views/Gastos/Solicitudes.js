@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
-import { usuarioService } from '../services/usuarioService';
-import { Busqueda } from '../components/Busqueda'
+import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
+import { usuarioService } from '../../services/usuarioService';
+import { Busqueda } from '../../components/Busqueda'
 import { useHistory } from 'react-router-dom';
-import { solicitudService } from '../services/solicitudService';
-import { StyledButtonPrimary } from '../components/Buttons'
+import { solicitudService } from '../../services/solicitudService';
+import { StyledButtonPrimary } from '../../components/Buttons'
 
 
 const useStyles = makeStyles ({
@@ -79,7 +79,7 @@ export const Solicitudes = () =>{
              <StyledButtonPrimary >Agregar solicitud técnica</StyledButtonPrimary>
             </div>
            </div>
-            <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
          </div>
 
     )

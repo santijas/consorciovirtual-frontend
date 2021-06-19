@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
-import { expensaService } from '../services/expensaService';
-import { Busqueda } from '../components/Busqueda'
-import { StyledButtonPrimary, StyledButtonSecondary } from '../components/Buttons'
+import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
+import { expensaService } from '../../services/expensaService';
+import { Busqueda } from '../../components/Busqueda'
+import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
 
 
@@ -97,7 +97,7 @@ export const Expensas = () =>{
               <StyledButtonSecondary className={classes.botonAnular} onClick={newUser}>Anular expensas</StyledButtonSecondary>
               </div>
            </div>
-            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
          </div>
 
     )

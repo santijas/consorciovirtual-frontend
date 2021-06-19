@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography, Snackbar } from '@material-ui/core';
-import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
-import { usuarioService } from '../services/usuarioService';
-import { Busqueda } from '../components/Busqueda'
-import { StyledButtonPrimary } from '../components/Buttons'
+import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
+import { usuarioService } from '../../services/usuarioService';
+import { Busqueda } from '../../components/Busqueda'
+import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
-import { StyledSnackbarGreen } from '../components/Snackbar'
+import { StyledSnackbarGreen } from '../../components/Snackbar'
 
 
 const useStyles = makeStyles ({
@@ -45,7 +45,7 @@ const getUser = (id) =>{
 }
 
 return (
-<StyledTableRow key={dato.id} onClick={() => getUser(dato.username)} className="pointer">
+<StyledTableRow key={dato.id} onClick={() => getUser(dato.id)} className="pointer">
   <StyledTableCell  component="th" scope="row">
     <div className="contenedorColumna">
       <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
@@ -100,7 +100,7 @@ export const Usuarios = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
               </div>
            </div>
-            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={112.7}/>
             
             <Snackbar
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}

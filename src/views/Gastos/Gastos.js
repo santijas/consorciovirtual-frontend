@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
-import { usuarioService } from '../services/usuarioService';
-import { Busqueda } from '../components/Busqueda'
-import { StyledButtonPrimary } from '../components/Buttons'
+import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
+import { usuarioService } from '../../services/usuarioService';
+import { Busqueda } from '../../components/Busqueda'
+import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
-import { gastoService } from '../services/gastoService';
+import { gastoService } from '../../services/gastoService';
 
 
 const useStyles = makeStyles ({
@@ -85,7 +85,7 @@ export const Gastos = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>
               </div>
            </div>
-            <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
          </div>
 
     )

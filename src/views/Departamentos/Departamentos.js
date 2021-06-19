@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
-import { departamentoService } from '../services/departamentoService';
-import { Busqueda } from '../components/Busqueda'
-import { StyledButtonPrimary } from '../components/Buttons'
+import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
+import { departamentoService } from '../../services/departamentoService';
+import { Busqueda } from '../../components/Busqueda'
+import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles ({
@@ -75,7 +75,7 @@ export const Departamentos = () =>{
                 <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
                 </div>
             </div>
-            <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
          </div>
 
     )

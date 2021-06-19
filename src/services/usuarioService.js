@@ -38,6 +38,9 @@ class UsuarioService{
         this.usuarioLogueado = user
     }
 
+    async deleteUser(id){
+        return axios.delete(`${REST_SERVER_URL}/usuario/delete/${id}`)
+    }
 
     usuariosPrueba = [
         new Usuario(1, "Jorge", "Bilboa"),

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
-import { usuarioService } from '../services/usuarioService';
-import { Busqueda } from '../components/Busqueda'
-import { StyledButtonPrimary } from '../components/Buttons'
+import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
+import { usuarioService } from '../../services/usuarioService';
+import { Busqueda } from '../../components/Busqueda'
+import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
 
 

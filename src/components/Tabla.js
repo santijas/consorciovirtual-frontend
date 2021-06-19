@@ -60,7 +60,7 @@ const useStyles = makeStyles({
 
 
 
-export const Tabla = ({datos,headers,ColumnasCustom}) =>{
+export const Tabla = ({datos,headers,ColumnasCustom, heightEnd}) =>{
     const classes = useStyles();
     const [page, setPage] = useState(1);
     const pageSize = 5
@@ -93,7 +93,7 @@ export const Tabla = ({datos,headers,ColumnasCustom}) =>{
             )}
 
           {page === totalPages && endIndex !== 0 && (
-            <TableRow style={{ height: 112.7 * (endIndex)}}>
+            <TableRow style={{ height: heightEnd * (endIndex)}}>
               <TableCell colSpan={6} />
             </TableRow>
           )}

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { StyledButtonPrimary, StyledButtonSecondary } from '../components/Buttons'
+import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
-import { usuarioService } from "../services/usuarioService";
-import { Historial } from '../components/Historial'
-import { SnackbarComponent } from '../components/Snackbar'
-import { ModalComponent } from '../components/Modal'
-import { Chevron } from '../assets/icons';
-import { Usuario } from '../domain/usuario';
+import { usuarioService } from "../../services/usuarioService";
+import { Historial } from '../../components/Historial'
+import { SnackbarComponent } from '../../components/Snackbar'
+import { ModalComponent } from '../../components/Modal'
+import { Chevron } from '../../assets/icons';
+import { Usuario } from '../../domain/usuario';
 import update from 'immutability-helper';
 
 const useStyles = makeStyles ({
@@ -149,7 +149,7 @@ const tiposDeUsuario = [
     };
   }
 
-export const AltaUsuario = ({edicion, creacion}) =>{
+export const ABMCUsuario = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [usuario, setUsuario] = useState('')
     const [tipoUsuario, setTipoUsuario] = useState()
@@ -229,6 +229,14 @@ export const AltaUsuario = ({edicion, creacion}) =>{
         }
     }
 
+    const eliminarUsuario = async () => {
+        try {
+            await usuarioService.deleteUser(usuario.id)
+        }catch(errorRecibido){
+            usarSnack("No se puede conectar con el servidor.", true)
+        }
+    }
+
     const validarUsuario = () =>{
         return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo
     }
@@ -249,7 +257,7 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                         <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este usuario?</h2>
                         <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
                         <Box display="flex" flexDirection="row" mt={4}>
-                            <StyledButtonPrimary>Eliminar usuario</StyledButtonPrimary>
+                            <StyledButtonPrimary onClick={ eliminarUsuario }>Eliminar usuario</StyledButtonPrimary>
                             <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
                                 Cancelar
                             </Link>
