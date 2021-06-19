@@ -6,6 +6,9 @@ import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
+import 'moment/locale/es'
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
 
 
 const useStyles = makeStyles ({
@@ -44,9 +47,15 @@ const getGasto = (id) =>{
   history.push(`/gasto/${id}`)
 }
 
+const formatDate = (date) =>{
+  const fecha = moment(date).format('MMMM YYYY').toUpperCase()
+  const lower = fecha.toLowerCase();
+  return fecha.charAt(0).toUpperCase() + lower.slice(1);
+}
+
 return (
 <StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer">
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.periodo}</StyledTableCell>
+  <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>

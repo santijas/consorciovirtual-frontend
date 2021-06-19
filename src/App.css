@@ -113,6 +113,10 @@ body, html {
   color: rgba(0, 0, 0, 0.40)!important;
 }
 
+.Mui-disabled{
+  text-transform: capitalize!important;
+}
+
 
 .contenedorColumna{
   display: flex;

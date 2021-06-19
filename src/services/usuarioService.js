@@ -29,7 +29,6 @@ class UsuarioService{
 
 
     async createUser(user){
-        console.log(user.toJSON())
         await axios.put((`${REST_SERVER_URL}/usuario/create`), user.toJSON())
     }
 

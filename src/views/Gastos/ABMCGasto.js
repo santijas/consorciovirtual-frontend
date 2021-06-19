@@ -12,9 +12,9 @@ import update from 'immutability-helper';
 import { Gasto } from '../../domain/gasto';
 import { gastoService } from '../../services/gastoService';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from '@date-io/date-fns';
-import { es } from "date-fns/locale";
-
+import MomentUtils from '@date-io/moment';
+import 'moment/locale/es'
+import moment from 'moment';
 
 const useStyles = makeStyles ({
     root: {
@@ -122,6 +122,9 @@ const useStyles = makeStyles ({
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
       },
+      inputsDate:{
+          textTransform: "uppercase"
+      }
   });
 
 
@@ -186,9 +189,11 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     const crearGasto = async () => {
         try{
+            gasto.periodo = new Date(Date.now())
+            console.log(gasto)
             if(validarGasto()){
                 await gastoService.createGasto(gasto)
-                history.push("/gastos", { openChildSnack : true })    
+                //history.push("/gastos", { openChildSnack : true })    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -268,17 +273,37 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                 }
         
                 <form className={classes.form} noValidate autoComplete="off">
+                    
+                    {   creacion &&
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>Período</span>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils} locale={es}>
+                        <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
-                                className={classes.inputs}
                                 views={["year", "month"]}
                                 value={ new Date(Date.now())}
                                 disabled
+                                inputVariant="outlined"
+                                onChange={(event) => actualizarValor(event)}
                             />
                         </MuiPickersUtilsProvider>
                     </div>
+                    }
+
+                    {   !creacion && edicion &&
+                    <div className={classes.contenedorInput}>
+                        <span className={classes.span}>Período</span>
+                        <MuiPickersUtilsProvider utils={MomentUtils}  locale={moment().locale('es')}>
+                            <DatePicker
+                                className={classes.inputsDate}
+                                views={["year", "month"]}
+                                value={gasto.periodo}
+                                disabled
+                                inputVariant="outlined"
+                                onChange={(event) => actualizarValor(event)}
+                            />
+                        </MuiPickersUtilsProvider>
+                    </div>
+                    }
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span} >Titulo</span>

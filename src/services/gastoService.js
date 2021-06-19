@@ -18,6 +18,10 @@ class GastoService{
         const JSON = await axios.get(`${REST_SERVER_URL}/gasto/${id}`)
         return this.gastoAJson(JSON.data)
     }
+
+    async createGasto(gasto){
+        await axios.put((`${REST_SERVER_URL}/usuario/create`), gasto.toJSON())
+    }
 }
 
 export const gastoService = new GastoService()
