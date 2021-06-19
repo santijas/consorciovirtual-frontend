@@ -34,21 +34,21 @@ const useStyles = makeStyles ({
 
   });
 
-const headers = ["Fecha", "Título", "Tipo", "Actividad", "Monto"]
+const headers = ["Periodo", "Título", "Tipo", "Actividad", "Monto"]
 
 
 const ColumnasCustom = (dato) => {
 let history= useHistory()
 
-const getUser = (id) =>{
-  history.push(`/usuario/${id}`)
+const getGasto = (id) =>{
+  history.push(`/gasto/${id}`)
 }
 
 return (
-<StyledTableRow key={dato.id} onClick={() => getUser(dato.username)} className="pointer">
+<StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer">
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.periodo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.rubro}</StyledTableCell>
+  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
   <StyledTableCell className="tableBold" component="th" scope="row">{dato.importe}</StyledTableCell>
 </StyledTableRow>
@@ -60,15 +60,15 @@ export const Gastos = () =>{
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
-      const gastosEncontrados = gastoService.gastosVista
+      const gastosEncontrados = await gastoService.getAll(textoBusqueda)
       setGastos(gastosEncontrados)
     }
 
     const newUser = () =>{
-      history.push("/newuser")
+      history.push("/newgasto")
     }
     
-
+ 
     useEffect( ()  =>  {
         fetchAll("")
     },[])

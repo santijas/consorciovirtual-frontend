@@ -9,19 +9,15 @@ class GastoService{
         return Gasto.fromJson(JSON)
     }
 
-    async getAll() {
-        const listaJSON = await axios.get(`${REST_SERVER_URL}/gastos`)
+    async getAll(palabraBuscada) {
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/gastos`, {params:{ palabraBuscada }})
         return listaJSON.data
     }
 
-
-    gastosVista = [
-        new Gasto(1, "Extraordinaria","Reparacion de elevador", 12000, "Mayo 2021"),
-        new Gasto(2, "Extraordinaria","Reparacion de elevador", 12000, "Mayo 2021"),
-        new Gasto(3, "Extraordinaria","Reparacion de elevador", 12000, "Mayo 2021"),
-        new Gasto(4, "Extraordinaria","Reparacion de elevador", 12000, "Mayo 2021"),
-        new Gasto(5, "Extraordinaria","Reparacion de elevador", 12000, "Mayo 2021")
-    ]
+    async getGasto(id){
+        const JSON = await axios.get(`${REST_SERVER_URL}/gasto/${id}`)
+        return this.gastoAJson(JSON.data)
+    }
 }
 
 export const gastoService = new GastoService()

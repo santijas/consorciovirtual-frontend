@@ -232,6 +232,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const eliminarUsuario = async () => {
         try {
             await usuarioService.deleteUser(usuario.id)
+            backToUsers()
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)
         }
