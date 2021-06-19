@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, Avatar, TextField, MenuItem, Divider, Box } from '@material-ui/core';
+import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { usuarioService } from "../services/usuarioService";
 import { Historial } from '../components/Historial'
+import { SnackbarComponent } from '../components/Snackbar'
+import { ModalComponent } from '../components/Modal'
 import { Chevron } from '../assets/icons';
 import { Usuario } from '../domain/usuario';
 import update from 'immutability-helper';
@@ -39,6 +41,14 @@ const useStyles = makeStyles ({
         textAlign:"left",
         marginBottom: 20,
         cursor: "pointer",
+    },
+    linkModal:{
+        color: "#159D74",
+        textAlign:"left",
+        marginLeft: 50,
+        marginTop: 10,
+        cursor: "pointer",
+        fontWeight: 600
     },
     form:{
         display:"flex",
@@ -98,7 +108,15 @@ const useStyles = makeStyles ({
     chevron:{
         fontSize: "12px",
         marginRight: 8
-    }
+    },
+    paper: {
+        position: 'absolute',
+        width: 400,
+        backgroundColor: "white",
+        boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.1)",
+        borderRadius: "6px",
+        padding: "0 30px 32px 32px"
+      },
   });
 
 const tiposDeUsuario = [
@@ -120,11 +138,28 @@ const tiposDeUsuario = [
     }
   ]
 
+  function getModalStyle() {
+    const top = 50 
+    const left = 50
+  
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+  }
+
 export const AltaUsuario = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [usuario, setUsuario] = useState('')
     const [tipoUsuario, setTipoUsuario] = useState()
     const [campoEditado, setCampoEditado] = useState(false)
+    const [openModal, setOpenModal] = useState(false)
+    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [mensajeSnack, setMensajeSnack] = useState()
+    const [snackColor, setSnackColor] = useState()
+    const [modalStyle] = useState(getModalStyle);
+
     let history = useHistory()
     const params = useParams()
 
@@ -144,7 +179,6 @@ export const AltaUsuario = ({edicion, creacion}) =>{
     }
 
     const actualizarValor = (event) => {
-        
         const newState = update(usuario, {
             [event.target.id]: { $set: event.target.value}
         })
@@ -156,9 +190,14 @@ export const AltaUsuario = ({edicion, creacion}) =>{
         history.push("/usuarios")
     }
 
+    const popupModal = () =>{
+        setOpenModal(true)
+    }
+
     const handleChangeType = (event) => {
         setTipoUsuario(event.target.value);
       };
+
     
     useEffect( ()  =>  {
         fetchUsuario()
@@ -168,19 +207,55 @@ export const AltaUsuario = ({edicion, creacion}) =>{
         try{
             if(validarUsuario()){
                 await usuarioService.createUser(usuario)
-
+                history.push("/usuarios", { openChildSnack : true })    
             }else{
-               
+                usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
+            usarSnack("No se puede conectar con el servidor.", true)
+        }
+    }
 
+    const modificarUsuario = async () => {
+        try {
+            if (validarUsuario()){
+                await usuarioService.updateUser(usuario)
+                usarSnack("Usuario modificado correctamente", false)
+            }else{
+                usarSnack("Campos obligatorios faltantes.", true)
+            }
+        }catch(errorRecibido){
+            usarSnack("No se puede conectar con el servidor.", true)
         }
     }
 
     const validarUsuario = () =>{
-        return true
+        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo
     }
 
+    const usarSnack = (mensaje, esError) =>{
+        if(esError){
+            setSnackColor("#F23D4F")
+        }else{
+            setSnackColor("#00A650")
+        }
+        setMensajeSnack(mensaje)
+        setOpenSnackbar(true)
+    }
+
+    const bodyModal = (
+      
+            <div style={modalStyle} className={classes.paper}>
+                        <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este usuario?</h2>
+                        <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
+                        <Box display="flex" flexDirection="row" mt={4}>
+                            <StyledButtonPrimary>Eliminar usuario</StyledButtonPrimary>
+                            <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
+                                Cancelar
+                            </Link>
+                        </Box>
+                    </div>
+        )
 
     return (
         
@@ -266,12 +341,12 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                 { edicion && !creacion &&
                 <div className={classes.contenedorBotones}>
                     {campoEditado &&
-                        <StyledButtonPrimary className={classes.botones}>Guardar cambios</StyledButtonPrimary>
+                        <StyledButtonPrimary className={classes.botones} onClick={ modificarUsuario }>Guardar cambios</StyledButtonPrimary>
                     }   
                     {!campoEditado &&
                         <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                     }
-                    <StyledButtonSecondary className={classes.botones} onClick={ backToUsers }>Eliminar usuario</StyledButtonSecondary>
+                    <StyledButtonSecondary className={classes.botones} onClick={ popupModal }>Eliminar usuario</StyledButtonSecondary>
                 </div>
                 }
                 <Divider className={classes.divider} />
@@ -281,6 +356,11 @@ export const AltaUsuario = ({edicion, creacion}) =>{
                 }
 
             </div>
+
+            <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
+                
+            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={ () => setOpenModal(false) }/>
+            
          </div>
 
     )

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography, Snackbar } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../components/Tabla';
 import { usuarioService } from '../services/usuarioService';
 import { Busqueda } from '../components/Busqueda'
 import { StyledButtonPrimary } from '../components/Buttons'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import { StyledSnackbarGreen } from '../components/Snackbar'
 
 
 const useStyles = makeStyles ({
@@ -58,10 +59,16 @@ return (
 </StyledTableRow>
 )
 }
+
+
+
 export const Usuarios = () =>{
+    const location = useLocation();
+    let history = useHistory()  
     const classes = useStyles();
     const [usuarios, setUsuarios] = useState([])
-    let history = useHistory()
+    const [openSnackbar, setOpenSnackbar] = useState('')
+
 
     const fetchAllUsers = async (textoBusqueda) =>{
       const usuariosEncontrados = await usuarioService.getAllUsers(textoBusqueda)
@@ -72,15 +79,19 @@ export const Usuarios = () =>{
       history.push("/newuser")
     }
     
+    const fetchSnack = () => {
+      location.state === undefined? setOpenSnackbar(false) : setOpenSnackbar(location.state.openChildSnack)
+    }
 
     useEffect( ()  =>  {
       fetchAllUsers("")
+      fetchSnack()
     },[])
 
     return (
         <div className={classes.root} >
            <Typography component="h2" variant="h5" className={classes.tittle}>
-             Usuarios
+             Usuarios 
            </Typography>
            <div className={classes.contenedorBusqueda}> 
               <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={fetchAllUsers} />
@@ -90,7 +101,19 @@ export const Usuarios = () =>{
               </div>
            </div>
             <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            
+            <Snackbar
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                open={openSnackbar}
+                onClose={() => setOpenSnackbar(false)}
+                key={'bottomcenter'}
+                autoHideDuration={2000}
+                >
+              <StyledSnackbarGreen
+              message="Usuario creado correctamente."
+              />
+              </Snackbar> 
          </div>
-
+        
     )
 }

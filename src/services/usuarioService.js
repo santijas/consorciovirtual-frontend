@@ -33,6 +33,11 @@ class UsuarioService{
         await axios.put((`${REST_SERVER_URL}/usuario/create`), user.toJSON())
     }
 
+    async updateUser(user){
+        await axios.put(`${REST_SERVER_URL}/usuario/modificar`, user.toJSON())
+        this.usuarioLogueado = user
+    }
+
 
     usuariosPrueba = [
         new Usuario(1, "Jorge", "Bilboa"),
