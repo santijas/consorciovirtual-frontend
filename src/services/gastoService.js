@@ -20,7 +20,7 @@ class GastoService{
     }
 
     async createGasto(gasto){
-        await axios.put((`${REST_SERVER_URL}/usuario/create`), gasto.toJSON())
+        await axios.put((`${REST_SERVER_URL}/gastos/create`), gasto.toJSON())
     }
 }
 

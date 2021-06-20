@@ -139,6 +139,17 @@ const useStyles = makeStyles ({
     };
   }
 
+  const tipoDeGasto = [
+    {
+      value: 'Comun',
+      label: 'Comun',
+    },
+    {
+      value: 'Extraordinario',
+      label: 'Extraordinario',
+    }
+  ]
+
 export const ABMCGasto = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [gasto, setGasto] = useState('')
@@ -148,6 +159,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
+    const [tipoGasto, setTipoGasto] = useState()
 
     let history = useHistory()
     const params = useParams()
@@ -189,11 +201,11 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     const crearGasto = async () => {
         try{
-            gasto.periodo = new Date(Date.now())
+            gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             console.log(gasto)
             if(validarGasto()){
                 await gastoService.createGasto(gasto)
-                //history.push("/gastos", { openChildSnack : true })    
+                history.push("/gastos", { openChildSnack : true })    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -237,6 +249,11 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         setMensajeSnack(mensaje)
         setOpenSnackbar(true)
     }
+
+    const handleChangeType = (event) => {
+        gasto.tipo = event.target.value
+        setTipoGasto(event.target.value)
+      };
 
     const bodyModal = (
       
@@ -310,14 +327,27 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         <TextField className={classes.inputs} id="titulo" value={gasto.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
                     </div>
 
+                    { !creacion && edicion &&
+                        <div className={classes.contenedorInput}>
+                        <span className={classes.span}>Tipo</span>
+                        <TextField className={classes.inputs} id="tipo" value={gasto.tipo || ''} onChange={(event) => actualizarValor(event)} name="tipo"  variant="outlined" disabled/>
+                    </div>
+                    }
+                    { creacion && !edicion &&
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>Tipo</span>
-                        <TextField className={classes.inputs} id="tipo" value={gasto.tipo || ''} onChange={(event) => actualizarValor(event)} name="tipo"  variant="outlined" />
+                        <TextField className={classes.inputs} id="tipo" select onChange={ handleChangeType } value={gasto.tipo || ''} variant="outlined" >
+                                {tipoDeGasto.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
                     </div>
-
+                    }
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Monto</span>
-                        <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe"  variant="outlined" />
+                        <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe"  variant="outlined" type="number"/>
                     </div>
 
                 </form> 

@@ -4,11 +4,12 @@ import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { usuarioService } from '../../services/usuarioService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
 import 'moment/locale/es'
 import moment from 'moment';
 import MomentUtils from '@date-io/moment';
+import { SnackbarComponent } from '../../components/Snackbar';
 
 
 const useStyles = makeStyles ({
@@ -65,7 +66,9 @@ return (
 }
 export const Gastos = () =>{
     const classes = useStyles();
+    const location = useLocation();
     const [gastos, setGastos] = useState([])
+    const [openSnackbar, setOpenSnackbar] = useState('')
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
@@ -77,9 +80,13 @@ export const Gastos = () =>{
       history.push("/newgasto")
     }
     
+    const fetchSnack = () => {
+      location.state === undefined? setOpenSnackbar(false) : setOpenSnackbar(location.state.openChildSnack)
+    }
  
     useEffect( ()  =>  {
         fetchAll("")
+        fetchSnack()
     },[])
 
     return (
@@ -95,6 +102,9 @@ export const Gastos = () =>{
               </div>
            </div>
             <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
+
+            <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={"Gasto creado correctamente."} handleCloseSnack={() => setOpenSnackbar(false)}/>
+        
          </div>
 
     )

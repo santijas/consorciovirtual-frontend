@@ -299,7 +299,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>DNI</span>
-                        <TextField className={classes.inputs} id="dni" value={usuario.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" />
+                        <TextField className={classes.inputs} id="dni" value={usuario.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" type="number"/>
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>

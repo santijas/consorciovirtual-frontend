@@ -38,7 +38,7 @@ class UsuarioService{
     }
 
     async deleteUser(id){
-        return axios.delete(`${REST_SERVER_URL}/usuario/delete/${id}`)
+        axios.put(`${REST_SERVER_URL}/usuario/delete/${id}`)
     }
 
     usuariosPrueba = [

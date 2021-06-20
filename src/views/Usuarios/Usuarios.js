@@ -5,7 +5,7 @@ import { usuarioService } from '../../services/usuarioService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
-import { StyledSnackbarGreen } from '../../components/Snackbar'
+import { SnackbarComponent } from '../../components/Snackbar'
 
 
 const useStyles = makeStyles ({
@@ -101,18 +101,9 @@ export const Usuarios = () =>{
               </div>
            </div>
             <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={112.7}/>
-            
-            <Snackbar
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                open={openSnackbar}
-                onClose={() => setOpenSnackbar(false)}
-                key={'bottomcenter'}
-                autoHideDuration={2000}
-                >
-              <StyledSnackbarGreen
-              message="Usuario creado correctamente."
-              />
-              </Snackbar> 
+
+              <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={"Usuario creado correctamente."} handleCloseSnack={() => setOpenSnackbar(false)}/>
+        
          </div>
         
     )
