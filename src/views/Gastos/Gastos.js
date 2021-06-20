@@ -59,7 +59,7 @@ return (
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">{dato.importe}</StyledTableCell>
+  <StyledTableCell className="tableBold" component="th" scope="row">${dato.importe}</StyledTableCell>
 </StyledTableRow>
 )
 }
@@ -71,7 +71,7 @@ export const Gastos = () =>{
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
-      const gastosEncontrados = await gastoService.getAll(textoBusqueda)
+      const gastosEncontrados = await gastoService.getBySearch(textoBusqueda)
       setGastos(gastosEncontrados)
     }
 

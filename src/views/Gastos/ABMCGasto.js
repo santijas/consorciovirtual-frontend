@@ -170,7 +170,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             if(creacion){
                 unGasto = new Gasto()
             } else{
-                unGasto = await gastoService.getGasto(params.id)
+                unGasto = await gastoService.getById(params.id)
             }
             setGasto(unGasto) 
             }
@@ -204,7 +204,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             console.log(gasto)
             if(validarGasto()){
-                await gastoService.createGasto(gasto)
+                await gastoService.create(gasto)
                 history.push("/gastos", { openChildSnack : true })    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -216,8 +216,9 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     const modificarGasto = async () => {
         try {
+            console.log(gasto)
             if (validarGasto()){
-                await gastoService.updateGasto(gasto)
+                await gastoService.update(gasto)
                 usarSnack("Gasto modificado correctamente", false)
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -229,7 +230,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     const eliminarGasto = async () => {
         try {
-            await gastoService.deleteUser(gasto.id)
+            await gastoService.delete(gasto.id)
             backToGastos()
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)

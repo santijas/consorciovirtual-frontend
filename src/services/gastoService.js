@@ -9,18 +9,26 @@ class GastoService{
         return Gasto.fromJson(JSON)
     }
 
-    async getAll(palabraBuscada) {
+    async getBySearch(palabraBuscada) {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/gastos`, {params:{ palabraBuscada }})
         return listaJSON.data
     }
 
-    async getGasto(id){
+    async getById(id){
         const JSON = await axios.get(`${REST_SERVER_URL}/gasto/${id}`)
         return this.gastoAJson(JSON.data)
     }
 
-    async createGasto(gasto){
-        await axios.put((`${REST_SERVER_URL}/gastos/create`), gasto.toJSON())
+    async create(gasto){
+        await axios.put((`${REST_SERVER_URL}/gastos/crear`), gasto.toJSON())
+    }
+
+    async update(gasto){
+        await axios.put((`${REST_SERVER_URL}/gasto/modificar`), gasto.toJSON())
+    }
+
+    async delete(id){
+        axios.put(`${REST_SERVER_URL}/gasto/eliminar/${id}`)
     }
 }
 

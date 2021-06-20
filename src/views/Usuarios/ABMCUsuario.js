@@ -169,7 +169,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             if(creacion){
                 unUsuario = new Usuario()
             } else{
-                unUsuario = await usuarioService.getUser(params.id)
+                unUsuario = await usuarioService.getById(params.id)
             }
             setUsuario(unUsuario) 
             }
@@ -206,7 +206,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const crearUsuario = async () => {
         try{
             if(validarUsuario()){
-                await usuarioService.createUser(usuario)
+                await usuarioService.create(usuario)
                 history.push("/usuarios", { openChildSnack : true })    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -219,7 +219,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const modificarUsuario = async () => {
         try {
             if (validarUsuario()){
-                await usuarioService.updateUser(usuario)
+                await usuarioService.update(usuario)
                 usarSnack("Usuario modificado correctamente", false)
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -231,7 +231,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
 
     const eliminarUsuario = async () => {
         try {
-            await usuarioService.deleteUser(usuario.id)
+            await usuarioService.delete(usuario.id)
             backToUsers()
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)

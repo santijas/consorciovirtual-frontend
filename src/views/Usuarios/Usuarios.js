@@ -71,7 +71,7 @@ export const Usuarios = () =>{
 
 
     const fetchAllUsers = async (textoBusqueda) =>{
-      const usuariosEncontrados = await usuarioService.getAllUsers(textoBusqueda)
+      const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
       setUsuarios(usuariosEncontrados)
     }
 

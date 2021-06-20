@@ -4,9 +4,22 @@ import { Departamento } from '../domain/departamento'
 
 class DepartamentoService {
 
-    async getAllDeptos(palabraBuscada) {
+    async getBySearch(palabraBuscada) {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/departamentos`, {params:{ palabraBuscada }})
         return listaJSON.data
+    }
+    
+    async create(user){
+        await axios.put((`${REST_SERVER_URL}/departamentos/crear`), user.toJSON())
+    }
+
+    async update(user){
+        await axios.put(`${REST_SERVER_URL}/departamentos/modificar`, user.toJSON())
+        this.usuarioLogueado = user
+    }
+
+    async delete(id){
+        axios.put(`${REST_SERVER_URL}/departamentos/eliminar/${id}`)
     }
 }
 

@@ -17,28 +17,27 @@ class UsuarioService{
         this.usuarioLogueado = this.usuarioAJson(usuarioJson.data)  
     }
 
-    async getUser(id){
+    async getById(id){
         const usuarioJson = await axios.get(`${REST_SERVER_URL}/usuario/${id}`)
         return this.usuarioAJson(usuarioJson.data)
     }
 
-    async getAllUsers(palabraBuscada) {
+    async getBySearch(palabraBuscada) {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/usuarios`, {params:{ palabraBuscada }})
         return listaJSON.data
     }
 
-
-    async createUser(user){
-        await axios.put((`${REST_SERVER_URL}/usuario/create`), user.toJSON())
+    async create(user){
+        await axios.put((`${REST_SERVER_URL}/usuario/crear`), user.toJSON())
     }
 
-    async updateUser(user){
+    async update(user){
         await axios.put(`${REST_SERVER_URL}/usuario/modificar`, user.toJSON())
         this.usuarioLogueado = user
     }
 
-    async deleteUser(id){
-        axios.put(`${REST_SERVER_URL}/usuario/delete/${id}`)
+    async delete(id){
+        axios.put(`${REST_SERVER_URL}/usuario/eliminar/${id}`)
     }
 
     usuariosPrueba = [
