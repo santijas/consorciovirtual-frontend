@@ -8,7 +8,6 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
 import 'moment/locale/es'
 import moment from 'moment';
-import MomentUtils from '@date-io/moment';
 import { SnackbarComponent } from '../../components/Snackbar';
 
 

@@ -31,7 +31,7 @@ const useStyles = makeStyles ({
   const headers = ["Departamento", "Propietario", "Inquilino", "Actividad", "Estado de cuenta"]
 
   const ColumnasCustom = (dato) => <StyledTableRow key={dato.id}>
-    <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º{dato.letraNro}</StyledTableCell>
+    <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
@@ -51,7 +51,7 @@ export const Departamentos = () =>{
 
 
     const fetchAllDepartamentos = async (textoBusqueda) =>{
-      const deptosEncontrados = await departamentoService.getAllDeptos()
+      const deptosEncontrados = await departamentoService.getAllDeptos(textoBusqueda)
       setDepartamentos(deptosEncontrados)
     }
 
