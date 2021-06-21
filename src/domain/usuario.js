@@ -1,6 +1,6 @@
 export class Usuario {
     
-    constructor(id, nombre, apellido, username, fechaNacimiento, dni, correo){ 
+    constructor(id, nombre, apellido, username, fechaNacimiento, dni, correo, tipo){ 
       this.id = id
       this.nombre = nombre
       this.apellido = apellido
@@ -8,8 +8,8 @@ export class Usuario {
       this.fechaNacimiento = fechaNacimiento
       this.dni = dni
       this.correo = correo
+      this.tipo = tipo
     }
-
 
     static fromJson(usuarioJSON) {
         return Object.assign(new Usuario(),
@@ -23,19 +23,4 @@ export class Usuario {
           ...this
         }
     }
-}
-
-
-export class LoginUsuario {
-
-    constructor(username, password){
-        this.username = username
-        this.password = password
-    }
-
-    toJSON() {
-        return {
-          ...this
-        }
-      }
 }

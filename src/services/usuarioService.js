@@ -4,7 +4,7 @@ import { Usuario } from "../domain/usuario";
 
 
 
-class UsuarioService{
+class UsuarioService {
     
     usuarioLogueado = null
 
@@ -12,9 +12,9 @@ class UsuarioService{
         return Usuario.fromJson(usuarioJSON)
     }
     
-    async loguearUsuario(login){     
-        const usuarioJson = await axios.post(`${REST_SERVER_URL}/login`, login.toJSON())
-        this.usuarioLogueado = this.usuarioAJson(usuarioJson.data)  
+    async loguearUsuario(usuario){     
+        const usuarioJson = await axios.post(`${REST_SERVER_URL}/login`, usuario.toJSON())
+        this.usuarioLogueado = this.usuarioAJson(usuarioJson.data)
     }
 
     async getById(id){

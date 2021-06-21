@@ -12,6 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
+import { usuarioService } from '../services/usuarioService.js'
+import { useState } from 'react'
+import { Usuario } from '../domain/usuario.js'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,10 +48,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Login = () => {
-    let history = useHistory()
+  let [username, setUsername] = useState('')
+  let [password, setPassword] = useState('')
+
+  let history = useHistory()
   const classes = useStyles();
 
-  const loginUser = () => {
+  const loginUser = async (e) => {
+    e.preventDefault()
+    const usuario = new Usuario()
+    usuario.username = username
+    usuario.password = password
+    await usuarioService.loguearUsuario(usuario)
     history.push('/usuarios')
 } 
 
@@ -64,7 +75,7 @@ export const Login = () => {
           <Typography component="h1" variant="h5">
             Consorcio Virtual
           </Typography>
-          <form className={classes.form} noValidate>
+          <form className={classes.form}>
             <TextField
               variant="outlined"
               margin="normal"
@@ -72,20 +83,20 @@ export const Login = () => {
               fullWidth
               id="email"
               label="Correo electronico"
-              name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              name="password"
               label="Contraseña"
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

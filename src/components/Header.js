@@ -4,12 +4,13 @@ import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { Desplegable } from '../assets/icons';
 import { avatarColours } from '../utils/avatarColours';
+import { usuarioService } from '../services/usuarioService.js'
 
 const useStyles = makeStyles({
     root: {
       background: "white",
       width: "100%",
-      position: "relative",
+      position: "sticky",
       top:0,
       zIndex: 1300,
       height: 70,
@@ -24,7 +25,8 @@ const useStyles = makeStyles({
     loguedUser:{
         display:"flex",
         alignSelf:"center",
-        marginRight: 100
+        alignItems:"center",
+        marginRight: 100,
     },
     avatar:{
         display:"flex",
@@ -46,7 +48,8 @@ const useStyles = makeStyles({
     },
     nombreTipo:{
         display:"flex",
-        flexDirection:"column"
+        flexDirection:"column",
+        textAlign:"left"
     },
     span:{
         textAlign:"left",
@@ -61,7 +64,8 @@ const useStyles = makeStyles({
 export const Header = () =>{
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const nombre = "Santiago Ranieri"
+    const nombre = `${usuarioService.usuarioLogueado.nombre} ${usuarioService.usuarioLogueado.apellido}`
+    const tipoCuenta = `${usuarioService.usuarioLogueado.tipo}`
     let history = useHistory()
 
     const handleClick = (event) => {
@@ -91,7 +95,7 @@ export const Header = () =>{
                           <div className={classes.contenedorBoton}> 
                                 <div className={classes.nombreTipo}>
                                     {nombre} 
-                                    <span className={classes.span}>Administrador</span>
+                                    <span className={classes.span}>{tipoCuenta}</span>
                                 </div> 
                                 <Desplegable className={classes.desplegable}/>
                         </div>
