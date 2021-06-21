@@ -6,7 +6,7 @@ import { Usuario } from "../domain/usuario";
 
 class UsuarioService {
     
-    usuarioLogueado = null
+    usuarioLogueado = new Usuario()
 
     usuarioAJson(usuarioJSON) {
         return Usuario.fromJson(usuarioJSON)

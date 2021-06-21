@@ -10,6 +10,9 @@ import { ABMCUsuario } from './views/Usuarios/ABMCUsuario'
 import { ABMCGasto } from './views/Gastos/ABMCGasto'
 import { Gastos } from './views/Gastos/Gastos'
 import { Expensas } from './views/Expensas/Expensas'
+import { usuarioService } from './services/usuarioService'
+import { Redirect } from 'react-router'
+
 
 
 export const Routes = () => {
@@ -21,7 +24,7 @@ export const Routes = () => {
               <Route><div className="App">
                     <Route><Header/></Route> 
                     <Route><NavBar/></Route> 
-                    <Route path="/usuarios"><Usuarios/></Route>
+                    <PrivateRoute path="/usuarios" component={Usuarios}></PrivateRoute>
                     <Route path="/newuser"><ABMCUsuario creacion={true} edicion={false}/></Route>
                     <Route path="/usuario/:id"><ABMCUsuario creacion={false} edicion={true} /></Route>
                     <Route path="/departamentos"><Departamentos/></Route>
@@ -34,4 +37,12 @@ export const Routes = () => {
             </Switch>
         </Router>
     )
+}
+
+const PrivateRoute = ({path, component}) => {
+    const authenticated = usuarioService.usuarioLogueado.id !== undefined
+
+    return (authenticated
+    ? <Route path={path} component={component}></Route>
+    : <Redirect exact={true} to="/" ></Redirect>)
 }
