@@ -30,13 +30,26 @@ const useStyles = makeStyles ({
 
   const headers = ["Departamento", "Propietario", "Inquilino", "Actividad", "Estado de cuenta"]
 
-  const ColumnasCustom = (dato) => <StyledTableRow key={dato.id}>
-    <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-    { estadoDeCuenta(dato.estadoCuenta) }
-  </StyledTableRow>
+  
+  const ColumnasCustom = (dato) => { 
+    
+    let history= useHistory()
+  
+    const showDepartamento = (id) =>{
+      history.push(`/departamento/${id}`)
+    }
+
+    return (
+      
+      <StyledTableRow key={dato.id} onClick={() => showDepartamento(dato.id)}>
+        <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
+        { estadoDeCuenta(dato.estadoCuenta) }
+      </StyledTableRow>
+    )
+  }
 
   const estadoDeCuenta = (estado) => {
     return estado?
@@ -48,15 +61,17 @@ const useStyles = makeStyles ({
 export const Departamentos = () =>{
     const classes = useStyles();
     const [departamentos, setDepartamentos] = useState([])
+    let history = useHistory()  
 
 
     const fetchAllDepartamentos = async (textoBusqueda) =>{
       const deptosEncontrados = await departamentoService.getBySearch(textoBusqueda)
+      console.log(deptosEncontrados)
       setDepartamentos(deptosEncontrados)
     }
 
     const newDepto = () =>{
-      
+      history.push("/newdepartamento")
     }
 
     useEffect( ()  =>  {

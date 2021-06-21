@@ -1,14 +1,17 @@
 export class Departamento {
 
-    constructor(id, idPropietario, idInquilino, torre, piso, nroDepto, porcentajeExp,m2){ 
+    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados,estadoDeCuenta, nombrePropietario,nombreInquilino){ 
       this.id = id
-      this.idPropietario = idPropietario
-      this.idInquilino = idInquilino
+      this.propietario = propietario
+      this.inquilino = inquilino
       this.torre = torre
       this.piso = piso
-      this.nroDepto = nroDepto
-      this.porcentajeExp = porcentajeExp
-      this.m2 = m2
+      this.nroDepartamento = nroDepartamento
+      this.porcentajeExp = porcentajeExpensa
+      this.metrosCuadrados = metrosCuadrados
+      this.nombrePropietario = nombrePropietario
+      this.nombreInquilino = nombreInquilino
+      // this.estadoDeCuenta = estadoDeCuenta
     }
 
     static fromJson(deptoJSON) {

@@ -1,21 +1,37 @@
 import axios from 'axios'
 import { REST_SERVER_URL } from './configuration'
 import { Departamento } from '../domain/departamento'
+import { Usuario } from '../domain/usuario'
 
 class DepartamentoService {
+
+    historialPrueba = [
+        new Usuario(1, "Jorge", "Bilboa"),
+        new Usuario(1, "Miguel", "Cervantes"),
+        new Usuario(1, "Patricio", "Dalton"),
+    ]
 
     async getBySearch(palabraBuscada) {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/departamentos`, {params:{ palabraBuscada }})
         return listaJSON.data
     }
     
-    async create(user){
-        await axios.put((`${REST_SERVER_URL}/departamentos/crear`), user.toJSON())
+    async getById(id){
+        const departamentoJson = await axios.get(`${REST_SERVER_URL}/departamento/${id}`)
+         return Departamento.fromJson(departamentoJson.data)
     }
 
-    async update(user){
-        await axios.put(`${REST_SERVER_URL}/departamentos/modificar`, user.toJSON())
-        this.usuarioLogueado = user
+    async create(depto,propietario){
+        depto.propietario = propietario
+        console.log(Departamento.fromJson(depto) )
+        await axios.put((`${REST_SERVER_URL}/departamento/crear`), Departamento.fromJson(depto).toJSON())
+    }
+
+    async update(depto,propietario,inquilino){
+        depto.propietario = propietario
+        depto.inquilino = inquilino
+        console.log(Departamento.fromJson(depto) )
+        // await axios.put(`${REST_SERVER_URL}/departamento/modificar`, Departamento.fromJson(depto).toJSON())
     }
 
     async delete(id){
