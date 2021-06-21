@@ -56,19 +56,19 @@ export const NavBar = () => {
 
       <List>
 
-        {tipoUsuario === "Administrador" &&
+        {(tipoUsuario === "Administrador" || tipoUsuario === "Administrador_consorcio") &&
           <ListItem button key="Usuarios" onClick={() => handleSelectMenu("usuarios")}>
             <ListItemIcon>{selected === "usuarios" ? <ActiveUser className="navicon activecolor" /> : <NonActiveUser className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "usuarios") ? "activecolor activesize" : "font"}`}>Usuarios</span>
           </ListItem>
         }
 
-        {tipoUsuario === "Administrador_consorcio" &&
+
           <ListItem button key="Departamentos" onClick={() => handleSelectMenu("departamentos")}>
             <ListItemIcon>{selected === "departamentos" ? <ActiveApartment className="navicon" /> : <NonActiveApartment className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "departamentos") ? "activecolor activesize" : "font"}`}>Departamentos</span>
           </ListItem>
-        }
+        
 
           <ListItem button key="Anuncios" onClick={() => handleSelectMenu("anuncios")}>
             <ListItemIcon>{selected === "anuncios" ? <ActiveAnnouncement className="navicon" /> : <NonActiveAnnouncement className="navicon" />}</ListItemIcon>

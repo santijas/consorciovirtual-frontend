@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Login = () => {
-  let [username, setUsername] = useState('')
+  let [correo, setCorreo] = useState('')
   let [password, setPassword] = useState('')
 
   let history = useHistory()
@@ -57,7 +57,7 @@ export const Login = () => {
   const loginUser = async (e) => {
     e.preventDefault()
     const usuario = new Usuario()
-    usuario.username = username
+    usuario.correo = correo
     usuario.password = password
     await usuarioService.loguearUsuario(usuario)
     history.push('/usuarios')
@@ -85,7 +85,7 @@ export const Login = () => {
               label="Correo electronico"
               autoComplete="email"
               autoFocus
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setCorreo(e.target.value)}
             />
             <TextField
               variant="outlined"

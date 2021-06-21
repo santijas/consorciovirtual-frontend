@@ -1,14 +1,13 @@
 export class Expensa {
 
-    constructor(id, idDepartamento, idUsuario, idDocumento, valorTotalExpensa, valorExpensaExtraordinaria, valorExpensaDepartamento, periodo, fechaDePago ){ 
+    constructor(id, valorDepartamentoComun, valorDepartamentoExtraordinaria, periodo, unidad, estado, montoAPagar){ 
       this.id = id
-      this.idDepartamento = idDepartamento
-      this.idDocumento = idDocumento
-      this.valorTotalExpensa = valorTotalExpensa
-      this.valorExpensaExtraordinaria = valorExpensaExtraordinaria
-      this.valorExpensaDepartamento = valorExpensaDepartamento
+      this.valorDepartamentoComun = valorDepartamentoComun
+      this.valorDepartamentoExtraordinaria = valorDepartamentoExtraordinaria
       this.periodo = periodo
-      this.fechaDePago = fechaDePago
+      this.unidad = unidad
+      this.estado = estado
+      this.montoAPagar = montoAPagar
     }
 
     static fromJson(expensaJSON) {

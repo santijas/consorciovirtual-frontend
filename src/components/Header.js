@@ -80,6 +80,11 @@ export const Header = () =>{
         return name.match(/\b(\w)/g).join('')
     }   
 
+    const splitTipo = (tipo) =>{
+        const division = tipo.split("_")
+        return division[0]
+    }
+
     const goToLogin = () =>{
         history.push("/")
     }
@@ -95,7 +100,7 @@ export const Header = () =>{
                           <div className={classes.contenedorBoton}> 
                                 <div className={classes.nombreTipo}>
                                     {nombre} 
-                                    <span className={classes.span}>{tipoCuenta}</span>
+                                    <span className={classes.span}>{splitTipo(tipoCuenta)}</span>
                                 </div> 
                                 <Desplegable className={classes.desplegable}/>
                         </div>
