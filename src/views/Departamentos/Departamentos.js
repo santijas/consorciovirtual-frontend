@@ -28,8 +28,14 @@ const useStyles = makeStyles ({
     }
   });
 
-  const headers = ["Departamento", "Propietario", "Inquilino", "Actividad", "Estado de cuenta"]
 
+  const headers = [
+    {id: "departamento", label:"Departamento"},
+    {id: "propietario", label:"Propietario"},
+    {id: "inquilino", label:"Inquilino"},
+    {id: "actividad", label:"Actividad"},
+    {id: "estado", label:"Estado de cuenta"},
+  ]
   
   const ColumnasCustom = (dato) => { 
     

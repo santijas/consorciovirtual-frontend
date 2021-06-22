@@ -35,7 +35,13 @@ const useStyles = makeStyles ({
 
   });
 
-const headers = ["Nombre y apellido", "E-mail", "DNI", "Actividad", "Tipo de Cuenta"]
+const headers = [
+  {id: "nombreApellido", numeric: "false", label:"Nombre y Apellido"},
+  {id: "email", numeric: "false", label:"E-mail"},
+  {id: "dni", numeric: "true", label:"DNI"},
+  {id: "actividad", numeric: "false", label:"Actividad"},
+  {id: "tipoCuenta", numeric: "false", label:"Tipo de Cuenta"}
+]
 
 
 const ColumnasCustom = (dato) => {

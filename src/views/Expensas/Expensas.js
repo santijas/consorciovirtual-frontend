@@ -33,12 +33,22 @@ const useStyles = makeStyles ({
     },
     botonAnular:{
       marginLeft: 8
+    },
+    contenedorBotones:{
+      display: "flex",
+      flexWrap: "nowrap",
+      alignItems:"center"
+
     }
 
   });
 
-const headers = ["Período", "Departamento", "Monto a pagar", "Estado"]
-
+const headers = [
+  {id: "periodo", label:"Periodo"},
+  {id: "departamento", label:"Departamento"},
+  {id: "monto", label:"Monto a pagar"},
+  {id: "estado", label:"Estado"},
+]
 
 const ColumnasCustom = (dato) => {
   return (
@@ -85,7 +95,7 @@ export const Expensas = () =>{
            </Typography>
            <div className={classes.contenedorBusqueda}> 
               <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
-              <div>
+              <div className={classes.contenedorBotones}>
                <span className={classes.cantidadObject} > {expensas.length} expensas </span>
               <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>
               <StyledButtonSecondary className={classes.botonAnular} onClick={newExpensa}>Anular expensas</StyledButtonSecondary>

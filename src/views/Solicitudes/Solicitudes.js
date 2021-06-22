@@ -33,7 +33,13 @@ const useStyles = makeStyles({
 
 });
 
-const headers = ["Solicitud", "Autor", "Título", "Actividad", "Estado"]
+const headers = [
+  {id: "solicitud", label:"Solicitud"},
+  {id: "autor", label:"Autor"},
+  {id: "titulo", label:"Título"},
+  {id: "actividad", label:"Actividad"},
+  {id: "estado", label:"Estado"}
+]
 
 const ColumnasCustom = (dato) => {
 

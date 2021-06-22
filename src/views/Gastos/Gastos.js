@@ -35,8 +35,13 @@ const useStyles = makeStyles ({
 
   });
 
-const headers = ["Periodo", "Título", "Tipo", "Actividad", "Monto"]
-
+const headers = [
+  {id: "periodo", label:"Periodo"},
+  {id: "titulo", label:"Título"},
+  {id: "tipo", label:"Tipo"},
+  {id: "actividad", label:"Actividad"},
+  {id: "monto", label:"Monto"}
+]
 
 const ColumnasCustom = (dato) => {
 let history= useHistory()

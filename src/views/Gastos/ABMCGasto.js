@@ -202,7 +202,6 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const crearGasto = async () => {
         try{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
-            console.log(gasto)
             if(validarGasto()){
                 await gastoService.create(gasto)
                 history.push("/gastos", { openChildSnack : true })    

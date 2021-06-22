@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -7,7 +7,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { TableFooter } from '@material-ui/core';
+import { TableFooter, TableSortLabel } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
 
@@ -58,14 +58,41 @@ const useStyles = makeStyles({
   }
 });
 
+const descendingComparator = (a, b, orderBy) =>{
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
+
+const getComparator = (order, orderBy) => {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+const stableSort = (array, comparator) => {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 
 
 export const Tabla = ({datos,headers,ColumnasCustom, heightEnd}) =>{
     const classes = useStyles();
     const [page, setPage] = useState(1);
+    const [order, setOrder] = useState("asc");
+    const [orderBy, setOrderBy] = useState("nombreApellido");  // CAMBIAR PARA Q SEA GENERICO!
     const pageSize = 5
     const totalItems = datos.length
-    
+
     let totalPages = Math.ceil(totalItems / pageSize);
     let endIndex =  pageSize - (totalItems - pageSize * (page -1))
 
@@ -73,20 +100,44 @@ export const Tabla = ({datos,headers,ColumnasCustom, heightEnd}) =>{
       setPage(value);
     };
 
+    const handleRequestSort = (event, property) => {
+      const isAsc = orderBy === property && order === "asc";
+      setOrder(isAsc ? "desc" : "asc");
+      setOrderBy(property); 
+      ordenarDatos()
+    };
+
+    const ordenarDatos = () =>{
+      return stableSort(datos, getComparator(order, orderBy))
+    }
+
     return (
     <TableContainer className={classes.container} component={Paper}>
       <Table className={classes.table} aria-label="customized table">
-        <TableHead className={classes.head}>
-          <TableRow>
-          {headers.map((header) => (
-            <StyledTableCell className={classes.head}>{header}</StyledTableCell>
-            ))}
-          </TableRow>
-        </TableHead>
+           <TableHead className={classes.head}>
+              <TableRow>
+                {headers.map((header) => (
+                  <StyledTableCell
+                    key={header.id}
+                    className={classes.head}
+                    sortDirection={orderBy === header.id ? order : false}
+                  >
+                    <TableSortLabel
+                      active={orderBy === header.id}
+                      direction={orderBy === header.id ? order : "asc"}
+                      onClick={(event) => handleRequestSort(event, header.id)}
+                      
+                    >
+                      {header.label}
+                    </TableSortLabel>
+                  </StyledTableCell>
+                ))}
+              </TableRow>
+            </TableHead>
         <TableBody>
-          {(pageSize > 0
-            ? (page===1? datos.slice( 0, pageSize) : datos.slice( (page-1)  * pageSize, (page-1) * pageSize + pageSize))
-            : datos)
+          { (pageSize > 0
+            ? (page===1? ordenarDatos().slice( 0, pageSize) : ordenarDatos().slice( (page-1)  * pageSize, (page-1) * pageSize + pageSize))
+            : (ordenarDatos()))
             .map((dato) => (
                     ColumnasCustom(dato)
               )

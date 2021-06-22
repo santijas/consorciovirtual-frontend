@@ -9,6 +9,10 @@ export class Gasto {
     }
 
 
+    esComun = () =>{
+     return this.tipo === "Común" 
+    }
+
     static fromJson(JSON) {
         return Object.assign(new Gasto(),
             JSON,
