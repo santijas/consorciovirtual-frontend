@@ -6,6 +6,7 @@ import { Header } from './components/Header'
 import { Usuarios } from './views/Usuarios/Usuarios'
 import { Departamentos } from './views/Departamentos/Departamentos'
 import { Solicitudes } from './views/Solicitudes/Solicitudes'
+import { ABMCSolicitud } from './views/Solicitudes/ABMCSolicitud'
 import { ABMCUsuario } from './views/Usuarios/ABMCUsuario'
 import { ABMCGasto } from './views/Gastos/ABMCGasto'
 import { Gastos } from './views/Gastos/Gastos'
@@ -33,6 +34,8 @@ export const Routes = () => {
                     <Route path="/newdepartamento"><ABMCDepartamento creacion={true} edicion={false}/></Route>
                     <Route path="/departamento/:id"><ABMCDepartamento creacion={false} edicion={true} /></Route>
                     <Route path="/solicitudes"><Solicitudes/></Route>
+                    <Route path="/newsolicitud"><ABMCSolicitud creacion={true} edicion={false}/></Route>
+                    <Route path="/solicitud/:id"><ABMCSolicitud creacion={false} edicion={true} /></Route>
                     <Route path="/gastos"><Gastos/></Route>
                     <Route path="/newgasto"><ABMCGasto creacion={true} edicion={false}/></Route>
                     <Route path="/gasto/:id"><ABMCGasto creacion={false} edicion={true} /></Route>

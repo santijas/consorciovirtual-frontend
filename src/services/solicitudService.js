@@ -16,6 +16,11 @@ class SolicitudService{
         return listaJSON.data
     }
 
+    async getById(id) {
+        const solicitud = await axios.get(`${REST_SERVER_URL}/solicitud/${id}`)
+        return SolicitudTecnica.fromJson(solicitud.data)
+    }
+
 }
 
 export const solicitudService = new SolicitudService()

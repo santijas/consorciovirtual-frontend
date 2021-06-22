@@ -92,7 +92,7 @@ export const NavBar = () => {
           </ListItem>
         }
 
-        {tipoUsuario === "Administrador" || tipoUsuario === "Administrador_consorcio" &&
+        {(tipoUsuario === "Administrador" || tipoUsuario === "Administrador_consorcio") &&
           <ListItem button key="Gastos" onClick={() => handleSelectMenu("gastos")}>
             <ListItemIcon>{selected === "gastos" ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "gastos") ? "activecolor activesize" : "font"}`}>Gastos</span>

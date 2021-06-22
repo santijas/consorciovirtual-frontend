@@ -152,7 +152,7 @@ const tiposDeUsuario = [
 export const ABMCUsuario = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [usuario, setUsuario] = useState('')
-    const [tipoUsuario, setTipoUsuario] = useState()
+    const [tipoUsuario, setTipoUsuario] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState('')
@@ -171,7 +171,8 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             } else{
                 unUsuario = await usuarioService.getById(params.id)
             }
-            setUsuario(unUsuario) 
+            setUsuario(unUsuario)
+            setTipoUsuario(unUsuario.tipo) 
             }
         catch{
 
