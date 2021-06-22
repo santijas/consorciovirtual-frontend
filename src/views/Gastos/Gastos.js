@@ -40,7 +40,7 @@ const headers = [
   {id: "titulo", label:"Título"},
   {id: "tipo", label:"Tipo"},
   {id: "actividad", label:"Actividad"},
-  {id: "monto", label:"Monto"}
+  {id: "importe", label:"Monto"}
 ]
 
 const ColumnasCustom = (dato) => {

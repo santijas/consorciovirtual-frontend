@@ -30,11 +30,11 @@ const useStyles = makeStyles ({
 
 
   const headers = [
-    {id: "departamento", label:"Departamento"},
+    {id: "piso", label:"Departamento"},
     {id: "propietario", label:"Propietario"},
     {id: "inquilino", label:"Inquilino"},
     {id: "actividad", label:"Actividad"},
-    {id: "estado", label:"Estado de cuenta"},
+    {id: "estadoCuenta", label:"Estado de cuenta"},
   ]
   
   const ColumnasCustom = (dato) => { 

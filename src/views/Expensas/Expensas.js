@@ -46,7 +46,7 @@ const useStyles = makeStyles ({
 const headers = [
   {id: "periodo", label:"Periodo"},
   {id: "departamento", label:"Departamento"},
-  {id: "monto", label:"Monto a pagar"},
+  {id: "montoAPagar", label:"Monto a pagar"},
   {id: "estado", label:"Estado"},
 ]
 

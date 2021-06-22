@@ -36,35 +36,35 @@ const useStyles = makeStyles ({
   });
 
 const headers = [
-  {id: "nombreApellido", numeric: "false", label:"Nombre y Apellido"},
-  {id: "email", numeric: "false", label:"E-mail"},
+  {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+  {id: "correo", numeric: "false", label:"E-mail"},
   {id: "dni", numeric: "true", label:"DNI"},
   {id: "actividad", numeric: "false", label:"Actividad"},
-  {id: "tipoCuenta", numeric: "false", label:"Tipo de Cuenta"}
+  {id: "tipo", numeric: "false", label:"Tipo de Cuenta"}
 ]
 
 
 const ColumnasCustom = (dato) => {
-let history= useHistory()
+  let history= useHistory()
 
-const getUser = (id) =>{
-  history.push(`/usuario/${id}`)
-}
+  const getUser = (id) =>{
+    history.push(`/usuario/${id}`)
+  }
 
-return (
-<StyledTableRow key={dato.id} onClick={() => getUser(dato.id)} className="pointer">
-  <StyledTableCell  component="th" scope="row">
-    <div className="contenedorColumna">
-      <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
-      <span >2° A</span>
-    </div>
-  </StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.dni}</StyledTableCell>
-  <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">{splitVisual(dato.tipo)}</StyledTableCell>
-</StyledTableRow>
-)
+  return (
+  <StyledTableRow key={dato.id} onClick={() => getUser(dato.id)} className="pointer">
+    <StyledTableCell  component="th" scope="row">
+      <div className="contenedorColumna">
+        <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
+        <span >2° A</span>
+      </div>
+    </StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.dni}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
+    <StyledTableCell className="tableBold" component="th" scope="row">{splitVisual(dato.tipo)}</StyledTableCell>
+  </StyledTableRow>
+  )
 }
 
 
