@@ -37,6 +37,10 @@ class DepartamentoService {
     async delete(id){
         axios.put(`${REST_SERVER_URL}/departamento/eliminar/${id}`)
     }
+
+    async count(){
+        return await axios.get(`${REST_SERVER_URL}/cantidaddepartamentos`)
+    }
 }
 
 export const departamentoService = new DepartamentoService()

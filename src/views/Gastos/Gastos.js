@@ -50,8 +50,6 @@ const getGasto = (id) =>{
   history.push(`/gasto/${id}`)
 }
 
-
-
 return (
 <StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer">
   <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
@@ -99,7 +97,7 @@ export const Gastos = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>
               </div>
            </div>
-            <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
+            <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
 
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={"Gasto creado correctamente."} handleCloseSnack={() => setOpenSnackbar(false)}/>
         

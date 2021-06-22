@@ -1,16 +1,14 @@
 export class Departamento {
 
-    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados,estadoDeCuenta, nombrePropietario,nombreInquilino){ 
+    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados,estadoDeCuenta){ 
       this.id = id
       this.propietario = propietario
       this.inquilino = inquilino
       this.torre = torre
       this.piso = piso
       this.nroDepartamento = nroDepartamento
-      this.porcentajeExp = porcentajeExpensa
+      this.porcentajeExpensa = porcentajeExpensa
       this.metrosCuadrados = metrosCuadrados
-      this.nombrePropietario = nombrePropietario
-      this.nombreInquilino = nombreInquilino
       // this.estadoDeCuenta = estadoDeCuenta
     }
 

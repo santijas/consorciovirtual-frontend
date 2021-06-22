@@ -101,7 +101,7 @@ export const Expensas = () =>{
               <StyledButtonSecondary className={classes.botonAnular} onClick={newExpensa}>Anular expensas</StyledButtonSecondary>
               </div>
            </div>
-            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
+            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
          </div>
 
     )

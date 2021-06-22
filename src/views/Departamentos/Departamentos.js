@@ -96,7 +96,7 @@ export const Departamentos = () =>{
                 <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
                 </div>
             </div>
-            <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
+            <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
          </div>
 
     )

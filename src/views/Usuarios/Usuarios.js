@@ -107,7 +107,7 @@ export const Usuarios = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
               </div>
            </div>
-            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={112.7}/>
+            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={112.7} defaultSort={"nombre"} defaultOrder={"asc"}/>
 
               <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={"Usuario creado correctamente."} handleCloseSnack={() => setOpenSnackbar(false)}/>
         
