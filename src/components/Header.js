@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { Desplegable } from '../assets/icons';
 import { avatarColours } from '../utils/avatarColours';
 import { usuarioService } from '../services/usuarioService.js'
+import { splitTipo } from '../utils/formats';
 
 const useStyles = makeStyles({
     root: {
@@ -79,11 +80,6 @@ export const Header = () =>{
     const filterFirstLetters = (name) => {
         return name.match(/\b(\w)/g).join('')
     }   
-
-    const splitTipo = (tipo) =>{
-        const division = tipo.split("_")
-        return division[0]
-    }
 
     const goToLogin = () =>{
         history.push("/")

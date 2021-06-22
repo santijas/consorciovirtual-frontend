@@ -43,6 +43,7 @@ const ColumnasCustom = (dato) => <StyledTableRow key={dato.id}>
       <span >{dato.fecha}</span>
     </div>
   </StyledTableCell>
+  <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
   <StyledTableCell className="tableBold" component="th" scope="row">{dato.estado}</StyledTableCell>

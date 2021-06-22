@@ -13,6 +13,8 @@ import { Expensas } from './views/Expensas/Expensas'
 import { usuarioService } from './services/usuarioService'
 import { Redirect } from 'react-router'
 import { ABMCDepartamento } from './views/Departamentos/ABMCDepartamento'
+import { ABExpensa } from './views/Expensas/ABExpensa'
+
 
 
 export const Routes = () => {
@@ -35,6 +37,7 @@ export const Routes = () => {
                     <Route path="/newgasto"><ABMCGasto creacion={true} edicion={false}/></Route>
                     <Route path="/gasto/:id"><ABMCGasto creacion={false} edicion={true} /></Route>
                     <Route path="/expensas"><Expensas/></Route>
+                    <Route path="/newexpensa"><ABExpensa/></Route>
             </div></Route>
             </Switch>
         </Router>

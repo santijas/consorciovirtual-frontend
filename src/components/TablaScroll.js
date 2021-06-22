@@ -11,7 +11,7 @@ import { TableFooter } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 
 
-export const StyledTableCell = withStyles((theme) => ({
+export const StyledTableCellScroll = withStyles((theme) => ({
   head: {
     backgroundColor: "#F5F5F5F5",
     color: "black",
@@ -25,12 +25,11 @@ export const StyledTableCell = withStyles((theme) => ({
   }
 }))(TableCell);
 
-export const StyledTableRow = withStyles((theme) => ({
+export const StyledTableRowScroll = withStyles((theme) => ({
   root: {
     backgroundColor: "white",
     borderRadius: 2,
-    padding: 22,
-    boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)"
+    boxShadow: "0px 1px 2px black"
   },
 }))(TableRow);
 
@@ -38,9 +37,7 @@ export const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
-    border: "none",
-    borderSpacing: "0 1em",
-    borderCollapse: "separate"
+    borderCollapse: "collapse",
   },
   container:{
     marginTop: 30,
@@ -60,49 +57,29 @@ const useStyles = makeStyles({
 
 
 
-export const Tabla = ({datos,headers,ColumnasCustom, heightEnd}) =>{
+export const TablaScroll = ({datos,headers,ColumnasCustom, heightEnd}) =>{
     const classes = useStyles();
-    const [page, setPage] = useState(1);
-    const pageSize = 5
-    const totalItems = datos.length
-    
-    let totalPages = Math.ceil(totalItems / pageSize);
-    let endIndex =  pageSize - (totalItems - pageSize * (page -1))
-
-    const handleChange = (event, value) => {
-      setPage(value);
-    };
 
     return (
     <TableContainer className={classes.container} component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead className={classes.head}>
           <TableRow>
-          {headers.map((header) => (
-            <StyledTableCell className={classes.head}>{header}</StyledTableCell>
-            ))}
+          
           </TableRow>
         </TableHead>
         <TableBody>
-          {(pageSize > 0
-            ? (page===1? datos.slice( 0, pageSize) : datos.slice( (page-1)  * pageSize, (page-1) * pageSize + pageSize))
-            : datos)
-            .map((dato) => (
+          {datos.map((dato) => (
                     ColumnasCustom(dato)
               )
             )}
 
-          {page === totalPages && endIndex !== 0 && (
-            <TableRow style={{ height: heightEnd * (endIndex)}}>
-              <TableCell colSpan={6} />
-            </TableRow>
-          )}
         </TableBody>
         <TableFooter>
              
         </TableFooter>
       </Table>
-      <Pagination className={classes.paginator} count={totalPages} page={page} defaultPage={1} onChange={handleChange}/>
+      
     </TableContainer>
     )
 }

@@ -129,12 +129,12 @@ const tiposDeUsuario = [
       label: 'Inquilino',
     },
     {
-      value: 'Administrador de Consorcio',
+      value: 'Administrador_consorcio',
       label: 'Administrador de Consorcio',
     },
     {
-    value: 'Administrador de Aplicacion',
-    label: 'Administrador de Aplicacion',
+    value: 'Administrador',
+    label: 'Administrador',
     }
   ]
 
@@ -195,9 +195,10 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     }
 
     const handleChangeType = (event) => {
+        usuario.tipo = event.target.value
         setTipoUsuario(event.target.value);
+        setCampoEditado(true)
       };
-
     
     useEffect( ()  =>  {
         fetchUsuario()
@@ -314,7 +315,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Tipo de usuario</span>
-                        <TextField className={classes.inputs} id="tipoUsuario" select onChange={handleChangeType} value={tipoUsuario || ''} variant="outlined" >
+                        <TextField className={classes.inputs} id="tipoUsuario" select onChange={ handleChangeType } value={usuario.tipo || ''} variant="outlined" >
                                 {tiposDeUsuario.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                 {option.label}

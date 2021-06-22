@@ -117,6 +117,9 @@ body, html {
   text-transform: capitalize!important;
 }
 
+.MuiInputBase-formControl .MuiOutlinedInput-input{
+  background-color: white;
+}
 
 .contenedorColumna{
   display: flex;
@@ -125,4 +128,8 @@ body, html {
 
 .pointer{
   cursor:pointer;
+}
+
+.capitalize{
+  text-transform: capitalize!important;
 }

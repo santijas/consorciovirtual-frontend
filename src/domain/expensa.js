@@ -1,4 +1,4 @@
-export class Expensa {
+export class ExpensaDeDepartamento {
 
     constructor(id, valorDepartamentoComun, valorDepartamentoExtraordinaria, periodo, unidad, estado, montoAPagar){ 
       this.id = id
@@ -11,33 +11,8 @@ export class Expensa {
     }
 
     static fromJson(expensaJSON) {
-      return Object.assign(new Expensa(),
+      return Object.assign(new ExpensaDeDepartamento(),
       expensaJSON,
-        { }
-      )
-    }
-
-    toJSON() {
-        return {
-          ...this
-        }
-    }
-}
-
-export class ExpensaVistaDTO {
-
-    constructor(id,periodo, departamento, tipoOrdinaria, valorTotalExpensa,estado ){ 
-      this.id = id
-      this.periodo = periodo
-      this.departamento = departamento
-      this.tipoOrdinaria = tipoOrdinaria
-      this.valorTotalExpensa = valorTotalExpensa
-      this.estado = estado
-    }
-
-    static fromJson(expensaVistaJSON) {
-      return Object.assign(new ExpensaVistaDTO(),
-      expensaVistaJSON,
         { }
       )
     }

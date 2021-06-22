@@ -6,6 +6,7 @@ import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
 import { SnackbarComponent } from '../../components/Snackbar'
+import { splitVisual } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -55,7 +56,7 @@ return (
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.dni}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">Propietario</StyledTableCell>
+  <StyledTableCell className="tableBold" component="th" scope="row">{splitVisual(dato.tipo)}</StyledTableCell>
 </StyledTableRow>
 )
 }

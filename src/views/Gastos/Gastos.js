@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
-import { usuarioService } from '../../services/usuarioService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
-import 'moment/locale/es'
-import moment from 'moment';
 import { SnackbarComponent } from '../../components/Snackbar';
+import { formatDate } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -47,11 +45,7 @@ const getGasto = (id) =>{
   history.push(`/gasto/${id}`)
 }
 
-const formatDate = (date) =>{
-  const fecha = moment(date).format('MMMM YYYY').toUpperCase()
-  const lower = fecha.toLowerCase();
-  return fecha.charAt(0).toUpperCase() + lower.slice(1);
-}
+
 
 return (
 <StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer">

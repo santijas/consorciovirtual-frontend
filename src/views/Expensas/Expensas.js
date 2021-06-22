@@ -5,6 +5,7 @@ import { expensaService } from '../../services/expensaService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
+import { formatDate } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -36,27 +37,20 @@ const useStyles = makeStyles ({
 
   });
 
-const headers = ["Período", "Departamento", "Tipo", "Monto a pagar", "Estado"]
+const headers = ["Período", "Departamento", "Monto a pagar", "Estado"]
 
 
 const ColumnasCustom = (dato) => {
   return (
   <StyledTableRow key={dato.id} className="pointer">
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.periodo}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
-    { tipoDeExpensa(dato.tipoOrdinaria) }
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.valorTotalExpensa}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.montoAPagar}</StyledTableCell> 
     { estadoDePago(dato.estado) }
   </StyledTableRow>
   )
 }
 
-const tipoDeExpensa = (tipoOrdinaria) => {
-  return tipoOrdinaria?
-  <StyledTableCell className="tableNormal" component="th" scope="row">Ordinaria</StyledTableCell> 
-  :
-  <StyledTableCell className="tableNormal"  component="th" scope="row">Extraordinaria</StyledTableCell>
-}
 
 const estadoDePago = (estado) => {
   return estado?
@@ -71,12 +65,12 @@ export const Expensas = () =>{
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
-      const expensasEncontradas = await expensaService.getAllExpensas()
+      const expensasEncontradas = await expensaService.getBySearch(textoBusqueda)
       setExpensas(expensasEncontradas)
     }
 
-    const newUser = () =>{
-      history.push("/newuser")
+    const newExpensa = () =>{
+      history.push("/newexpensa")
     }
     
 
@@ -93,8 +87,8 @@ export const Expensas = () =>{
               <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
               <div>
                <span className={classes.cantidadObject} > {expensas.length} expensas </span>
-              <StyledButtonPrimary onClick={newUser} >Calcular expensas</StyledButtonPrimary>
-              <StyledButtonSecondary className={classes.botonAnular} onClick={newUser}>Anular expensas</StyledButtonSecondary>
+              <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>
+              <StyledButtonSecondary className={classes.botonAnular} onClick={newExpensa}>Anular expensas</StyledButtonSecondary>
               </div>
            </div>
             <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90}/>

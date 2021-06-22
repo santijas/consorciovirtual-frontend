@@ -19,6 +19,11 @@ class GastoService{
         return this.gastoAJson(JSON.data)
     }
 
+    async getByPeriod(periodo) {
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/gastos/periodo`, {params:{ periodo }})
+        return listaJSON.data
+    }
+
     async create(gasto){
         await axios.put((`${REST_SERVER_URL}/gastos/crear`), gasto.toJSON())
     }
