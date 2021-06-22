@@ -38,6 +38,7 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
     borderCollapse: "collapse",
+    
   },
   container:{
     marginTop: 30,

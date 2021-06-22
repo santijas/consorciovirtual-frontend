@@ -141,12 +141,12 @@ const useStyles = makeStyles ({
 
   const tipoDeGasto = [
     {
-      value: 'Comun',
-      label: 'Comun',
+      value: 'Común',
+      label: 'Común',
     },
     {
-      value: 'Extraordinario',
-      label: 'Extraordinario',
+      value: 'Extraordinaria',
+      label: 'Extraordinaria',
     }
   ]
 

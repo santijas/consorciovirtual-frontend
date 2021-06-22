@@ -20,7 +20,7 @@ class ExpensaService {
     }
 
     async create(periodo){
-        await axios.post((`${REST_SERVER_URL}/expensas/createPorImporteDeGastos/${periodo}`))
+        await axios.get(`${REST_SERVER_URL}/expensas/createPorImporteDeGastos/`, {params:{ periodo }})
     }
 
     async delete(periodo){

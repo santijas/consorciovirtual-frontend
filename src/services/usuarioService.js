@@ -33,7 +33,6 @@ class UsuarioService {
 
     async update(user){
         await axios.put(`${REST_SERVER_URL}/usuario/modificar`, user.toJSON())
-        this.usuarioLogueado = user
     }
 
     async delete(id){

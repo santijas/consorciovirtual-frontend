@@ -2,17 +2,19 @@ import React, { useEffect, useState, Fragment } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, Divider, Box } from '@material-ui/core';
+import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
-import update from 'immutability-helper';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
-import { obtenerPeriodoDeMoment } from '../../utils/formats';
+import { dosDecimales, obtenerPeriodoDeMoment } from '../../utils/formats';
 import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../components/TablaScroll';
 import { gastoService } from '../../services/gastoService';
+import update from 'immutability-helper';
+import { ExpensaGeneral } from '../../domain/expensaGeneral';
+import { expensaService } from '../../services/expensaService';
 
 const useStyles = makeStyles ({
     root: {
@@ -130,7 +132,8 @@ const useStyles = makeStyles ({
         padding: "0 30px 32px 32px"
       },
       inputsDate:{
-          textTransform: "uppercase"
+          textTransform: "capitalize",
+          cursor: "pointer"
       }
   });
 
@@ -147,11 +150,18 @@ const useStyles = makeStyles ({
   }
 
   const ColumnasCustom = (dato) => {
+
+    let history= useHistory()
+  
+    const showGasto = (id) =>{
+      history.push(`/gasto/${id}`)
+    }
+
     return (
-    <StyledTableRowScroll key={dato.id} className="pointer">
+    <StyledTableRowScroll key={dato.id} className="pointer" onClick={() => showGasto(dato.id)}>
       <StyledTableCellScroll className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCellScroll>
       <StyledTableCellScroll className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCellScroll>
-      <StyledTableCellScroll className="tableBold" component="th" scope="row">{dato.importe}</StyledTableCellScroll> 
+      <StyledTableCellScroll className="tableBold" component="th" scope="row">$ {dosDecimales(dato.importe)}</StyledTableCellScroll> 
     </StyledTableRowScroll>
     )
   }
@@ -162,6 +172,8 @@ export const ABExpensa = () =>{
     const [openModal, setOpenModal] = useState(false)
     const [modalStyle] = useState(getModalStyle);
     const [selectedDate, handleDateChange] = useState(new Date());
+    const [expensaGeneral, setExpensaGeneral] = useState(new ExpensaGeneral()) 
+    const [render, setRender] = useState('')
 
 
     let history = useHistory()
@@ -171,11 +183,24 @@ export const ABExpensa = () =>{
         try{
             const gastos = await gastoService.getByPeriod(obtenerPeriodoDeMoment(selectedDate))
             setGastos(gastos)
+            setExpensaGeneral(new ExpensaGeneral())
+            const valorComun = gastos.filter(gasto => gasto.tipo === "Común").map(gasto => gasto.importe).reduce(function(acc, val) { return acc + val; }, 0)
+            const valorExtraordinaria = gastos.filter(gasto => gasto.tipo === "Extraordinaria").map(gasto => gasto.importe).reduce(function(acc, val) { return acc + val; }, 0)
+            actualizarValor(dosDecimales(valorComun), dosDecimales(valorExtraordinaria))
         }catch{
 
         }    
     }
 
+
+
+    const actualizarValor = (valorComun, valorExtraordinaria) => {
+        const newState = update(expensaGeneral, {
+            valorTotalExpensaComun: { $set: valorComun},
+            valorTotalExpensaExtraordinaria: {$set: valorExtraordinaria}
+        })
+        setExpensaGeneral(newState)
+    }
 
     const backToExpensas = () =>{
         history.push("/expensas")
@@ -187,7 +212,7 @@ export const ABExpensa = () =>{
 
     
     const generarExpensa = () => {
-        console.log(obtenerPeriodoDeMoment(selectedDate))
+        expensaService.create(obtenerPeriodoDeMoment(selectedDate))
     }
     
     useEffect( ()  =>  {
@@ -214,6 +239,19 @@ export const ABExpensa = () =>{
                     </div>
         )
 
+        const renderInput = ( props ) => (
+            <TextField 
+            className={classes.inputsDate} 
+            id="tipo" 
+            onClick={props.onClick} 
+            onChange={props.onChange} 
+            value={props.value} 
+            variant="outlined"
+            inputProps={{className: classes.inputsDate}}
+            />
+            
+          );
+
     return (
         
         <div className={classes.root} >
@@ -237,12 +275,12 @@ export const ABExpensa = () =>{
                                 views={["year", "month"]}
                                 value={ selectedDate }
                                 inputVariant="outlined"
-                                className="capitalize"
                                 minDate={ restriccionDate() }
                                 maxDate={ Date.now() }
                                 disableFuture
                                 onChange={ handleDateChange }
-                            />
+                                TextFieldComponent={renderInput}
+                            >xD</DatePicker>
                         </MuiPickersUtilsProvider>
                     </div>
                     
@@ -254,12 +292,12 @@ export const ABExpensa = () =>{
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Valor total de expensa común</span>
-                        <span className={classes.inputsDisabled}>$5000</span>
+                        <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaComun || ' - '}</span>
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.spanDisabled}>Valor total de expensa extraordinaria</span>
-                        <span className={classes.inputsDisabled}>$5353</span>
+                        <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
                     </div>
                 </form> 
                 {gastos.length !== 0 && 

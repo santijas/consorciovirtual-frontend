@@ -21,10 +21,13 @@ export const splitVisual = (string) =>{
 export const obtenerPeriodoDeMoment = (fecha) =>{
   let mes  
     if( moment(fecha).month() < 10 ){
-       mes = "0"+moment(fecha).month()
+       mes = "0"+(moment(fecha).month()+1)
     }else{
-      mes = moment(fecha).month()
+      mes = moment(fecha).month() + 1
     }
-    console.log(moment(fecha).month())
     return `"${moment(fecha).year()}-${mes}"`
+}
+
+export const dosDecimales = (num) =>{
+  return Math.round(num * 100) / 100
 }

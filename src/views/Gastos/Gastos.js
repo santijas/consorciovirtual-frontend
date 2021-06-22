@@ -6,7 +6,7 @@ import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
 import { SnackbarComponent } from '../../components/Snackbar';
-import { formatDate } from '../../utils/formats';
+import { dosDecimales, formatDate } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -53,7 +53,7 @@ return (
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">${dato.importe}</StyledTableCell>
+  <StyledTableCell className="tableBold" component="th" scope="row">${dosDecimales(dato.importe)}</StyledTableCell>
 </StyledTableRow>
 )
 }
