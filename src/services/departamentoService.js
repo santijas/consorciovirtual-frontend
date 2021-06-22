@@ -31,11 +31,11 @@ class DepartamentoService {
         depto.propietario = propietario
         depto.inquilino = inquilino
         console.log(Departamento.fromJson(depto) )
-        // await axios.put(`${REST_SERVER_URL}/departamento/modificar`, Departamento.fromJson(depto).toJSON())
+        await axios.put(`${REST_SERVER_URL}/departamento/modificar`, Departamento.fromJson(depto).toJSON())
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/departamentos/eliminar/${id}`)
+        axios.put(`${REST_SERVER_URL}/departamento/eliminar/${id}`)
     }
 }
 
