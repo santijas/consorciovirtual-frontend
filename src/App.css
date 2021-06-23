@@ -133,3 +133,19 @@ body, html {
 .capitalize{
   text-transform: capitalize!important;
 }
+
+.logo{
+  font-size: 25px!important;
+  width: 200px!important;
+  height: 10px!important;
+}
+
+.MuiInput-underline::before{
+  border-bottom: none!important;
+  cursor:none;
+} 
+
+.MuiInput-underline::after{
+  border-bottom: none!important;
+  cursor:none;
+} 

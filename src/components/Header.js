@@ -6,6 +6,7 @@ import { Desplegable } from '../assets/icons';
 import { avatarColours } from '../utils/avatarColours';
 import { usuarioService } from '../services/usuarioService.js'
 import { splitTipo } from '../utils/formats';
+import Logo from '../assets/logo.png'
 
 const useStyles = makeStyles({
     root: {
@@ -21,7 +22,9 @@ const useStyles = makeStyles({
     },
     tittle:{
         alignSelf:"center",
-        padding: 20
+        padding: 20,
+        display: "flex",
+        justifyContent:"left",
     },
     loguedUser:{
         display:"flex",
@@ -59,6 +62,9 @@ const useStyles = makeStyles({
     },
     desplegable:{
         marginLeft:10
+    },
+    logo:{
+        marginLeft: 25
     }
   });
 
@@ -87,9 +93,9 @@ export const Header = () =>{
 
         return (
             <header className={classes.root}>
-                <Typography component="h1" variant="h5" className={classes.tittle}>
-                     Consorcio Virtual
-                </Typography>
+                <div className={classes.tittle}>
+                    <img src={Logo} className={classes.logo}/>
+                </div>
                 <div className={classes.loguedUser} >
                         <Avatar style={{backgroundColor: avatarColours(nombre)}} className={classes.avatar} >{filterFirstLetters(nombre)}</Avatar>
                         <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>

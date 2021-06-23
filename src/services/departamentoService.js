@@ -33,7 +33,8 @@ class DepartamentoService {
     }
 
     async count(){
-        return await axios.get(`${REST_SERVER_URL}/cantidaddepartamentos`)
+        const cantidad = await axios.get(`${REST_SERVER_URL}/cantidaddepartamentos`)
+        return cantidad.data
     }
 }
 

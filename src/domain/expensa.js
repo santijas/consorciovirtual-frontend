@@ -1,6 +1,6 @@
 export class ExpensaDeDepartamento {
 
-    constructor(id, valorDepartamentoComun, valorDepartamentoExtraordinaria, periodo, unidad, estado, montoAPagar){ 
+    constructor(id, valorDepartamentoComun, valorDepartamentoExtraordinaria, periodo, unidad, estado, montoAPagar, propietario, fechaDePago){ 
       this.id = id
       this.valorDepartamentoComun = valorDepartamentoComun
       this.valorDepartamentoExtraordinaria = valorDepartamentoExtraordinaria
@@ -8,6 +8,8 @@ export class ExpensaDeDepartamento {
       this.unidad = unidad
       this.estado = estado
       this.montoAPagar = montoAPagar
+      this.propietario = propietario
+      this.fechaDePago = fechaDePago
     }
 
     static fromJson(expensaJSON) {

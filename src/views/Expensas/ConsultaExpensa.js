@@ -1,22 +1,20 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
-import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
-import { dosDecimales, obtenerPeriodoDeMoment } from '../../utils/formats';
+import { dosDecimales, numeroConPuntos, obtenerPeriodoDeMoment } from '../../utils/formats';
 import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../components/TablaScroll';
 import { gastoService } from '../../services/gastoService';
 import { departamentoService } from '../../services/departamentoService';
 import update from 'immutability-helper';
 import { ExpensaGeneral } from '../../domain/expensaGeneral';
 import { expensaService } from '../../services/expensaService';
-import { SnackbarComponent } from '../../components/Snackbar';
 
 const useStyles = makeStyles ({
     root: {
@@ -102,7 +100,7 @@ const useStyles = makeStyles ({
       },
     inputsDisabled:{
         textAlign: "left",
-        marginLeft: 10,
+        marginLeft: 4,
         fontSize: 16,
         padding: "14px 6px"
     },
@@ -136,7 +134,13 @@ const useStyles = makeStyles ({
       },
       inputsDate:{
           textTransform: "capitalize",
-          cursor: "pointer"
+          marginLeft: "4px"
+      },
+      inputsDateDisabled:{
+        textTransform: "capitalize",
+        textAlign: "left",
+        fontSize: 16,
+        padding: "14px 6px"
       }
   });
 
@@ -157,82 +161,38 @@ const useStyles = makeStyles ({
     )
   }
 
-export const ABExpensa = () =>{
+export const ConsultarExpensa = () =>{
     const classes = useStyles();
-    const [gastos, setGastos] = useState('')
-    const [selectedDate, handleDateChange] = useState(new Date());
-    const [expensaGeneral, setExpensaGeneral] = useState(new ExpensaGeneral()) 
-    const [cantidadDeptos, setCantidadDeptos] = useState('')
-    const [openSnackbar, setOpenSnackbar] = useState('')
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const [gastos, setGastos] = useState('') 
+    const [expensa, setExpensa] = useState()
 
     let history = useHistory()
     const params = useParams()
 
-    const fetchGastosPeriodo = async () =>{
+    const fetchExpensa = async () =>{
         try{
-            const gastosEncontrados = await gastoService.getByPeriod(obtenerPeriodoDeMoment(selectedDate))
+            let unaExpensa = await expensaService.getById(params.id)
+            setExpensa(unaExpensa) 
+            console.log(expensa)
+            const gastosEncontrados = await gastoService.getByPeriod(obtenerPeriodoDeMoment(unaExpensa.periodo))
             setGastos(gastosEncontrados)
-            setExpensaGeneral(new ExpensaGeneral())
-            const valorComun = gastosEncontrados.filter(gasto => gasto.tipo === "Común").map(gasto => gasto.importe).reduce(function(acc, val) { return acc + val; }, 0)
-            const valorExtraordinaria = gastosEncontrados.filter(gasto => gasto.tipo === "Extraordinaria").map(gasto => gasto.importe).reduce(function(acc, val) { return acc + val; }, 0)
-            actualizarValor(dosDecimales(valorComun), dosDecimales(valorExtraordinaria))
+        }catch{
 
-            const cantidadDeptos = await departamentoService.count()
-            setCantidadDeptos(cantidadDeptos)
-        }catch(error){
-            usarSnack(error, true)
-        }    
+        }
     }
-
-
-
-    const actualizarValor = (valorComun, valorExtraordinaria) => {
-        const newState = update(expensaGeneral, {
-            valorTotalExpensaComun: { $set: valorComun},
-            valorTotalExpensaExtraordinaria: {$set: valorExtraordinaria}
-        })
-        setExpensaGeneral(newState)
-    }
-
+    
     const backToExpensas = () =>{
         history.push("/expensas")
     }
 
-    
-    const generarExpensa = () => {
-        try{
-            if(gastos.length > 0){
-                expensaService.create(obtenerPeriodoDeMoment(selectedDate))
-                history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
-            }else{
-                usarSnack("No es posible generar expensas sin gastos registrados en el periodo.", true)
-            }  
-        }catch(error){
-            usarSnack(error, true)
-        }
+    const pagarExpensa = () =>{
+        console.log()
     }
 
-    const usarSnack = (mensaje, esError) =>{
-        if(esError){
-            setSnackColor("#F23D4F")
-        }else{
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
-    
     useEffect( ()  =>  {
-        fetchGastosPeriodo()
-    },[selectedDate])
+        fetchExpensa()
+    },[])
 
-    const restriccionDate = () => {
-        var date = new Date(Date.now())
-        date.setFullYear(date.getFullYear() -5);
-        return `"${date.getFullYear()}-${date.getMonth()}"`
-    }
 
         const renderInput = ( props ) => (
             <TextField 
@@ -241,10 +201,8 @@ export const ABExpensa = () =>{
             onClick={props.onClick} 
             onChange={props.onChange} 
             value={props.value} 
-            variant="outlined"
-            inputProps={{className: classes.inputsDate}}
+            inputProps={{className: classes.inputsDateDisabled}}
             />
-            
           );
 
     return (
@@ -257,9 +215,10 @@ export const ABExpensa = () =>{
                 </Link>
 
                     <Typography component="h2" variant="h5" className={classes.tittle}>
-                        Calcular expensas {}
+                        Expensa
                      </Typography>
         
+            {expensa &&
                 <form className={classes.form} noValidate autoComplete="off">
                     
                    
@@ -268,33 +227,44 @@ export const ABExpensa = () =>{
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
                                 views={["year", "month"]}
-                                value={ selectedDate }
+                                value={ expensa.periodo }
                                 inputVariant="outlined"
-                                minDate={ restriccionDate() }
-                                maxDate={ Date.now() }
                                 disableFuture
-                                onChange={ handleDateChange }
                                 TextFieldComponent={renderInput}
-                            >xD</DatePicker>
+                                readOnly
+                                disableToolbar
+                            />
                         </MuiPickersUtilsProvider>
                     </div>
                     
-
+                    
                     <div className={classes.contenedorInputDerecha}>
-                        <span className={classes.spanDisabled}>Cantidad de departamentos</span>
-                        <span className={classes.inputsDisabled}>{cantidadDeptos}</span>
+                        <span className={classes.spanDisabled}>Monto a pagar</span>
+                        <span className={classes.inputsDisabled}>$ {expensa.montoAPagar}</span>
                     </div>
 
                     <div className={classes.contenedorInput}>
-                        <span className={classes.spanDisabled}>Valor total de expensa común</span>
-                        <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaComun || ' - '}</span>
+                        <span className={classes.spanDisabled}>Valor de expensa común</span>
+                        <span className={classes.inputsDisabled}>$ {numeroConPuntos(expensa.valorDepartamentoComun) || ' - '}</span>
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>
-                        <span className={classes.spanDisabled}>Valor total de expensa extraordinaria</span>
-                        <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
+                        <span className={classes.spanDisabled}>Valor de expensa extraordinaria</span>
+                        <span className={classes.inputsDisabled}>$ {numeroConPuntos(expensa.valorDepartamentoExtraordinaria) || ' - ' }</span>
                     </div>
+
+                    <div className={classes.contenedorInput}>
+                        <span className={classes.spanDisabled}>Propietario</span>
+                        <span className={classes.inputsDisabled}> {expensa.propietario || ' - '}</span>
+                    </div>
+
+                    <div className={classes.contenedorInputDerecha}>
+                        <span className={classes.spanDisabled}>Departamento</span>
+                        <span className={classes.inputsDisabled}> {expensa.unidad || ' - ' }</span>
+                    </div>
+                   
                 </form> 
+                 }
                 {gastos.length !== 0 && 
                 <div>
                     <Typography component="h2" variant="subtitle1" className={classes.tittleVariant}>
@@ -310,11 +280,11 @@ export const ABExpensa = () =>{
             <div className={classes.buttonLog}>
 
                 <div className={classes.contenedorBotones}>
-                    <StyledButtonPrimary className={classes.botones} onClick={ generarExpensa } >Generar expensas</StyledButtonPrimary>
+                    <StyledButtonPrimary className={classes.botones} onClick={ pagarExpensa } >Pagar expensa</StyledButtonPrimary>
                 </div>
 
                 <Divider className={classes.divider} />
-                <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
+
             </div>
             
          </div>

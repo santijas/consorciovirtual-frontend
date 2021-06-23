@@ -18,6 +18,7 @@ const useStyles = makeStyles({
         marginLeft: 300,
         flexDirection: "row",
         height: "100%",
+        boxSizing: "unset"
     },
     tittle: {
         textAlign: "left",

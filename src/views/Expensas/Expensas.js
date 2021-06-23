@@ -4,8 +4,9 @@ import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { expensaService } from '../../services/expensaService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
-import { useHistory } from 'react-router-dom';
-import { formatDate } from '../../utils/formats';
+import { useHistory, useLocation, withRouter } from 'react-router-dom';
+import { formatDate, numeroConPuntos } from '../../utils/formats';
+import { SnackbarComponent } from '../../components/Snackbar';
 
 
 const useStyles = makeStyles ({
@@ -51,27 +52,29 @@ const headers = [
 ]
 
 const ColumnasCustom = (dato) => {
+  let history= useHistory()
+
+  const getExpensa = (id) =>{
+    history.push(`/expensa/${id}`)
+  }
+
   return (
-  <StyledTableRow key={dato.id} className="pointer">
+  <StyledTableRow key={dato.id} className="pointer" onClick={() => getExpensa(dato.id)}>
     <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.montoAPagar}</StyledTableCell> 
-    { estadoDePago(dato.estado) }
+    <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 
+    <StyledTableCell className="tableBold"  component="th" scope="row">{dato.estado}</StyledTableCell>
   </StyledTableRow>
   )
 }
 
-
-const estadoDePago = (estado) => {
-  return estado?
-  <StyledTableCell className="tableBold" component="th" scope="row">Pagado</StyledTableCell> 
-  :
-  <StyledTableCell className="tableBold"  component="th" scope="row">Pendiente</StyledTableCell>
-}
-
 export const Expensas = () =>{
+    const location = useLocation();
     const classes = useStyles();
     const [expensas, setExpensas] = useState([])
+    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [mensajeSnack, setMensajeSnack] = useState('')
+    const [render, setRender] = useState('')
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
@@ -82,11 +85,24 @@ export const Expensas = () =>{
     const newExpensa = () =>{
       history.push("/newexpensa")
     }
-    
+
+    const anularExpensa = () =>{
+      history.push("/anularexpensa")
+    }
+    const fetchSnack = () => {
+      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    }
+
+    const usarSnack = () =>{
+      setOpenSnackbar(location.state.openChildSnack)
+      setMensajeSnack(location.state.mensajeChild)
+      setRender(location.state.render)
+    }
 
     useEffect( ()  =>  {
+        fetchSnack()
         fetchAll("")
-    },[])
+    },[render])
 
     return (
         <div className={classes.root} >
@@ -94,15 +110,19 @@ export const Expensas = () =>{
              Expensas
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-              <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
+              <Busqueda holder="Buscá por departamento o monto" busqueda={fetchAll} />
               <div className={classes.contenedorBotones}>
                <span className={classes.cantidadObject} > {expensas.length} expensas </span>
               <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>
-              <StyledButtonSecondary className={classes.botonAnular} onClick={newExpensa}>Anular expensas</StyledButtonSecondary>
+              <StyledButtonSecondary className={classes.botonAnular} onClick={anularExpensa}>Anular expensas</StyledButtonSecondary>
               </div>
            </div>
             <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
+
+            <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
          </div>
 
+        
     )
 }
+export default withRouter(Expensas)

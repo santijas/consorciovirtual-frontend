@@ -6,7 +6,7 @@ import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
 import { SnackbarComponent } from '../../components/Snackbar';
-import { dosDecimales, formatDate } from '../../utils/formats';
+import { dosDecimales, formatDate, numeroConPuntos } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -56,7 +56,7 @@ return (
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
-  <StyledTableCell className="tableBold" component="th" scope="row">${dosDecimales(dato.importe)}</StyledTableCell>
+  <StyledTableCell className="tableBold" component="th" scope="row">${numeroConPuntos(dosDecimales(dato.importe))}</StyledTableCell>
 </StyledTableRow>
 )
 }
@@ -91,7 +91,7 @@ export const Gastos = () =>{
              Gastos
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-              <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
+              <Busqueda holder="Buscá por título o monto" busqueda={fetchAll} />
               <div>
                <span className={classes.cantidadObject} > {gastos.length} gastos </span>
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>

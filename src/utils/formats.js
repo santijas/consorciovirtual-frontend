@@ -31,3 +31,9 @@ export const obtenerPeriodoDeMoment = (fecha) =>{
 export const dosDecimales = (num) =>{
   return Math.round(num * 100) / 100
 }
+
+export const numeroConPuntos = (numero) => {
+  var parts = numero.toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  return parts.join(",");
+}

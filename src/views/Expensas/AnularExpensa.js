@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { StyledButtonPrimary } from '../../components/Buttons'
-import { useHistory, useParams } from 'react-router-dom';
+import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
+import { useHistory, useParams, withRouter } from 'react-router-dom';
 import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
@@ -9,9 +9,8 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
-import { dosDecimales, obtenerPeriodoDeMoment } from '../../utils/formats';
+import { dosDecimales, numeroConPuntos, obtenerPeriodoDeMoment } from '../../utils/formats';
 import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../components/TablaScroll';
-import { gastoService } from '../../services/gastoService';
 import { departamentoService } from '../../services/departamentoService';
 import update from 'immutability-helper';
 import { ExpensaGeneral } from '../../domain/expensaGeneral';
@@ -150,64 +149,56 @@ const useStyles = makeStyles ({
 
     return (
     <StyledTableRowScroll key={dato.id} className="pointer" onClick={() => showGasto(dato.id)}>
-      <StyledTableCellScroll className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCellScroll>
-      <StyledTableCellScroll className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCellScroll>
-      <StyledTableCellScroll className="tableBold" component="th" scope="row">$ {dosDecimales(dato.importe)}</StyledTableCellScroll> 
+      <StyledTableCellScroll className="tableNormal" component="th" scope="row">{dato.unidad}</StyledTableCellScroll>
+      <StyledTableCellScroll className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCellScroll>
+      <StyledTableCellScroll className="tableNormal" component="th" scope="row">$ {dosDecimales(dato.montoAPagar)}</StyledTableCellScroll> 
+      <StyledTableCellScroll className="tableBold" component="th" scope="row">{dato.estado}</StyledTableCellScroll> 
     </StyledTableRowScroll>
     )
   }
 
-export const ABExpensa = () =>{
+export const AnularExpensa = () =>{
     const classes = useStyles();
-    const [gastos, setGastos] = useState('')
+    const [expensas, setExpensas] = useState('')
     const [selectedDate, handleDateChange] = useState(new Date());
-    const [expensaGeneral, setExpensaGeneral] = useState(new ExpensaGeneral()) 
+    const [expensaGeneral, setExpensaGeneral] = useState() 
     const [cantidadDeptos, setCantidadDeptos] = useState('')
     const [openSnackbar, setOpenSnackbar] = useState('')
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
 
+
     let history = useHistory()
     const params = useParams()
 
-    const fetchGastosPeriodo = async () =>{
+    const fetchExpensasPeriodo = async () =>{
         try{
-            const gastosEncontrados = await gastoService.getByPeriod(obtenerPeriodoDeMoment(selectedDate))
-            setGastos(gastosEncontrados)
-            setExpensaGeneral(new ExpensaGeneral())
-            const valorComun = gastosEncontrados.filter(gasto => gasto.tipo === "Común").map(gasto => gasto.importe).reduce(function(acc, val) { return acc + val; }, 0)
-            const valorExtraordinaria = gastosEncontrados.filter(gasto => gasto.tipo === "Extraordinaria").map(gasto => gasto.importe).reduce(function(acc, val) { return acc + val; }, 0)
-            actualizarValor(dosDecimales(valorComun), dosDecimales(valorExtraordinaria))
+            const expensaEncontrada = await expensaService.getByPeriodGeneral(obtenerPeriodoDeMoment(selectedDate))
+            setExpensaGeneral(expensaEncontrada)
+            
+            const expensasDelPeriodo = await expensaService.getByPeriodDepto(obtenerPeriodoDeMoment(selectedDate))
+            setExpensas(expensasDelPeriodo)
 
             const cantidadDeptos = await departamentoService.count()
             setCantidadDeptos(cantidadDeptos)
-        }catch(error){
-            usarSnack(error, true)
+        }catch{
+
         }    
     }
 
-
-
-    const actualizarValor = (valorComun, valorExtraordinaria) => {
-        const newState = update(expensaGeneral, {
-            valorTotalExpensaComun: { $set: valorComun},
-            valorTotalExpensaExtraordinaria: {$set: valorExtraordinaria}
-        })
-        setExpensaGeneral(newState)
-    }
 
     const backToExpensas = () =>{
         history.push("/expensas")
     }
 
     
-    const generarExpensa = () => {
+    const anularExpensa = () => {
         try{
-            if(gastos.length > 0){
-                expensaService.create(obtenerPeriodoDeMoment(selectedDate))
-                history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
+            if(expensas.length > 0){
+                expensaService.anularExpensas(obtenerPeriodoDeMoment(selectedDate))
+                history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas anuladas correctamente.", render: false})
             }else{
-                usarSnack("No es posible generar expensas sin gastos registrados en el periodo.", true)
+                usarSnack("No existen expensas generadas en dicho periodo.", true)
             }  
         }catch(error){
             usarSnack(error, true)
@@ -225,7 +216,7 @@ export const ABExpensa = () =>{
     }
     
     useEffect( ()  =>  {
-        fetchGastosPeriodo()
+        fetchExpensasPeriodo()
     },[selectedDate])
 
     const restriccionDate = () => {
@@ -257,9 +248,9 @@ export const ABExpensa = () =>{
                 </Link>
 
                     <Typography component="h2" variant="h5" className={classes.tittle}>
-                        Calcular expensas {}
+                        Anular expensas
                      </Typography>
-        
+                { expensaGeneral &&
                 <form className={classes.form} noValidate autoComplete="off">
                     
                    
@@ -275,7 +266,7 @@ export const ABExpensa = () =>{
                                 disableFuture
                                 onChange={ handleDateChange }
                                 TextFieldComponent={renderInput}
-                            >xD</DatePicker>
+                            />
                         </MuiPickersUtilsProvider>
                     </div>
                     
@@ -295,13 +286,14 @@ export const ABExpensa = () =>{
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
                     </div>
                 </form> 
-                {gastos.length !== 0 && 
+                }
+                {expensas.length !== 0 && 
                 <div>
                     <Typography component="h2" variant="subtitle1" className={classes.tittleVariant}>
-                            Gastos del período
+                            Expensas del período
                     </Typography>
                     <Box mx={"auto"}>
-                    <TablaScroll datos={gastos} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
+                    <TablaScroll datos={expensas} ColumnasCustom={ColumnasCustom} heightEnd={90}/>
                     </Box>
                 </div>
                 }
@@ -310,7 +302,7 @@ export const ABExpensa = () =>{
             <div className={classes.buttonLog}>
 
                 <div className={classes.contenedorBotones}>
-                    <StyledButtonPrimary className={classes.botones} onClick={ generarExpensa } >Generar expensas</StyledButtonPrimary>
+                    <StyledButtonSecondary className={classes.botones} onClick={ anularExpensa } >Anular expensas</StyledButtonSecondary>
                 </div>
 
                 <Divider className={classes.divider} />
@@ -323,3 +315,4 @@ export const ABExpensa = () =>{
 }
  
 
+export default withRouter(AnularExpensa)
