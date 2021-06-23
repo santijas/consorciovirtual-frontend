@@ -4,7 +4,8 @@ import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { departamentoService } from '../../services/departamentoService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
+import { SnackbarComponent } from '../../components/Snackbar';
 
 const useStyles = makeStyles ({
     root: {
@@ -65,9 +66,13 @@ const useStyles = makeStyles ({
   }
 
 export const Departamentos = () =>{
+  const location = useLocation();
     const classes = useStyles();
     const [departamentos, setDepartamentos] = useState([])
+    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [mensajeSnack, setMensajeSnack] = useState('')
     let history = useHistory()  
+
 
 
     const fetchAllDepartamentos = async (textoBusqueda) =>{
@@ -80,8 +85,18 @@ export const Departamentos = () =>{
       history.push("/newdepartamento")
     }
 
+    const fetchSnack = () => {
+      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    }
+
+    const usarSnack = () =>{
+      setOpenSnackbar(location.state.openChildSnack)
+      setMensajeSnack(location.state.mensajeChild)
+    }
+
     useEffect( ()  =>  {
       fetchAllDepartamentos("")
+      fetchSnack()
     },[])
 
     return (
@@ -97,6 +112,8 @@ export const Departamentos = () =>{
                 </div>
             </div>
             <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
+            <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
+        
          </div>
 
     )

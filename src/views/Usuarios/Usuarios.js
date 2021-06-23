@@ -56,7 +56,6 @@ const ColumnasCustom = (dato) => {
     <StyledTableCell  component="th" scope="row">
       <div className="contenedorColumna">
         <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
-        <span >2° A</span>
       </div>
     </StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
@@ -75,6 +74,7 @@ export const Usuarios = () =>{
     const classes = useStyles();
     const [usuarios, setUsuarios] = useState([])
     const [openSnackbar, setOpenSnackbar] = useState('')
+    const [mensajeSnack, setMensajeSnack] = useState('')
 
 
 
@@ -88,13 +88,18 @@ export const Usuarios = () =>{
     }
     
     const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : setOpenSnackbar(location.state.openChildSnack)
+      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    }
+
+    const usarSnack = () =>{
+      setOpenSnackbar(location.state.openChildSnack)
+      setMensajeSnack(location.state.mensajeChild)
     }
 
     useEffect( ()  =>  {
       fetchAllUsers("")
       fetchSnack()
-    },[openSnackbar])
+    },[])
 
     return (
         <div className={classes.root} >
@@ -108,9 +113,9 @@ export const Usuarios = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
               </div>
            </div>
-            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={112.7} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
 
-              <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={"Usuario creado correctamente."} handleCloseSnack={() => setOpenSnackbar(false)}/>
+              <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         
          </div>
         

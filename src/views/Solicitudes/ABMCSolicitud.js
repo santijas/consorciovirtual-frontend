@@ -12,6 +12,7 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { registroModificacionService } from "../../services/registroModificacionService";
+import { SolicitudTecnica } from '../../domain/solicitudTecnica';
 
 const useStyles = makeStyles({
     root: {
@@ -237,11 +238,12 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         try {
             let unaSolicitud
             if (creacion) {
-                unaSolicitud = new solicitud()
+                unaSolicitud = new SolicitudTecnica()
             } else {
                 unaSolicitud = await solicitudService.getById(params.id)
             }
             setSolicitud(unaSolicitud)
+            console.log(unaSolicitud)
             setEstado(unaSolicitud.nombreEstado)
             setTitulo(unaSolicitud.titulo)
             setDetalle(unaSolicitud.detalle)
@@ -311,8 +313,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     }
 
     const validarSolicitud = () => {
-        console.log(titulo + detalle)
-        return titulo && detalle
+        return solicitud.titulo && solicitud.titulo
     }
 
     const usarSnack = (mensaje, esError) => {
@@ -393,7 +394,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Titulo</span>
                         {edicion ? <span className={classes.span}>{solicitud.titulo}</span>
-                            : <TextField className={classes.inputs} id="titulo" variant="outlined" onChange={(e) => setTitulo(e.target.value)}></TextField>}
+                            : <TextField className={classes.inputs} id="titulo" variant="outlined" value={solicitud.titulo || ''} onChange={(event) => actualizarValor(event)}></TextField>}
                     </div>
 
                 </form>
@@ -402,7 +403,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                         <div className={classes.contenedorInputDescripcion}>
                             <span className={classes.spanDisabled}>Descripción</span>
                             {edicion ? <span className={classes.span}>{solicitud.detalle}</span>
-                                : <TextField className={classes.inputs} id="descripcion" variant="outlined" onChange={(e) => setDetalle(e.target.value)}></TextField>}
+                                : <TextField className={classes.inputs} id="detalle" name="detalle" variant="outlined" value={solicitud.detalle || ''} onChange={(event) => actualizarValor(event)}></TextField>}
                         </div>
                     </div>
 

@@ -212,7 +212,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
             if (validarDepartamento()) {        
                 await departamentoService.create(departamento, propDepto)
-                history.push("/departamentos", { openChildSnack: true })
+                history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento creado correctamente."})
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -240,7 +240,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const eliminarDepartamento = async () => {
         try {
             await departamentoService.delete(departamento.id)
-            backToUsers()
+            history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento eliminado correctamente."})
         } catch (errorRecibido) {
             usarSnack("No se puede conectar con el servidor.", true)
         }
@@ -316,19 +316,21 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
-                    <div className={classes.contenedorInput}>
+
+                <div className={classes.contenedorInput}>
+                        <span className={classes.span}>Piso</span>
+                        <TextField className={classes.inputs} id="piso" value={departamento.piso || ''} onChange={(event) => actualizarValor(event)} name="piso" variant="outlined" />
+                    </div>
+                    
+                    
+                    <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Departamento</span>
                         <TextField className={classes.inputs} id="nroDepartamento" value={departamento.nroDepartamento || ''} onChange={(event) => actualizarValor(event)} name="nroDepartamento" variant="outlined" />
                     </div>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <div className={classes.contenedorInput}>
                         <span className={classes.span} >Torre</span>
                         <TextField className={classes.inputs} id="torre" value={departamento.torre || ''} onChange={(event) => actualizarValor(event)} name="torre" variant="outlined" />
-                    </div>
-
-                    <div className={classes.contenedorInput}>
-                        <span className={classes.span}>Piso</span>
-                        <TextField className={classes.inputs} id="piso" value={departamento.piso || ''} onChange={(event) => actualizarValor(event)} name="piso" variant="outlined" />
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>

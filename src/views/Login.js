@@ -1,42 +1,44 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+import { Avatar, TextField, FormControlLabel, Checkbox, Link, Paper, Grid, Box, Typography } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
 import { usuarioService } from '../services/usuarioService.js'
 import { useState } from 'react'
 import { Usuario } from '../domain/usuario.js'
+import Logo from '../assets/logo.png'
+import { StyledButtonPrimary } from '../components/Buttons'
+import Fondo from '../assets/background.jpg'
+import { NonActiveAnnouncement, NonActiveChat, NonActiveExpenses, NonActiveGastos, NonActiveInquiline, NonActiveRequest } from '../assets/icons.js';
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100vh',
+    display: "flex",
+    flexDirection: "column",
+    width:"100%"
   },
-  image: {
-    backgroundImage: 'url(https://blog.zoom.us/wp-content/uploads/2021/02/digital-transformation-1-scaled.jpeg)',
-    backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+  image:{
+    backgroundImage: `url(${Fondo})`,
+    backgroundColor: "#F5F5F5",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
+    boxShadow: "1px -2px 5px 3px black",
   },
   paper: {
     margin: theme.spacing(20, 4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    maxWidth: "400px",
+    maxHeigth: "100px!important",
+    opacity: "none",
+    
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: "#159D74",
   },
   form: {
     width: '100%',
@@ -45,6 +47,21 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  container:{
+    borderRadius: "5px",
+    maxHeight: "700px",
+    boxShadow:"0px 0px 8px 1px rgba(0,0,0,0.50)",
+    display:"flex",
+    alignItems:"center"
+  },
+  iconos:{
+    fontSize: 60,
+    color: "#159D74"
+  },
+  bold:{
+    fontWeigth: 600,
+    fontSize: 18
+  }
 }));
 
 export const Login = () => {
@@ -64,16 +81,16 @@ export const Login = () => {
 } 
 
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+  <Box className={classes.root}>
+    <Box className={classes.image} display="flex" justifyContent="flex-end" py={4} pr={20}>
+        
+        <Box className={classes.container} component={Paper}>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
+            <LockOutlinedIcon  />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Consorcio Virtual
+            <img src={Logo} className={classes.logo}/>
           </Typography>
           <form className={classes.form}>
             <TextField
@@ -102,16 +119,15 @@ export const Login = () => {
               control={<Checkbox value="remember" color="primary" />}
               label="Recordarme"
             />
-            <Button
+            <StyledButtonPrimary
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
               className={classes.submit}
               onClick={loginUser}
             >
               Ingresar
-            </Button>
+            </StyledButtonPrimary>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -121,7 +137,40 @@ export const Login = () => {
             </Grid>
           </form>
         </div>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
+    <Box display="flex" justifyContent="space-around" width="100%" alignItems="center">
+      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
+       <NonActiveAnnouncement className={classes.iconos} />
+        <span className={classes.bold}>Consultá los anuncios y la documentacion.</span>
+      </Box>
+
+      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
+       <NonActiveRequest className={classes.iconos} />
+        <span className={classes.bold}>Realizá reclamos y solicitudes tecnicas.</span>
+      </Box>
+
+      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
+       <NonActiveExpenses className={classes.iconos} />
+        <span className={classes.bold}>Consultá los gastos del mes.</span>
+      </Box>
+
+      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
+       <NonActiveGastos className={classes.iconos}/>
+        <span className={classes.bold}>Paga tus expensas.</span>
+      </Box>
+
+      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
+       <NonActiveInquiline className={classes.iconos} />
+        <span className={classes.bold}>Gestioná tus inquilinos.</span>
+      </Box>
+
+      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
+       <NonActiveChat className={classes.iconos} />
+        <span className={classes.bold}>Chatea con tus vecinos.</span>
+      </Box>
+
+    </Box>
+  </Box>
   );
 }

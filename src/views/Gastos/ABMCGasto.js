@@ -124,7 +124,7 @@ const useStyles = makeStyles ({
         padding: "0 30px 32px 32px"
       },
       inputsDate:{
-          textTransform: "uppercase"
+          textTransform: "capitalize"
       }
   });
 
@@ -162,6 +162,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
     const [tipoGasto, setTipoGasto] = useState()
+    const [selectedDate, handleDateChange] = useState(new Date());
 
     let history = useHistory()
     const params = useParams()
@@ -206,7 +207,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             if(validarGasto()){
                 await gastoService.create(gasto)
-                history.push("/gastos", { openChildSnack : true })    
+                history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -235,7 +236,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const eliminarGasto = async () => {
         try {
             await gastoService.delete(gasto.id)
-            backToGastos()
+            history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto eliminado correctamente."})    
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)
         }
@@ -274,6 +275,19 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                     </div>
         )
 
+        const renderInput = ( props ) => (
+            <TextField 
+            className={classes.inputsDate} 
+            id="tipo" 
+            onClick={props.onClick} 
+            onChange={props.onChange} 
+            value={props.value} 
+            variant="outlined"
+            inputProps={{className: classes.inputsDate}}
+            />
+            
+          );
+
     return (
         
         <div className={classes.root} >
@@ -302,10 +316,11 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
                                 views={["year", "month"]}
-                                value={ new Date(Date.now())}
-                                disabled
+                                value={ selectedDate }
+                                minDate={ new Date(Date.now()) }
                                 inputVariant="outlined"
-                                onChange={(event) => actualizarValor(event)}
+                                onChange={ handleDateChange }
+                                TextFieldComponent={renderInput}
                             />
                         </MuiPickersUtilsProvider>
                     </div>

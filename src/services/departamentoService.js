@@ -36,6 +36,11 @@ class DepartamentoService {
         const cantidad = await axios.get(`${REST_SERVER_URL}/cantidaddepartamentos`)
         return cantidad.data
     }
+    
+    async getByPropietarioId(id){
+        const departamentoJson = await axios.get(`${REST_SERVER_URL}/departamento/propietario/${id}`)
+        return Departamento.fromJson(departamentoJson.data)
+    }
 }
 
 export const departamentoService = new DepartamentoService()

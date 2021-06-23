@@ -65,6 +65,7 @@ export const Gastos = () =>{
     const location = useLocation();
     const [gastos, setGastos] = useState([])
     const [openSnackbar, setOpenSnackbar] = useState('')
+    const [mensajeSnack, setMensajeSnack] = useState('')
     let history = useHistory()
 
     const fetchAll = async (textoBusqueda) =>{
@@ -77,7 +78,12 @@ export const Gastos = () =>{
     }
     
     const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : setOpenSnackbar(location.state.openChildSnack)
+      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    }
+
+    const usarSnack = () =>{
+      setOpenSnackbar(location.state.openChildSnack)
+      setMensajeSnack(location.state.mensajeChild)
     }
  
     useEffect( ()  =>  {
@@ -99,7 +105,7 @@ export const Gastos = () =>{
            </div>
             <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
 
-            <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={"Gasto creado correctamente."} handleCloseSnack={() => setOpenSnackbar(false)}/>
+            <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         
          </div>
 

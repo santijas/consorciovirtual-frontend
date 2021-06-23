@@ -21,6 +21,18 @@ class SolicitudService{
         return SolicitudTecnica.fromJson(solicitud.data)
     }
 
+    async create(solicitud){
+        await axios.put((`${REST_SERVER_URL}/solicitud/crear`), solicitud.toJSON())
+    }
+
+    async update(solicitud){
+        await axios.put(`${REST_SERVER_URL}/solicitud/modificar`, solicitud.toJSON())
+    }
+
+    async delete(id){
+        axios.put(`${REST_SERVER_URL}/solicitud/eliminar/${id}`)
+    }
+
 }
 
 export const solicitudService = new SolicitudService()

@@ -275,7 +275,7 @@ export const ABExpensa = () =>{
                                 disableFuture
                                 onChange={ handleDateChange }
                                 TextFieldComponent={renderInput}
-                            >xD</DatePicker>
+                            ></DatePicker>
                         </MuiPickersUtilsProvider>
                     </div>
                     

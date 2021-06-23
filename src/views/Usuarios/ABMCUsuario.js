@@ -10,6 +10,7 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { Usuario } from '../../domain/usuario';
 import update from 'immutability-helper';
+import { departamentoService } from "../../services/departamentoService";
 
 const useStyles = makeStyles ({
     root: {
@@ -161,6 +162,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
+    const [departamento, setDepartamento] = useState()
 
     let history = useHistory()
     const params = useParams()
@@ -171,7 +173,10 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             if(creacion){
                 unUsuario = new Usuario()
             } else{
+                let unDepartamento
                 unUsuario = await usuarioService.getById(params.id)
+                //unDepartamento = await departamentoService.getByPropietarioId(params.id)
+                //setDepartamento(unDepartamento)
             }
             setUsuario(unUsuario)
             setTipoUsuario(unUsuario.tipo) 
@@ -211,7 +216,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
         try{
             if(validarUsuario()){
                 await usuarioService.create(usuario)
-                history.push("/usuarios", { openChildSnack : true })    
+                history.push("/usuarios", { openChildSnack : true, mensajeChild: "Usuario creado correctamente."})    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -239,7 +244,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const eliminarUsuario = async () => {
         try {
             await usuarioService.delete(usuario.id)
-            backToUsers()
+            history.push("/usuarios", { openChildSnack : true, mensajeChild: "Usuario eliminado correctamente."}) 
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)
         }
@@ -330,17 +335,17 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                         </TextField>
                     </div>
                     
-                    { edicion && !creacion &&
+                    { edicion && !creacion && departamento &&
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Piso</span>
-                        <span className={classes.inputsDisabled}>2</span>
+                        <span className={classes.inputsDisabled}>{departamento.piso || ''}</span>
                     </div>
                     }
                     
-                    { edicion && !creacion &&
+                    { edicion && !creacion && departamento &&
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.spanDisabled}>Departamento</span>
-                        <span className={classes.inputsDisabled}>B</span>
+                        <span className={classes.inputsDisabled}>{departamento.nroDepartamento || ''}</span>
                     </div>
                     }
                 </form> 
