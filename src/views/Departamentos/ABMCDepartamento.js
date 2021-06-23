@@ -146,8 +146,11 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
     const [usuarios, setUsuarios] = useState('')
-    const [propietario, setPropietario] = useState(null)
-    const [inquilino, setInquilino] = useState(null)
+     // A MODIFICAR PARA EL FINAL
+    const [propietarioId, setPropietarioId] = useState(null)
+    const [inquilinoId, setInquilinoId] = useState(null)
+    const [propDepto, setPropDepto] = useState('')
+    const [inqDepto,setInqDepto] = useState('')
 
 
     let history = useHistory()
@@ -161,17 +164,20 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
             } else {
                 unDepartamento = await departamentoService.getById(params.id)
             }
-            setearEstados(unDepartamento)
+            if(unDepartamento)setearEstados(unDepartamento)
         }
         catch {
 
         }
     }
 
+     // A MODIFICAR PARA EL FINAL
     const setearEstados = (depto) => {
         setDepartamento(depto)
-        setPropietario(depto.propietario.id)
-        setInquilino(depto.inquilino.id)
+        setPropDepto(depto.propietario)
+        setInqDepto(depto.inquilino)
+        setPropietarioId(depto.propietario.id)
+        setInquilinoId(depto.inquilino.id)
     }
 
     const fetchAllUsers = async (textoBusqueda) => {
@@ -202,8 +208,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
     const crearDepartamento = async () => {
         try {
-            if (validarDepartamento()) {
-                await departamentoService.create(departamento, propietario)
+
+            if (validarDepartamento()) {        
+                await departamentoService.create(departamento, propDepto)
                 history.push("/departamentos", { openChildSnack: true })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -215,9 +222,8 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
     const modificarDepartamento = async () => {
         try {
-            console.log(propietario)
             if (validarDepartamento()) {
-                await departamentoService.update(departamento, propietario, inquilino)
+                await departamentoService.update(departamento, propDepto, inqDepto)
                 history.push("/departamentos", { openChildSnack: true })
                 usarSnack("Departamento modificado correctamente", false)
             } else {
@@ -251,14 +257,25 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         setOpenSnackbar(true)
     }
 
+
+     // A MODIFICAR PARA EL FINAL
     const changePropietario = (event) => {
-        setPropietario(event.target.value)  
-        setCampoEditado(true)      
+        
+        setPropietarioId(event.target.value)  
+        setCampoEditado(true)     
+        setPropDepto( selectUsuario(event.target.value) )
     }
 
+     // A MODIFICAR PARA EL FINAL
     const changeInquilino = (event) => {
-        setInquilino(event.target.value)
+        setInquilinoId(event.target.value)
         setCampoEditado(true)
+        setInqDepto( selectUsuario(event.target.value) )
+    }
+
+     // A MODIFICAR PARA EL FINAL
+    const selectUsuario = (pos) => {
+        return [...usuarios].filter(us => us.id == pos)
     }
 
     const bodyModal = (
@@ -316,11 +333,11 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" />
                     </div>
 
-                    {usuarios && departamento && !creacion &&
+                    {usuarios && departamento &&
                         <div className={classes.contenedorInput}>
                             <span className={classes.span}>Propietario</span>
                             {departamento &&
-                                <TextField className={classes.inputs} id="propietario" select value={propietario || ''} onChange={changePropietario} name="propietario" variant="outlined" >
+                                <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={changePropietario} name="propietario" variant="outlined" >
                                     {usuarios.map((option) => (
                                         <MenuItem key={option.id} value={option.id}>
                                             {option.id}.  {option.nombre} {option.apellido}
@@ -336,10 +353,10 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                     </div>
 
                      
-                    { usuarios && edicion && !creacion &&
+                    { usuarios && departamento && edicion && !creacion &&
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>Inquilino</span>
-                        {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilino || ''} onChange={changeInquilino} name="inquilino" variant="outlined" >
+                        {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={changeInquilino} name="inquilino" variant="outlined" >
                         <MenuItem key={0} value={null}>
                                         Sin Inquilino
                                     </MenuItem>
@@ -368,7 +385,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
                     </div>
                 }
-                {edicion && !creacion &&
+                {edicion && !creacion && propDepto &&
                     <div className={classes.contenedorBotones}>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarDepartamento}>Guardar cambios</StyledButtonPrimary>
