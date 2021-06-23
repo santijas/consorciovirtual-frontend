@@ -11,6 +11,7 @@ import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
+import { registroModificacionService } from "../../services/registroModificacionService";
 
 const useStyles = makeStyles({
     root: {
@@ -221,6 +222,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const [titulo, setTitulo] = useState('')
     const [detalle, setDetalle] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
+    const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState('')
     const [mensajeSnack, setMensajeSnack] = useState()
@@ -289,10 +291,13 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const modificarSolicitud = async () => {
         try {
             await solicitudService.update(solicitud)
+            setCambiosGuardados(true)
+            setCampoEditado(false)
             usarSnack("Solicitud técnica modificada correctamente", false)
         } catch (errorRecibido) {
             usarSnack("No se puede conectar con el servidor.", true)
         }
+        setCambiosGuardados(false)
     }
 
     const eliminarSolicitud = async () => {
@@ -442,8 +447,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 }
                 <Divider className={classes.divider} />
 
-                {edicion && !creacion &&
-                    <Historial usuariosHistorial={usuarioService.usuariosPrueba} />
+                { edicion && !creacion &&
+                    <Historial tipo="SOLICITUD_TECNICA" id={params.id} update={cambiosGuardados}/>
                 }
 
             </div>

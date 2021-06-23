@@ -38,12 +38,6 @@ class UsuarioService {
     async delete(id){
         axios.put(`${REST_SERVER_URL}/usuario/eliminar/${id}`)
     }
-
-    usuariosPrueba = [
-        new Usuario(1, "Jorge", "Bilboa"),
-        new Usuario(1, "Miguel", "Cervantes"),
-        new Usuario(1, "Patricio", "Dalton"),
-    ]
 }
 
 export const usuarioService = new UsuarioService()

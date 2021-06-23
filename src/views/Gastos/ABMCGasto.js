@@ -3,7 +3,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
-import { usuarioService } from "../../services/usuarioService";
+import { registroModificacionService } from "../../services/registroModificacionService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
@@ -154,6 +154,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [gasto, setGasto] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
+    const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState('')
     const [mensajeSnack, setMensajeSnack] = useState()
@@ -218,6 +219,8 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             console.log(gasto)
             if (validarGasto()){
                 await gastoService.update(gasto)
+                setCambiosGuardados(true)
+                setCampoEditado(false)
                 usarSnack("Gasto modificado correctamente", false)
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -225,6 +228,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)
         }
+        setCambiosGuardados(false)
     }
 
     const eliminarGasto = async () => {
@@ -375,7 +379,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                 <Divider className={classes.divider} />
                 
                 { edicion && !creacion &&
-                    <Historial usuariosHistorial={usuarioService.usuariosPrueba}/>
+                    <Historial tipo='GASTO' id={params.id} update={cambiosGuardados}/>
                 }
 
             </div>

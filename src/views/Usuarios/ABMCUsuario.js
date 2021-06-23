@@ -154,6 +154,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const [usuario, setUsuario] = useState('')
     const [tipoUsuario, setTipoUsuario] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
+    const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState('')
     const [mensajeSnack, setMensajeSnack] = useState()
@@ -222,6 +223,8 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
         try {
             if (validarUsuario()){
                 await usuarioService.update(usuario)
+                setCambiosGuardados(true)
+                setCampoEditado(false)
                 usarSnack("Usuario modificado correctamente", false)
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -229,6 +232,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)
         }
+        setCambiosGuardados(false)
     }
 
     const eliminarUsuario = async () => {
@@ -363,7 +367,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                 <Divider className={classes.divider} />
                 
                 { edicion && !creacion &&
-                    <Historial usuariosHistorial={usuarioService.usuariosPrueba}/>
+                    <Historial tipo="USUARIO" id={params.id} update={cambiosGuardados}/>
                 }
 
             </div>

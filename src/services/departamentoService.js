@@ -5,12 +5,6 @@ import { Usuario } from '../domain/usuario'
 
 class DepartamentoService {
 
-    historialPrueba = [
-        new Usuario(1, "Jorge", "Bilboa"),
-        new Usuario(1, "Miguel", "Cervantes"),
-        new Usuario(1, "Patricio", "Dalton"),
-    ]
-
     async getBySearch(palabraBuscada) {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/departamentos`, {params:{ palabraBuscada }})
         return listaJSON.data

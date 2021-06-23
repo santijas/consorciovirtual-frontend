@@ -1,5 +1,7 @@
 import { Box, Typography, Avatar, makeStyles } from '@material-ui/core';
+import { registroModificacionService } from '../services/registroModificacionService';
 import {avatarColours} from '../utils/avatarColours';
+import React, { useEffect, useState } from 'react'
 
 const useStyles = makeStyles((theme) => ({
     tittle:{
@@ -24,8 +26,17 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-export const Historial = ({usuariosHistorial}) => {
+export const Historial = ({tipo, id, update}) => {
     const classes = useStyles()
+    const [registrosModificacion, setRegistrosModificacion] = useState([])
+
+    useEffect( ()  =>  {
+        fetchRegistrosModificacion()
+    },[update])
+
+    const fetchRegistrosModificacion = async () => {
+        setRegistrosModificacion(await registroModificacionService.getByTipoYId(tipo, id))
+    }
 
     const filterFirstLetters = (name) => {
         return name.match(/\b(\w)/g).join('')
@@ -37,16 +48,17 @@ export const Historial = ({usuariosHistorial}) => {
                         Historial de cambios
                     </Typography>
                     <Box display="flex" flexDirection="column" mt={5}>
-                        {usuariosHistorial.map((user) => (
+                        {registrosModificacion.map((registro) => {return (
                             <Box display="flex" mb={3}> 
-                                <Avatar style={{backgroundColor: avatarColours(user.nombre)} }  className={classes.avatar}>{filterFirstLetters(user.nombre+ " " + user.apellido)}</Avatar>
+                                <Avatar style={{backgroundColor: avatarColours(registro.usuarioModificador)} }  className={classes.avatar}>{filterFirstLetters(registro.usuarioModificador)}</Avatar>
                                 <Box display="flex" flexDirection="column">
-                                    <span className={classes.spanAvatar}>{user.nombre} {user.apellido}</span>
-                                    <span className={classes.spanFecha}>12/03/2021 - 17:13 hs</span>
+                                    <span className={classes.spanAvatar}>{registro.usuarioModificador}</span>
+                                    <span className={classes.spanFecha}>{registro.fechaHoraModificacion}</span>
                                 </Box>
                             </Box>
-                         ))}
+                         )})}
                     </Box>
                 </Box>
     )
 }
+

@@ -4,6 +4,7 @@ import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/But
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { departamentoService } from "../../services/departamentoService";
+import { registroModificacionService } from "../../services/registroModificacionService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
@@ -11,7 +12,6 @@ import { Chevron } from '../../assets/icons';
 import { Departamento } from '../../domain/departamento';
 import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
-import { Usuario } from '../../domain/usuario';
 
 const useStyles = makeStyles ({
     root: {
@@ -140,6 +140,7 @@ export const ABMCDepartamento = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [departamento, setDepartamento] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
+    const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState('')
     const [mensajeSnack, setMensajeSnack] = useState()
@@ -218,7 +219,8 @@ export const ABMCDepartamento = ({edicion, creacion}) =>{
         try {
             if (validarDepartamento()){
                 await departamentoService.update(departamento,propietario,inquilino)
-                history.push("/departamentos", { openChildSnack : true })  
+                setCambiosGuardados(true)
+                setCampoEditado(false)
                 usarSnack("Departamento modificado correctamente", false)
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -226,6 +228,7 @@ export const ABMCDepartamento = ({edicion, creacion}) =>{
         }catch(errorRecibido){
             usarSnack("No se puede conectar con el servidor.", true)
         }
+        setCambiosGuardados(false)
     }
 
     const eliminarDepartamento = async () => {
@@ -377,7 +380,7 @@ export const ABMCDepartamento = ({edicion, creacion}) =>{
                 <Divider className={classes.divider} />
                 
                 { edicion && !creacion &&
-                    <Historial usuariosHistorial={departamentoService.historialPrueba}/>
+                    <Historial tipo="DEPARTAMENTO" id={params.id} update={cambiosGuardados}/>
                 }
 
             </div>
