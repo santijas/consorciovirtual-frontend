@@ -85,11 +85,11 @@ const stableSort = (array, comparator) => {
 }
 
 
-export const Tabla = ({datos,headers,ColumnasCustom, heightEnd}) =>{
-    const classes = useStyles();
-    const [page, setPage] = useState(1);
-    const [order, setOrder] = useState("asc");
-    const [orderBy, setOrderBy] = useState("nombreApellido");  // CAMBIAR PARA Q SEA GENERICO!
+export const Tabla = ({datos,headers,ColumnasCustom, heightEnd, defaultSort, defaultOrder}) =>{
+    const classes = useStyles()
+    const [page, setPage] = useState(1)
+    const [order, setOrder] = useState(defaultOrder)
+    const [orderBy, setOrderBy] = useState(defaultSort)
     const pageSize = 5
     const totalItems = datos.length
 

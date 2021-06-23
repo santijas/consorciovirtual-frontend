@@ -80,16 +80,16 @@ export const Reclamos = () =>{
     return (
         <div className={classes.root} >
            <Typography component="h2" variant="h5" className={classes.tittle}>
-             Expensas
+             Reclamos
            </Typography>
            <div className={classes.contenedorBusqueda}> 
               <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
               <div>
-               <span className={classes.cantidadObject} > {expensas.length} expensas </span>
-              <StyledButtonPrimary onClick={newUser} >Agregar expensa</StyledButtonPrimary>
+               <span className={classes.cantidadObject} > {reclamos.length} reclamos </span>
+              <StyledButtonPrimary onClick={newUser} >Agregar Reclamo</StyledButtonPrimary>
               </div>
            </div>
-            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom}/>
+            <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"}/>
          </div>
 
     )

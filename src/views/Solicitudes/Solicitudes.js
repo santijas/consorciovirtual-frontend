@@ -34,7 +34,7 @@ const useStyles = makeStyles({
 });
 
 const headers = [
-  {id: "fecha", label:"Solicitud"},
+  {id: "id", label:"Solicitud"},
   {id: "nombreAutor", label:"Autor"},
   {id: "titulo", label:"Título"},
   {id: "actividad", label:"Actividad"},
@@ -95,7 +95,7 @@ export const Solicitudes = () => {
           <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>
         </div>
       </div>
-      <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} />
+      <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"}/>
     </div>
 
   )
