@@ -48,7 +48,7 @@ const useStyles = makeStyles ({
 
     return (
       
-      <StyledTableRow key={dato.id} onClick={() => showDepartamento(dato.id)}>
+      <StyledTableRow key={dato.id} onClick={() => showDepartamento(dato.id)} className="pointer">
         <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>

@@ -17,6 +17,7 @@ class SolicitudService{
     }
 
     async getById(id) {
+        
         const solicitud = await axios.get(`${REST_SERVER_URL}/solicitud/${id}`)
         return SolicitudTecnica.fromJson(solicitud.data)
     }
@@ -26,6 +27,7 @@ class SolicitudService{
     }
 
     async update(solicitud){
+        
         await axios.put(`${REST_SERVER_URL}/solicitud/modificar`, solicitud.toJSON())
     }
 

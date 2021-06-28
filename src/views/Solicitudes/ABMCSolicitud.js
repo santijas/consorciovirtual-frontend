@@ -239,12 +239,13 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             let unaSolicitud
             if (creacion) {
                 unaSolicitud = new SolicitudTecnica()
+                unaSolicitud.fecha = new Date()
+                unaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
             } else {
                 unaSolicitud = await solicitudService.getById(params.id)
             }
             setSolicitud(unaSolicitud)
-            console.log(unaSolicitud)
-            setEstado(unaSolicitud.nombreEstado)
+            setEstado(unaSolicitud.estado.nombreEstado)
             setTitulo(unaSolicitud.titulo)
             setDetalle(unaSolicitud.detalle)
         }
@@ -270,8 +271,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     }
 
     const handleChangeType = (event) => {
-        actualizarValor(event)
         setEstado(event.target.value);
+        setCampoEditado(true)
     };
 
     useEffect(() => {
@@ -281,7 +282,10 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const crearSolicitud = async () => {
         try {
             if (validarSolicitud()) {
-                await solicitudService.create(solicitud)
+                let nuevaSolicitud = solicitud
+                nuevaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
+                nuevaSolicitud.estado = {id: 1}
+                await solicitudService.create(nuevaSolicitud)
                 history.push("/solicitudes", { openChildSnack: true })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -293,6 +297,9 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
     const modificarSolicitud = async () => {
         try {
+            let nuevaSolicitud = solicitud
+            nuevaSolicitud.estado.nombreEstado = estado
+            nuevaSolicitud.estado.id = (estado === 'Pendiente') ? 1 : 2
             await solicitudService.update(solicitud)
             setCambiosGuardados(true)
             setCampoEditado(false)
