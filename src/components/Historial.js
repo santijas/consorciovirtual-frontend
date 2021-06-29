@@ -49,7 +49,7 @@ export const Historial = ({tipo, id, update}) => {
                     </Typography>
                     <Box display="flex" flexDirection="column" mt={5}>
                         {registrosModificacion.map((registro) => {return (
-                            <Box display="flex" mb={3}> 
+                            <Box display="flex" mb={3} key={registro.id}> 
                                 <Avatar style={{backgroundColor: avatarColours(registro.usuarioModificador)} }  className={classes.avatar}>{filterFirstLetters(registro.usuarioModificador)}</Avatar>
                                 <Box display="flex" flexDirection="column">
                                     <span className={classes.spanAvatar}>{registro.usuarioModificador}</span>

@@ -1,4 +1,4 @@
-import { Avatar, Button, makeStyles, Menu, MenuItem, Typography } from '@material-ui/core';
+import { Avatar, Button, makeStyles, Menu, MenuItem } from '@material-ui/core';
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";

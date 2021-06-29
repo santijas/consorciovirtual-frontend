@@ -77,7 +77,6 @@ export const Departamentos = () =>{
 
     const fetchAllDepartamentos = async (textoBusqueda) =>{
       const deptosEncontrados = await departamentoService.getBySearch(textoBusqueda)
-      console.log(deptosEncontrados)
       setDepartamentos(deptosEncontrados)
     }
 

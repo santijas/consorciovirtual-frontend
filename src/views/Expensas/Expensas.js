@@ -102,6 +102,7 @@ export const Expensas = () =>{
     useEffect( ()  =>  {
         fetchSnack()
         fetchAll("")
+        console.log("RENDER!")
     },[render])
 
     return (
