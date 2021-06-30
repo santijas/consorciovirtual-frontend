@@ -15,6 +15,8 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
+import {FileUploader} from '../../components/FileUploader'
+import { app } from '../../base';
 
 const useStyles = makeStyles ({
     root: {
@@ -163,6 +165,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const [modalStyle] = useState(getModalStyle);
     const [tipoGasto, setTipoGasto] = useState()
     const [selectedDate, handleDateChange] = useState(new Date());
+    const [selectedFile, setSelectedFile] = useState(null);
 
     let history = useHistory()
     const params = useParams()
@@ -197,6 +200,29 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const popupModal = () =>{
         setOpenModal(true)
     }
+
+    const onFileUpload = async () => { 
+        const storageRef = app.storage().ref()
+        const fileRef = storageRef.child(selectedFile.name)
+        await fileRef.put(selectedFile).then(() =>{
+            console.log(fileRef.getDownloadURL())
+        })
+
+
+        
+
+        // const formData = new FormData(); 
+       
+        // formData.append( 
+        //   "myFile", 
+        //   selectedFile, 
+        //   selectedFile.name 
+        // ); 
+       
+        // fileUploaderService.upload(formData)
+
+
+      }
     
     useEffect( ()  =>  {
         fetchGasto()
@@ -206,13 +232,16 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         try{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             if(validarGasto()){
+                onFileUpload()  
                 await gastoService.create(gasto)
-                history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})    
+                history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})  
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
+                onFileUpload()
             }
         } catch (error) {
             usarSnack("No se puede conectar con el servidor.", true)
+            onFileUpload()
         }
     }
 
@@ -368,6 +397,15 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Monto</span>
                         <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe"  variant="outlined" type="number"/>
+                    </div>
+
+
+                    <div className={classes.contenedorInput}>
+                        <span className={classes.span}>Archivo</span>
+                        <FileUploader
+                        onFileSelectSuccess={(file) => setSelectedFile(file)}
+                        onFileSelectError={({ error }) => alert(error)}
+                        />
                     </div>
 
                 </form> 
