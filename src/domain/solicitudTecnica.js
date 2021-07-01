@@ -10,7 +10,6 @@ export class SolicitudTecnica {
       this.estado = estado
     }
 
-
     static fromJson(solicitudJSON) {
         return Object.assign(new SolicitudTecnica(),
         solicitudJSON,

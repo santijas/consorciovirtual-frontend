@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import { solicitudService } from '../../services/solicitudService';
 import { StyledButtonPrimary } from '../../components/Buttons'
 
-
 const useStyles = makeStyles({
   root: {
     display: 'flex',
@@ -70,14 +69,13 @@ export const Solicitudes = () => {
   let history = useHistory()
 
   const fetchAllSolicitudes = async (textoBusqueda) => {
-    const solicitudesEncontradas = await solicitudService.getAllSolicitudes()
+    const solicitudesEncontradas = await solicitudService.getAllSolicitudes(textoBusqueda)
     setSolicitudes(solicitudesEncontradas)
   }
 
   const newSolicitud = () => {
     history.push("/newsolicitud")
   }
-
 
   useEffect(() => {
     fetchAllSolicitudes("")
