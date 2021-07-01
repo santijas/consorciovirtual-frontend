@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Anuncio } from '../domain/anuncio'
 import { REST_SERVER_URL } from './configuration'
+import { usuarioService } from './usuarioService';
 
 class AnuncioService {
 
@@ -14,20 +15,22 @@ class AnuncioService {
     }
 
     async getById(id) {
-        const anuncio = await axios.get(`${REST_SERVER_URL}/anuncio/${id}`)
+        const anuncio = await axios.get(`${REST_SERVER_URL}/anuncios/${id}`)
         return Anuncio.fromJson(anuncio.data)
     }
 
-    async create(solicitud){
-        await axios.put((`${REST_SERVER_URL}/solicitud/crear`), solicitud.toJSON())
+    async create(anuncio){
+        const idAutor = usuarioService.usuarioLogueado.id
+        await axios.post((`${REST_SERVER_URL}/anuncios/crear/${idAutor}`), anuncio.toJSON())
     }
 
-    async update(solicitud){
-        await axios.put(`${REST_SERVER_URL}/solicitud/modificar`, solicitud.toJSON())
+    async update(anuncio){
+        const idAutor = usuarioService.usuarioLogueado.id
+        await axios.put(`${REST_SERVER_URL}/anuncios/modificar/${idAutor}`, anuncio.toJSON())
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/solicitud/eliminar/${id}`)
+        axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}`)
     }
 
 }

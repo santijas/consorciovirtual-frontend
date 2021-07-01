@@ -10,7 +10,6 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { Usuario } from '../../domain/usuario';
 import update from 'immutability-helper';
-import { departamentoService } from "../../services/departamentoService";
 
 const useStyles = makeStyles ({
     root: {
