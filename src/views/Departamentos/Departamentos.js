@@ -66,7 +66,7 @@ const useStyles = makeStyles ({
   }
 
 export const Departamentos = () =>{
-  const location = useLocation();
+    const location = useLocation();
     const classes = useStyles();
     const [departamentos, setDepartamentos] = useState([])
     const [openSnackbar, setOpenSnackbar] = useState('')

@@ -20,6 +20,7 @@ import { ABMCDepartamento } from './views/Departamentos/ABMCDepartamento'
 import { ABExpensa } from './views/Expensas/ABExpensa'
 import { ConsultarExpensa } from './views/Expensas/ConsultaExpensa'
 import { AnularExpensa } from './views/Expensas/AnularExpensa'
+import { Chat } from './views/Chat/Chat.js'
 
 
 
@@ -53,6 +54,7 @@ export const Routes = () => {
                         <Route path="/newexpensa"><ABExpensa/></Route>
                         <Route path="/expensa/:id"><ConsultarExpensa/></Route>
                         <Route path="/anularexpensa"><AnularExpensa/></Route>
+                        <Route path="/chat"><Chat/></Route>
                     </div>
                 </Route>
             </Switch>
