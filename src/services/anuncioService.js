@@ -30,7 +30,7 @@ class AnuncioService {
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}`)
+        await axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}`)
     }
 
 }

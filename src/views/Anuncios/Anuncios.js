@@ -3,8 +3,10 @@ import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { Busqueda } from '../../components/Busqueda'
 import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { anuncioService } from '../../services/anuncioService';
 import { StyledButtonPrimary } from '../../components/Buttons'
+import { SnackbarComponent } from '../../components/Snackbar'
 
 const useStyles = makeStyles({
     root: {
@@ -62,7 +64,10 @@ const ColumnasCustom = (dato) => {
 export const Anuncios = () => {
     const classes = useStyles();
     const [anuncios, setAnuncios] = useState([])
+    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [mensajeSnack, setMensajeSnack] = useState()
     let history = useHistory()
+    let location = useLocation()
 
     const fetchAllAnuncios = async (textoBusqueda) => {
         const anunciosEncontrados = await anuncioService.getAllAnuncios(textoBusqueda)
@@ -75,7 +80,17 @@ export const Anuncios = () => {
 
     useEffect(() => {
         fetchAllAnuncios("")
+        fetchSnack()
     }, [])
+
+    const fetchSnack = () => {
+        location.state === undefined ? setOpenSnackbar(false) : usarSnack()
+    }
+
+    const usarSnack = () => {
+        setOpenSnackbar(location.state.openChildSnack)
+        setMensajeSnack(location.state.mensajeChild)
+    }
 
     return (
         <div className={classes.root} >
@@ -90,7 +105,11 @@ export const Anuncios = () => {
                 </div>
             </div>
             <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
+
+            <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
+
         </div>
+
 
     )
 }

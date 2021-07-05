@@ -286,7 +286,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 nuevaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
                 nuevaSolicitud.estado = {id: 1}
                 await solicitudService.create(nuevaSolicitud)
-                history.push("/solicitudes", { openChildSnack: true })
+                history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica creada correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -313,7 +313,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const eliminarSolicitud = async () => {
         try {
             await solicitudService.delete(solicitud.id)
-            backToSolicitudes()
+            history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica eliminada correctamente." })
         } catch (errorRecibido) {
             usarSnack("No se puede conectar con el servidor.", true)
         }

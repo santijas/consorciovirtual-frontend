@@ -29,7 +29,7 @@ class DepartamentoService {
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/departamento/eliminar/${id}`)
+        await axios.put(`${REST_SERVER_URL}/departamento/eliminar/${id}`)
     }
 
     async count(){

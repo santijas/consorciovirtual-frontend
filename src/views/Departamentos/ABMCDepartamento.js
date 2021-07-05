@@ -335,7 +335,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Superficie (m2)</span>
-                        <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" />
+                        <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" type="number"/>
                     </div>
 
                     {usuarios && departamento &&

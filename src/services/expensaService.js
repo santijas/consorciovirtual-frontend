@@ -29,7 +29,7 @@ class ExpensaService {
     }
 
     async delete(periodo){
-        axios.put(`${REST_SERVER_URL}/expensas/anular/${periodo}`)
+        await axios.put(`${REST_SERVER_URL}/expensas/anular/${periodo}`)
     }
 
     async getByPeriodGeneral(periodo) {

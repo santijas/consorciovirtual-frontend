@@ -76,8 +76,6 @@ export const Usuarios = () =>{
     const [openSnackbar, setOpenSnackbar] = useState('')
     const [mensajeSnack, setMensajeSnack] = useState('')
 
-
-
     const fetchAllUsers = async (textoBusqueda) =>{
       const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
       setUsuarios(usuariosEncontrados)

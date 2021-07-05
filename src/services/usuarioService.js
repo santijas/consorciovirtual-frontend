@@ -36,7 +36,7 @@ class UsuarioService {
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/usuario/eliminar/${id}`)
+        await axios.put(`${REST_SERVER_URL}/usuario/eliminar/${id}`)
     }
 }
 

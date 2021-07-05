@@ -33,7 +33,7 @@ class GastoService{
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/gasto/eliminar/${id}`)
+        await axios.put(`${REST_SERVER_URL}/gasto/eliminar/${id}`)
     }
 }
 

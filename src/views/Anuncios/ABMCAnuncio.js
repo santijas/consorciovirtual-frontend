@@ -198,7 +198,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
         try {
             if (validarAnuncio()) {
                 await anuncioService.create(anuncio)
-                history.push("/anuncios", { openChildSnack: true, mensajeChild: "Anuncio creado correctamente." })
+                history.push( "/anuncios", { openChildSnack: true, mensajeChild: "Anuncio creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
