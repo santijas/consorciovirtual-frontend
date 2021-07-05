@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
-import { usuarioService } from '../../services/usuarioService';
+import { reclamoService } from '../../services/reclamoService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
-
 
 const useStyles = makeStyles ({
     root: {
@@ -33,18 +32,23 @@ const useStyles = makeStyles ({
 
   });
 
-const headers = ["Reclamo", "Autor", "Asunto", "Actividad", "Estado"]
-
+  const headers = [
+    { id: "id", label: "Reclamo" },
+    { id: "autor", label: "Autor" },
+    { id: "asunto", label: "Asunto" },
+    { id: "fechaModificacion", label: "Actividad" },
+    { id: "Estado", label: "Estado" }
+]
 
 const ColumnasCustom = (dato) => {
 let history= useHistory()
 
-const getUser = (id) =>{
-  history.push(`/usuario/${id}`)
+const getReclamo = (id) =>{
+  history.push(`/reclamo/${id}`)
 }
 
 return (
-<StyledTableRow key={dato.id} onClick={() => getUser(dato.username)} className="pointer">
+<StyledTableRow key={dato.id} onClick={() => getReclamo(dato.username)} className="pointer">
 <StyledTableCell  component="th" scope="row">
     <div className="contenedorColumna">
       <span className="tableBold">{dato.id}</span>
@@ -63,18 +67,18 @@ export const Reclamos = () =>{
     const [reclamos, setReclamos] = useState([])
     let history = useHistory()
 
-    const fetchAll = async (textoBusqueda) =>{
-      const reclamosEncontrados = [] //await reclamoService.getAll()
+    const fetchAllReclamos = async (textoBusqueda) =>{
+      const reclamosEncontrados = await reclamoService.getAll(textoBusqueda)
       setReclamos(reclamosEncontrados)
     }
 
-    const newUser = () =>{
-      history.push("/newuser")
+    const newReclamo = () =>{
+      history.push("/newreclamo")
     }
     
 
     useEffect( ()  =>  {
-        fetchAll("")
+        fetchAllReclamos("")
     },[])
 
     return (
@@ -83,10 +87,10 @@ export const Reclamos = () =>{
              Reclamos
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-              <Busqueda holder="Buscá por fecha, título o monto" busqueda={fetchAll} />
+              <Busqueda holder="Buscá por id, asunto o estado" busqueda={fetchAllReclamos} />
               <div>
                <span className={classes.cantidadObject} > {reclamos.length} reclamos </span>
-              <StyledButtonPrimary onClick={newUser} >Agregar Reclamo</StyledButtonPrimary>
+              <StyledButtonPrimary onClick={newReclamo} >Agregar Reclamo</StyledButtonPrimary>
               </div>
            </div>
             <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"}/>

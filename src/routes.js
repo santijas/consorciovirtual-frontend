@@ -9,6 +9,7 @@ import { Departamentos } from './views/Departamentos/Departamentos'
 import { Anuncios } from './views/Anuncios/Anuncios'
 import { ABMCAnuncio } from './views/Anuncios/ABMCAnuncio'
 import { Solicitudes } from './views/Solicitudes/Solicitudes'
+import { Reclamos } from './views/Reclamos/Reclamos'
 import { ABMCSolicitud } from './views/Solicitudes/ABMCSolicitud'
 import { ABMCUsuario } from './views/Usuarios/ABMCUsuario'
 import { ABMCGasto } from './views/Gastos/ABMCGasto'
@@ -43,6 +44,7 @@ export const Routes = () => {
                         <Route path="/anuncios"><Anuncios/></Route>
                         <Route path="/newanuncio"><ABMCAnuncio creacion={true} edicion={false}/></Route>
                         <Route path="/anuncio/:id"><ABMCAnuncio creacion={false} edicion={true}/></Route>
+                        <Route path="/reclamos"><Reclamos/></Route>
                         <Route path="/solicitudes"><Solicitudes/></Route>
                         <Route path="/newsolicitud"><ABMCSolicitud creacion={true} edicion={false}/></Route>
                         <Route path="/solicitud/:id"><ABMCSolicitud creacion={false} edicion={true} /></Route>
