@@ -2,17 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, TextField, MenuItem, Divider, Box, List, ListItem } from '@material-ui/core';
+import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { solicitudService } from "../../services/solicitudService";
+import { reclamoService } from "../../services/reclamoService";
 import { usuarioService } from "../../services/usuarioService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
-import { registroModificacionService } from "../../services/registroModificacionService";
-import { SolicitudTecnica } from '../../domain/solicitudTecnica';
+import { Reclamo } from '../../domain/reclamo';
 
 const useStyles = makeStyles({
     root: {
@@ -127,7 +126,7 @@ const useStyles = makeStyles({
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
     },
-    nroSolicitud: {
+    nroReclamo: {
         fontSize: "15px",
         textAlign: "left",
         marginLeft: "10px",
@@ -146,41 +145,10 @@ const useStyles = makeStyles({
     contenedorDescripcion: {
         width: "100%",
         display: "block"
-    },
-    contenedorNotas: {
-        display: "block",
-        textAlign: "left"
-    },
-    notas: {
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#e7e7e7",
-        width: "100%",
-        fontSize: "14px",
-        marginBottom: 15,
-        marginLeft: 10,
-        marginTop: 6
-    },
-    nota: {
-        display: "flex",
-        justifyContent: "space-between",
-        width: "100%"
-    },
-    autorNota: {
-        color: "#159D74",
-        fontWeight: 600,
-        marginRight: 10
-    },
-    fechaNota: {
-        color: "grey",
-        display: "block"
-    },
-    infoNota: {
-        marginLeft: 10
     }
 });
 
-const estadosDeSolicitud = [
+const estadosDeReclamo = [
     {
         value: 'Pendiente',
         label: 'Pendiente',
@@ -188,21 +156,6 @@ const estadosDeSolicitud = [
     {
         value: 'Aprobado',
         label: 'Aprobado',
-    }
-]
-
-const notas = [
-    {
-        autor: "Mariano",
-        texto: "El técnico solucionó el problema",
-        fecha: "16/6/2021",
-        hora: "13:38 hs"
-    },
-    {
-        autor: "Mariano",
-        texto: "El técnico visitará el edificio el jueves",
-        fecha: "12/6/2021",
-        hora: "15:30 hs"
     }
 ]
 
@@ -217,12 +170,12 @@ function getModalStyle() {
     };
 }
 
-export const ABMCSolicitud = ({ edicion, creacion }) => {
+export const ABMCReclamo = ({ edicion, creacion }) => {
     const classes = useStyles();
-    const [solicitud, setSolicitud] = useState('')
+    const [reclamo, setReclamo] = useState('')
     const [estado, setEstado] = useState('')
-    const [titulo, setTitulo] = useState('')
-    const [detalle, setDetalle] = useState('')
+    const [asunto, setAsunto] = useState('')
+    const [mensaje, setMensaje] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -234,36 +187,31 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     let history = useHistory()
     const params = useParams()
 
-    const fetchSolicitud = async () => {
-        try {
-            let unaSolicitud
-            if (creacion) {
-                unaSolicitud = new SolicitudTecnica()
-                unaSolicitud.fecha = new Date()
-                unaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
-            } else {
-                unaSolicitud = await solicitudService.getById(params.id)
-            }
-            setSolicitud(unaSolicitud)
-            setEstado(unaSolicitud.estado.nombreEstado)
-            setTitulo(unaSolicitud.titulo)
-            setDetalle(unaSolicitud.detalle)
+    const fetchReclamo = async () => {
+        let unReclamo
+        if (creacion) {
+            unReclamo = new Reclamo()
+            unReclamo.fecha = new Date()
+            unReclamo.autor = { id: usuarioService.usuarioLogueado.id }
+        } else {
+            unReclamo = await reclamoService.getById(params.id)
         }
-        catch {
-
-        }
+        setReclamo(unReclamo)
+        setEstado(unReclamo.estado)
+        setAsunto(unReclamo.asunto)
+        setMensaje(unReclamo.mensaje)
     }
 
     const actualizarValor = (event) => {
-        const newState = update(solicitud, {
+        const newState = update(reclamo, {
             [event.target.id]: { $set: event.target.value }
         })
-        setSolicitud(newState)
+        setReclamo(newState)
         setCampoEditado(true)
     }
 
-    const backToSolicitudes = () => {
-        history.push("/solicitudes")
+    const backToReclamos = () => {
+        history.push("/reclamos")
     }
 
     const popupModal = () => {
@@ -276,17 +224,17 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     };
 
     useEffect(() => {
-        fetchSolicitud()
+        fetchReclamo()
     }, [])
 
-    const crearSolicitud = async () => {
+    const crearReclamo = async () => {
         try {
-            if (validarSolicitud()) {
-                let nuevaSolicitud = solicitud
-                nuevaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
-                nuevaSolicitud.estado = {id: 1}
-                await solicitudService.create(nuevaSolicitud)
-                history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica creada correctamente." })
+            if (validarReclamo()) {
+                let nuevoReclamo = reclamo
+                nuevoReclamo.autor = { id: usuarioService.usuarioLogueado.id }
+                nuevoReclamo.estado = { id: 1 }
+                await reclamoService.create(nuevoReclamo)
+                history.push("/reclamos", { openChildSnack: true, mensajeChild: "Reclamo creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -295,32 +243,34 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         }
     }
 
-    const modificarSolicitud = async () => {
+    const modificarReclamo = async () => {
         try {
-            let nuevaSolicitud = solicitud
-            nuevaSolicitud.estado.nombreEstado = estado
-            nuevaSolicitud.estado.id = (estado === 'Pendiente') ? 1 : 2
-            await solicitudService.update(solicitud)
+            let nuevoReclamo = reclamo
+            nuevoReclamo.estado = {}
+            nuevoReclamo.estado.nombreEstado = estado
+            nuevoReclamo.estado.id = (estado === 'Pendiente') ? 1 : 2
+            nuevoReclamo.autor = {id: nuevoReclamo.idAutor}
+            await reclamoService.update(reclamo)
             setCambiosGuardados(true)
             setCampoEditado(false)
-            usarSnack("Solicitud técnica modificada correctamente", false)
+            usarSnack("Reclamo modificado correctamente", false)
         } catch (errorRecibido) {
             usarSnack("No se puede conectar con el servidor.", true)
         }
         setCambiosGuardados(false)
     }
 
-    const eliminarSolicitud = async () => {
+    const eliminarReclamo = async () => {
         try {
-            await solicitudService.delete(solicitud.id)
-            history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica eliminada correctamente." })
+            await reclamoService.delete(reclamo.id)
+            history.push("/reclamos", { openChildSnack: true, mensajeChild: "Reclamo eliminado correctamente." })
         } catch (errorRecibido) {
             usarSnack("No se puede conectar con el servidor.", true)
         }
     }
 
-    const validarSolicitud = () => {
-        return solicitud.titulo && solicitud.detalle
+    const validarReclamo = () => {
+        return reclamo.asunto && reclamo.mensaje
     }
 
     const usarSnack = (mensaje, esError) => {
@@ -336,10 +286,10 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const bodyModal = (
 
         <div style={modalStyle} className={classes.paper}>
-            <h2 id="simple-modal-title">¿Estás seguro que querés eliminar esta solicitud técnica?</h2>
+            <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este reclamo?</h2>
             <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
             <Box display="flex" flexDirection="row" mt={4}>
-                <StyledButtonPrimary onClick={eliminarSolicitud}>Eliminar solicitud técnica</StyledButtonPrimary>
+                <StyledButtonPrimary onClick={eliminarReclamo}>Eliminar reclamo</StyledButtonPrimary>
                 <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
                     Cancelar
                 </Link>
@@ -351,32 +301,32 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
         <div className={classes.root} >
             <div className={classes.contenedorForm}>
-                <Link className={classes.link} onClick={backToSolicitudes}>
+                <Link className={classes.link} onClick={backToReclamos}>
                     <Chevron className={classes.chevron} />
-                    Volver a solicitudes técnicas
+                    Volver a reclamos
                 </Link>
                 {creacion &&
                     <Typography component="h2" variant="h5" className={classes.tittle}>
-                        Nueva solicitud técnica
+                        Nuevo reclamo
                     </Typography>
                 }
 
                 {!creacion && edicion &&
                     <Typography component="h2" variant="h5" className={classes.tittle}>
-                        Modificar solicitud técnica
+                        Modificar reclamo
                     </Typography>
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
                     <div className={classes.contenedorInput}>
-                        <span className={classes.spanDisabled}>Nro de solicitud técnica</span>
-                        <span className={classes.nroSolicitud}>{edicion ? solicitud.id : '-'}</span>
+                        <span className={classes.spanDisabled}>Nro de reclamo</span>
+                        <span className={classes.nroReclamo}>{edicion ? reclamo.id : '-'}</span>
                     </div>
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span} >Estado</span>
-                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoSolicitud" select disabled={creacion} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Activa' : ''} variant={creacion ? 'filled' : 'outlined'} >
-                            {estadosDeSolicitud.map((option) => (
+                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={creacion} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Activo' : ''} variant={creacion ? 'filled' : 'outlined'} >
+                            {estadosDeReclamo.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>
@@ -387,77 +337,57 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Autor</span>
                         {creacion ? <span className={classes.span}>{usuarioService.usuarioLogueado.nombre + " " + usuarioService.usuarioLogueado.apellido}</span>
-                            : <span className={classes.span}>{solicitud.nombreAutor}</span>}
+                            : <span className={classes.span}>{reclamo.nombreAutor}</span>}
                     </div>
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Fecha</span>
                         <div className={classes.contenedorFecha}>
-                            <span className={classes.span}>{edicion ? solicitud.fecha : (new Date()).toLocaleDateString()}</span>
+                            <span className={classes.span}>{edicion ? reclamo.fecha : (new Date()).toLocaleDateString()}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
                     </div>
 
                     <div className={classes.contenedorInput}>
-                        <span className={classes.spanDisabled}>Titulo</span>
-                        {edicion ? <span className={classes.span}>{solicitud.titulo}</span>
-                            : <TextField className={classes.inputs} id="titulo" variant="outlined" value={solicitud.titulo || ''} onChange={(event) => actualizarValor(event)}></TextField>}
+                        <span className={classes.spanDisabled}>Asunto</span>
+                        {edicion ? <span className={classes.span}>{reclamo.asunto}</span>
+                            : <TextField className={classes.inputs} id="asunto" variant="outlined" value={reclamo.asunto || ''} onChange={(event) => actualizarValor(event)}></TextField>}
                     </div>
 
                 </form>
 
                 <div className={classes.contenedorDescripcion}>
-                        <div className={classes.contenedorInputDescripcion}>
-                            <span className={classes.spanDisabled}>Descripción</span>
-                            {edicion ? <span className={classes.span}>{solicitud.detalle}</span>
-                                : <TextField className={classes.inputs} id="detalle" name="detalle" variant="outlined" value={solicitud.detalle || ''} onChange={(event) => actualizarValor(event)}></TextField>}
-                        </div>
+                    <div className={classes.contenedorInputDescripcion}>
+                        <span className={classes.spanDisabled}>Descripción</span>
+                        {edicion ? <span className={classes.span}>{reclamo.mensaje}</span>
+                            : <TextField className={classes.inputs} id="mensaje" name="mensaje" variant="outlined" value={reclamo.mensaje || ''} onChange={(event) => actualizarValor(event)}></TextField>}
                     </div>
-
-                {(edicion && !creacion) &&
-                    <div className={classes.contenedorNotas}>
-                        <span className={classes.spanDisabled}>Notas</span>
-
-                        <List className={classes.notas} disablePadding>
-                            {notas.map((nota) => { return <ListItem button className={classes.nota} divider>
-                                <div>
-                                    <span className={classes.autorNota}>{nota.autor}: </span>
-                                    <span>{nota.texto}</span>
-                                </div>
-                                <div>
-                                    <span className={classes.fechaNota}>{nota.fecha}</span>
-                                    <Typography variant="body2" align="right">{nota.hora}</Typography>
-                                </div>
-                            </ListItem>})}
-                        </List>
-                    </div>
-                }
-
+                </div>
 
             </div>
 
             <div className={classes.buttonLog}>
                 {creacion &&
                     <div className={classes.contenedorBotones}>
-                        <StyledButtonPrimary className={classes.botones} onClick={() => crearSolicitud()} >Crear solicitud técnica</StyledButtonPrimary>
-                        <StyledButtonSecondary className={classes.botones} onClick={backToSolicitudes}>Cancelar</StyledButtonSecondary>
+                        <StyledButtonPrimary className={classes.botones} onClick={crearReclamo}>Crear reclamo</StyledButtonPrimary>
+                        <StyledButtonSecondary className={classes.botones} onClick={backToReclamos}>Cancelar</StyledButtonSecondary>
                     </div>
                 }
                 {edicion && !creacion &&
                     <div className={classes.contenedorBotones}>
                         {campoEditado &&
-                            <StyledButtonPrimary className={classes.botones} onClick={modificarSolicitud}>Guardar cambios</StyledButtonPrimary>
+                            <StyledButtonPrimary className={classes.botones} onClick={modificarReclamo}>Guardar cambios</StyledButtonPrimary>
                         }
                         {!campoEditado &&
                             <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                         }
-                        <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar solicitud</StyledButtonSecondary>
+                        <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar reclamo</StyledButtonSecondary>
                     </div>
                 }
                 <Divider className={classes.divider} />
 
-                { edicion && !creacion &&
-                    <Historial tipo="SOLICITUD_TECNICA" id={params.id} update={cambiosGuardados}/>
+                {edicion && !creacion &&
+                    <Historial tipo="RECLAMO" id={params.id} update={cambiosGuardados} />
                 }
 
             </div>

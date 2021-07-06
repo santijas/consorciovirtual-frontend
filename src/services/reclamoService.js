@@ -19,18 +19,16 @@ class ReclamoService {
         return Reclamo.fromJson(reclamo.data)
     }
 
-    async create(anuncio){
-        const idAutor = usuarioService.usuarioLogueado.id
-        await axios.post((`${REST_SERVER_URL}/anuncios/crear/${idAutor}`), anuncio.toJSON())
+    async create(reclamo){
+        await axios.post((`${REST_SERVER_URL}/reclamo/crear`), reclamo.toJSON())
     }
 
-    async update(anuncio){
-        const idAutor = usuarioService.usuarioLogueado.id
-        await axios.put(`${REST_SERVER_URL}/anuncios/modificar/${idAutor}`, anuncio.toJSON())
+    async update(reclamo){
+        await axios.put(`${REST_SERVER_URL}/reclamo/modificar`, reclamo.toJSON())
     }
 
     async delete(id){
-        await axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}`)
+        await axios.delete(`${REST_SERVER_URL}/reclamo/eliminar/${id}`)
     }
 
 }
