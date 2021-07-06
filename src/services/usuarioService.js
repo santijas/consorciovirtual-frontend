@@ -36,7 +36,8 @@ class UsuarioService {
     }
 
     async delete(id){
-        await axios.put(`${REST_SERVER_URL}/usuario/eliminar/${id}`)
+        const idLogueado = this.usuarioLogueado.id
+        await axios.delete(`${REST_SERVER_URL}/usuario/eliminar/${id}`,  {params:  {idLogueado} })
     }
 }
 

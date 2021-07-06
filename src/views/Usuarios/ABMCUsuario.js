@@ -245,8 +245,9 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
         try {
             await usuarioService.delete(usuario.id)
             history.push("/usuarios", { openChildSnack : true, mensajeChild: "Usuario eliminado correctamente."}) 
-        }catch(errorRecibido){
-            usarSnack("No se puede conectar con el servidor.", true)
+        }catch(e){
+            console.log(e.name)
+            usarSnack(e.message, true)
         }
     }
 
