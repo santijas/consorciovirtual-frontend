@@ -249,8 +249,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             setTitulo(unaSolicitud.titulo)
             setDetalle(unaSolicitud.detalle)
         }
-        catch {
-
+        catch(error) {
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -291,7 +291,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
-            usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -304,8 +304,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             setCambiosGuardados(true)
             setCampoEditado(false)
             usarSnack("Solicitud técnica modificada correctamente", false)
-        } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+        } catch (error) {
+            usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
     }
@@ -314,8 +314,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         try {
             await solicitudService.delete(solicitud.id)
             history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica eliminada correctamente." })
-        } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+        } catch (error) {
+            usarSnack(error.response.data, true)
         }
     }
 

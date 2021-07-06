@@ -181,8 +181,8 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             setUsuario(unUsuario)
             setTipoUsuario(unUsuario.tipo) 
             }
-        catch{
-
+        catch(error){
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -221,7 +221,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
-            usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -235,8 +235,8 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
-        }catch(errorRecibido){
-            usarSnack("No se puede conectar con el servidor.", true)
+        }catch(error){
+            usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
     }
@@ -245,9 +245,8 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
         try {
             await usuarioService.delete(usuario.id)
             history.push("/usuarios", { openChildSnack : true, mensajeChild: "Usuario eliminado correctamente."}) 
-        }catch(e){
-            console.log(e.name)
-            usarSnack(e.message, true)
+        }catch(error){
+            usarSnack(error.response.data, true)
         }
     }
 

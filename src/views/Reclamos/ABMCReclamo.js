@@ -239,7 +239,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
-            usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -254,8 +254,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             setCambiosGuardados(true)
             setCampoEditado(false)
             usarSnack("Reclamo modificado correctamente", false)
-        } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+        } catch (error) {
+            usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
     }
@@ -264,8 +264,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         try {
             await reclamoService.delete(reclamo.id)
             history.push("/reclamos", { openChildSnack: true, mensajeChild: "Reclamo eliminado correctamente." })
-        } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+        } catch (error) {
+            usarSnack(error.response.data, true)
         }
     }
 

@@ -176,8 +176,8 @@ export const AnularExpensa = () =>{
 
             const cantidadDeptos = await departamentoService.count()
             setCantidadDeptos(cantidadDeptos)
-        }catch{
-
+        }catch(error){
+            usarSnack(error.response.data, true)
         }    
     }
 
@@ -196,7 +196,7 @@ export const AnularExpensa = () =>{
                 usarSnack("No existen expensas generadas en dicho periodo.", true)
             }  
         }catch(error){
-            usarSnack(error, true)
+            usarSnack(error.response.data, true)
         }
     }
 
