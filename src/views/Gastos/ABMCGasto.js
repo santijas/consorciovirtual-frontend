@@ -234,8 +234,8 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             setGasto(unGasto) 
             console.log(unGasto)
             }
-        catch{
-
+        catch(error){
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -266,7 +266,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             gasto.url = downloadURL
            }
        }catch(error){
-         usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(error.response.data, true)
        }
       }
 
@@ -296,7 +296,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
-            usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -311,8 +311,8 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
             }
-        }catch(errorRecibido){
-            usarSnack("No se puede conectar con el servidor.", true)
+        }catch(error){
+            usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
     }
@@ -321,8 +321,8 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         try {
             await gastoService.delete(gasto.id)
             history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto eliminado correctamente."})    
-        }catch(errorRecibido){
-            usarSnack("No se puede conectar con el servidor.", true)
+        }catch(error){
+            usarSnack(error.response.data, true)
         }
     }
 

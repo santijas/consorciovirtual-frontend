@@ -167,8 +167,8 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
             }
             if(unDepartamento)setearEstados(unDepartamento)
         }
-        catch {
-
+        catch(error) {
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -217,7 +217,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
-            usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(error.response.data, true)
         }
     }
 
@@ -231,8 +231,8 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
-        } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+        } catch (error) {
+            usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
     }
@@ -241,8 +241,8 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         try {
             await departamentoService.delete(departamento.id)
             history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento eliminado correctamente."})
-        } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+        } catch (error) {
+            usarSnack(error.response.data, true)
         }
     }
 

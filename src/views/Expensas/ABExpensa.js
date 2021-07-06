@@ -180,7 +180,7 @@ export const ABExpensa = () =>{
             const cantidadDeptos = await departamentoService.count()
             setCantidadDeptos(cantidadDeptos)
         }catch(error){
-            usarSnack(error, true)
+            usarSnack(error.response.data, true)
         }    
     }
 
@@ -208,7 +208,7 @@ export const ABExpensa = () =>{
                 usarSnack("No es posible generar expensas sin gastos registrados en el periodo.", true)
             }  
         }catch(error){
-            usarSnack(error, true)
+            usarSnack(error.response.data, true)
         }
     }
 
