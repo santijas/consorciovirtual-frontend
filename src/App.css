@@ -149,3 +149,11 @@ body, html {
   border-bottom: none!important;
   cursor:none;
 } 
+
+button.mercadopago-button {
+  background-color: #159D74;
+  color: white;
+  padding: 5px 60px;
+  border-radius: 2;
+  text-transform: none;
+}

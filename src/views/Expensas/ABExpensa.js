@@ -1,9 +1,8 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
-import { ModalComponent } from '../../components/Modal'
+import { Link, Divider, Box, TextField } from '@material-ui/core';
 import { Chevron } from '../../assets/icons';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
@@ -168,7 +167,6 @@ export const ABExpensa = () =>{
     const [snackColor, setSnackColor] = useState()
 
     let history = useHistory()
-    const params = useParams()
 
     const fetchGastosPeriodo = async () =>{
         try{

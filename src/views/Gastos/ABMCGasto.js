@@ -127,6 +127,14 @@ const useStyles = makeStyles ({
       },
       inputsDate:{
           textTransform: "capitalize"
+      },
+      delete:{
+          textAlign: "left",
+          color: "red",
+          fontWeight: 600,
+          fontSize: 14,
+          marginTop: 4,
+          cursor: "pointer"
       }
   });
 
@@ -153,6 +161,50 @@ const useStyles = makeStyles ({
     }
   ]
 
+  const rubros = [
+    {
+      value: 'SUELDOYCARGASSOCIALES',
+      label: 'Sueldo y cargas sociales',
+    },
+    {
+      value: 'MANTENIMIENTOPARTESCOMUNES',
+      label: 'Mantenimiento de partes comúnes',
+    },
+    {
+        value: 'SERVICIOSPUBICOS',
+        label: 'Servicios públicos',
+    },
+    {
+        value: 'OTROSSERVICIOS',
+        label: 'Otros servicios',
+    },
+    {
+        value: 'REPARACIONESENUNIDADES',
+        label: 'Reparacion en unidades',
+    },
+    {
+        value: 'GASTOSBANCARIOS',
+        label: 'Gastos bancarios',
+    },
+    {
+        value: 'LIMPIEZA',
+        label: 'Limpieza',
+    },
+    {
+        value: 'ADMINISTRACION',
+        label: 'Administración',
+    },
+    {
+        value: 'SEGUROS',
+        label: 'Seguros',
+    },
+    {
+        value: 'OTROS',
+        label: 'Otros',
+    }
+
+  ]
+
 export const ABMCGasto = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [gasto, setGasto] = useState('')
@@ -164,6 +216,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
     const [tipoGasto, setTipoGasto] = useState()
+    const [rubro, setRubro] = useState()
     const [selectedDate, handleDateChange] = useState(new Date());
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -179,6 +232,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                 unGasto = await gastoService.getById(params.id)
             }
             setGasto(unGasto) 
+            console.log(unGasto)
             }
         catch{
 
@@ -202,26 +256,28 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     }
 
     const onFileUpload = async () => { 
-        const storageRef = app.storage().ref()
-        const fileRef = storageRef.child(selectedFile.name)
-        await fileRef.put(selectedFile).then(() =>{
-            console.log(fileRef.getDownloadURL())
-        })
+       try{
+           if(selectedFile){
+            const storageRef = app.storage().ref()
+            const fileRef = storageRef.child(`Gasto_${gasto.periodo}_${gasto.titulo}`)
+            await fileRef.put(selectedFile).then(() =>{
+            })
+            const downloadURL = await fileRef.getDownloadURL()
+            gasto.url = downloadURL
+           }
+       }catch(error){
+         usarSnack("No se puede conectar con el servidor.", true)
+       }
+      }
 
-
-        
-
-        // const formData = new FormData(); 
-       
-        // formData.append( 
-        //   "myFile", 
-        //   selectedFile, 
-        //   selectedFile.name 
-        // ); 
-       
-        // fileUploaderService.upload(formData)
-
-
+      const onDownload = () => {
+        const link = document.createElement("a");
+        link.setAttribute("href", gasto.url);
+        link.setAttribute("target", "_blank");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     
     useEffect( ()  =>  {
@@ -232,23 +288,22 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         try{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             if(validarGasto()){
-                onFileUpload()  
+                await onFileUpload()  
+                console.log(gasto)
                 await gastoService.create(gasto)
                 history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})  
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
-                onFileUpload()
             }
         } catch (error) {
             usarSnack("No se puede conectar con el servidor.", true)
-            onFileUpload()
         }
     }
 
     const modificarGasto = async () => {
         try {
-            console.log(gasto)
             if (validarGasto()){
+                await onFileUpload()
                 await gastoService.update(gasto)
                 setCambiosGuardados(true)
                 setCampoEditado(false)
@@ -289,6 +344,25 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         gasto.tipo = event.target.value
         setTipoGasto(event.target.value)
       };
+
+      const handleChangeRubro = (event) => {
+        gasto.rubro = event.target.value
+        setRubro(event.target.value)
+        setCampoEditado(true)
+      };
+
+      const handleSelectFile = (file) => {
+        setSelectedFile(file)
+        setCampoEditado(true)
+      };
+
+      const deleteFile = (event) => {
+        gasto.url = null
+        setSelectedFile(null)
+        setCampoEditado(true)
+      };
+
+
 
     const bodyModal = (
       
@@ -399,14 +473,48 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe"  variant="outlined" type="number"/>
                     </div>
 
-
                     <div className={classes.contenedorInput}>
+                        <span className={classes.span}>Rubro</span>
+                        <TextField className={classes.inputs} id="rubro" select onChange={ handleChangeRubro } value={gasto.rubro || ''} variant="outlined" >
+                                {rubros.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </div>
+
+                { creacion && !edicion &&
+                    <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Archivo</span>
                         <FileUploader
                         onFileSelectSuccess={(file) => setSelectedFile(file)}
                         onFileSelectError={({ error }) => alert(error)}
                         />
                     </div>
+                }
+
+                { !creacion && edicion &&
+                    
+                    <div className={classes.contenedorInputDerecha}>
+                        <span className={classes.span}>Archivo</span>
+                        {
+                            gasto.url ?
+                            <Box display="flex" flexDirection="column">
+                                <StyledButtonPrimary className={classes.botones} onClick={ onDownload } >Descargar documento</StyledButtonPrimary>
+                                <span className={classes.delete} onClick={ deleteFile }>Eliminar archivo</span>
+                            </Box>
+                            :
+                            <FileUploader
+                            onFileSelectSuccess={(file) => handleSelectFile(file) }
+                            onFileSelectError={({ error }) => alert(error)}
+                            /> 
+                        }
+                        
+                        
+                    </div>
+                }
+
 
                 </form> 
                       
@@ -446,5 +554,3 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     )
 }
- 
-

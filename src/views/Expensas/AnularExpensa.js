@@ -1,19 +1,16 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
+import { StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, withRouter } from 'react-router-dom';
 import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
-import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
-import { dosDecimales, numeroConPuntos, obtenerPeriodoDeMoment } from '../../utils/formats';
+import { dosDecimales, obtenerPeriodoDeMoment } from '../../utils/formats';
 import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../components/TablaScroll';
 import { departamentoService } from '../../services/departamentoService';
-import update from 'immutability-helper';
-import { ExpensaGeneral } from '../../domain/expensaGeneral';
 import { expensaService } from '../../services/expensaService';
 import { SnackbarComponent } from '../../components/Snackbar';
 
@@ -167,9 +164,7 @@ export const AnularExpensa = () =>{
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
 
-
     let history = useHistory()
-    const params = useParams()
 
     const fetchExpensasPeriodo = async () =>{
         try{

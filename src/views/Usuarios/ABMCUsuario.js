@@ -161,7 +161,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
-    const [departamento, setDepartamento] = useState()
+    const [departamentos, setDepartamentos] = useState([])
 
     let history = useHistory()
     const params = useParams()
@@ -172,10 +172,10 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             if(creacion){
                 unUsuario = new Usuario()
             } else{
-                let unDepartamento
+                let listaDepartamentos
                 unUsuario = await usuarioService.getById(params.id)
-                //unDepartamento = await departamentoService.getByPropietarioId(params.id)
-                //setDepartamento(unDepartamento)
+                listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
+                setDepartamentos(listaDepartamentos)
             }
             setUsuario(unUsuario)
             setTipoUsuario(unUsuario.tipo) 
@@ -334,17 +334,25 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                         </TextField>
                     </div>
                     
-                    { edicion && !creacion && departamento &&
+                    { edicion && !creacion && departamentos.length > 0 &&
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Piso</span>
-                        <span className={classes.inputsDisabled}>{departamento.piso || ''}</span>
+                        {
+                            departamentos.map((departamento)=>(
+                                <span style={{ marginBottom : 6}} key={departamento.id} className={classes.inputsDisabled}>{departamento.piso || ''}</span>
+                            ))
+                        }
                     </div>
                     }
                     
-                    { edicion && !creacion && departamento &&
+                    { edicion && !creacion && departamentos.length > 0 &&
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.spanDisabled}>Departamento</span>
-                        <span className={classes.inputsDisabled}>{departamento.nroDepartamento || ''}</span>
+                               {
+                            departamentos.map((departamento)=>(
+                                <span style={{ marginBottom : 6}} key={departamento.id} className={classes.inputsDisabled}>{departamento.nroDepartamento || ''}</span>
+                            ))
+                        }
                     </div>
                     }
                 </form> 

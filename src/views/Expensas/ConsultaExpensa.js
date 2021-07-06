@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
 import { Chevron } from '../../assets/icons';
@@ -11,10 +10,8 @@ import moment from 'moment';
 import { dosDecimales, numeroConPuntos, obtenerPeriodoDeMoment } from '../../utils/formats';
 import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../components/TablaScroll';
 import { gastoService } from '../../services/gastoService';
-import { departamentoService } from '../../services/departamentoService';
-import update from 'immutability-helper';
-import { ExpensaGeneral } from '../../domain/expensaGeneral';
 import { expensaService } from '../../services/expensaService';
+import { Checkout } from '../../components/Checkout';
 
 const useStyles = makeStyles ({
     root: {
@@ -173,7 +170,6 @@ export const ConsultarExpensa = () =>{
         try{
             let unaExpensa = await expensaService.getById(params.id)
             setExpensa(unaExpensa) 
-            console.log(expensa)
             const gastosEncontrados = await gastoService.getByPeriod(obtenerPeriodoDeMoment(unaExpensa.periodo))
             setGastos(gastosEncontrados)
         }catch{
@@ -183,10 +179,6 @@ export const ConsultarExpensa = () =>{
     
     const backToExpensas = () =>{
         history.push("/expensas")
-    }
-
-    const pagarExpensa = () =>{
-        console.log()
     }
 
     useEffect( ()  =>  {
@@ -279,10 +271,11 @@ export const ConsultarExpensa = () =>{
 
             <div className={classes.buttonLog}>
 
+                {expensa &&
                 <div className={classes.contenedorBotones}>
-                    <StyledButtonPrimary className={classes.botones} onClick={ pagarExpensa } >Pagar expensa</StyledButtonPrimary>
+                    <Checkout expensaId={expensa.id} />
                 </div>
-
+                 }
                 <Divider className={classes.divider} />
 
             </div>

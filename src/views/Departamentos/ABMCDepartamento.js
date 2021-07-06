@@ -278,7 +278,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
      // A MODIFICAR PARA EL FINAL
     const selectUsuario = (pos) => {
-        return [...usuarios].filter(us => us.id == pos)
+        return [...usuarios].filter(us => us.id === pos)
     }
 
     const bodyModal = (

@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { REST_SERVER_URL } from './configuration'
 import { Departamento } from '../domain/departamento'
-import { Usuario } from '../domain/usuario'
 
 class DepartamentoService {
 
@@ -38,8 +37,9 @@ class DepartamentoService {
     }
     
     async getByPropietarioId(id){
-        const departamentoJson = await axios.get(`${REST_SERVER_URL}/departamento/propietario/${id}`)
-        return Departamento.fromJson(departamentoJson.data)
+        const departamentoJson = await axios.get(`${REST_SERVER_URL}/departamentos/user/${id}`)
+        console.log(departamentoJson.data)
+        return departamentoJson.data
     }
 }
 
