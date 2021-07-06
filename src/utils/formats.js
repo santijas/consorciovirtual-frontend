@@ -37,3 +37,11 @@ export const numeroConPuntos = (numero) => {
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   return parts.join(",");
 }
+
+export const soloFecha = (fecha) => {
+  return moment(fecha).format('DD/MM/YYYY')
+}
+
+export const horaYMinutos = (fecha) => {
+  return moment(fecha).format('hh:mm')
+}

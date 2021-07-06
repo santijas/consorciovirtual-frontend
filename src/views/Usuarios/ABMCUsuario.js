@@ -4,6 +4,7 @@ import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/But
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { usuarioService } from "../../services/usuarioService";
+import { departamentoService } from "../../services/departamentoService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
