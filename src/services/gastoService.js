@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Gasto } from '../domain/gasto'
 import { REST_SERVER_URL } from './configuration'
+import { usuarioService } from '../services/usuarioService';
 
 
 class GastoService{
@@ -29,7 +30,8 @@ class GastoService{
     }
 
     async update(gasto){
-        await axios.put((`${REST_SERVER_URL}/gasto/modificar`), gasto.toJSON())
+        const idLogueado = usuarioService.usuarioLogueado.id
+        await axios.put((`${REST_SERVER_URL}/gasto/modificar`), gasto.toJSON(), {params:{ idLogueado }})
     }
 
     async delete(id){

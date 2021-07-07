@@ -21,7 +21,7 @@ class AnuncioService {
 
     async create(anuncio){
         const idAutor = usuarioService.usuarioLogueado.id
-        await axios.post((`${REST_SERVER_URL}/anuncios/crear/${idAutor}`), anuncio.toJSON())
+        await axios.put((`${REST_SERVER_URL}/anuncios/crear/${idAutor}`), anuncio.toJSON())
     }
 
     async update(anuncio){

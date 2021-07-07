@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { SolicitudTecnica } from '../domain/solicitudTecnica'
 import { REST_SERVER_URL } from './configuration'
+import { usuarioService } from './usuarioService';
 class SolicitudService {
 
     solicitudAJson(solicitudJSON) {
@@ -22,7 +23,8 @@ class SolicitudService {
     }
 
     async update(solicitud){
-        await axios.put(`${REST_SERVER_URL}/solicitud/modificar`, solicitud.toJSON())
+        const idLogueado = usuarioService.usuarioLogueado.id
+        await axios.put(`${REST_SERVER_URL}/solicitud/modificar`, solicitud.toJSON(), {params:  {idLogueado} })
     }
 
     async delete(id){

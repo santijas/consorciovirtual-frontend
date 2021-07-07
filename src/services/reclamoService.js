@@ -24,7 +24,8 @@ class ReclamoService {
     }
 
     async update(reclamo){
-        await axios.put(`${REST_SERVER_URL}/reclamo/modificar`, reclamo.toJSON())
+        const idLogueado = usuarioService.usuarioLogueado.id
+        await axios.put(`${REST_SERVER_URL}/reclamo/modificar`, reclamo.toJSON(), {params:  {idLogueado} })
     }
 
     async delete(id){
