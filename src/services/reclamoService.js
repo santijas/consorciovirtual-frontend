@@ -10,7 +10,8 @@ class ReclamoService {
     }
 
     async getAll(busqueda) {
-        const listaJSON = await axios.get(`${REST_SERVER_URL}/reclamos/?palabraBuscada=${busqueda}`)
+        const idLogueado = usuarioService.usuarioLogueado.id
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/reclamos/?palabraBuscada=${busqueda}`, {params:  {idLogueado}})
         return listaJSON.data
     }
 
