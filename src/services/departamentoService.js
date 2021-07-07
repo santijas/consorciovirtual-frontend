@@ -30,7 +30,8 @@ class DepartamentoService {
     }
 
     async delete(id){
-        await axios.put(`${REST_SERVER_URL}/departamento/eliminar/${id}`)
+        const idLogueado = usuarioService.usuarioLogueado.id
+        await axios.delete(`${REST_SERVER_URL}/departamento/eliminar/${id}`,  {params:  {idLogueado} })
     }
 
     async count(){
