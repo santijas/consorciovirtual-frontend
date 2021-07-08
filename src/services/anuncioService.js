@@ -30,7 +30,8 @@ class AnuncioService {
     }
 
     async delete(id){
-        await axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}`)
+        const idLogueado = usuarioService.usuarioLogueado.id
+        await axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}?idLogueado=${idLogueado}`)
     }
 
 }

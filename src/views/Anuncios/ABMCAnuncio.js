@@ -228,7 +228,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
             await anuncioService.delete(anuncio.id)
             history.push("/anuncios", { openChildSnack: true, mensajeChild: "Anuncio eliminado correctamente." })
         } catch (errorRecibido) {
-            usarSnack("No se puede conectar con el servidor.", true)
+            usarSnack(errorRecibido.response.data, true)
         }
     }
 

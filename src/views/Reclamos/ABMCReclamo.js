@@ -250,7 +250,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             nuevoReclamo.estado.nombreEstado = estado
             nuevoReclamo.estado.id = (estado === 'Pendiente') ? 1 : 2
             nuevoReclamo.autor = {id: nuevoReclamo.idAutor}
-            await reclamoService.update(reclamo)
+            await reclamoService.update(nuevoReclamo)
             setCambiosGuardados(true)
             setCampoEditado(false)
             usarSnack("Reclamo modificado correctamente", false)

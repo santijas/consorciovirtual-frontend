@@ -243,11 +243,11 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 unaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
             } else {
                 unaSolicitud = await solicitudService.getById(params.id)
+                setEstado(unaSolicitud.estado.nombreEstado)
+                setTitulo(unaSolicitud.titulo)
+                setDetalle(unaSolicitud.detalle)
             }
             setSolicitud(unaSolicitud)
-            setEstado(unaSolicitud.estado.nombreEstado)
-            setTitulo(unaSolicitud.titulo)
-            setDetalle(unaSolicitud.detalle)
         }
         catch(error) {
             usarSnack(error.response.data, true)
@@ -429,6 +429,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                                     <Typography variant="body2" align="right">{nota.hora}</Typography>
                                 </div>
                             </ListItem>})}
+                           
                         </List>
                     </div>
                 }

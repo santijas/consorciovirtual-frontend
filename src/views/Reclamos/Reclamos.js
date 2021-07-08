@@ -57,7 +57,7 @@ const ColumnasCustom = (dato) => {
           <span >{dato.fecha}</span>
         </div>
       </StyledTableCell>
-      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
+      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.asunto}</StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
       <StyledTableCell className="tableBold" component="th" scope="row">{dato.estado}</StyledTableCell>
