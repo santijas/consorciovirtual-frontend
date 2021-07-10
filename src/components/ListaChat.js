@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { makeStyles, Typography } from '@material-ui/core';
 import { horaYMinutos, soloFecha } from '../utils/formats'; 
-import { chatService } from '../services/chatService';
+
 
 //SE TIENE QUE BORRAR
 const iDusuarioHardcodeado = 1
@@ -58,15 +58,13 @@ const useStyles = makeStyles ({
     }
 })
 
-export const ListaChat = ({mensajesFiltrados}) => {
+export const ListaChat = ({listaDeMensajes}) => {
     const classes = useStyles();
     const [mensajes,setMensajes] = useState('')
     const [idUsuario,setIdUsuario] = useState('')
 
     const getMensajes = async () => {
-        let listaMensajes = await chatService.getMensajes()
-        console.log(listaMensajes)
-        setMensajes(listaMensajes)
+        setMensajes(listaDeMensajes)
     }
  
     const mensajeBloque = (mensaje) => {
@@ -75,8 +73,8 @@ export const ListaChat = ({mensajesFiltrados}) => {
             <div className={classes.mensajePropio}>
                 <span className={classes.mensajePropioInterno}>{mensaje.mensaje}</span>
                 <span className={classes.mensajeAjenoFechaHora}>
-                    <div>{soloFecha(mensaje.fechaHora)}</div>
-                    <div className={classes.mensajeAjenoHora}>{horaYMinutos(mensaje.fechaHora)} hs</div>
+                    <div>{soloFecha(mensaje.fechaYHora)}</div>
+                    <div className={classes.mensajeAjenoHora}>{horaYMinutos(mensaje.fechaYHora)} hs</div>
                 </span>
             </div>
         :    
@@ -85,8 +83,8 @@ export const ListaChat = ({mensajesFiltrados}) => {
                 <div className={classes.mensajeAjenoInterno}>
                     <span className={classes.mensajeAjenoMensaje}>{mensaje.mensaje}</span>
                     <span className={classes.mensajeAjenoFechaHora}>
-                        <div>{soloFecha(mensaje.fechaHora)}</div>
-                        <div className={classes.mensajeAjenoHora}>{horaYMinutos(mensaje.fechaHora)} hs</div>
+                        <div>{soloFecha(mensaje.fechaYHora)}</div>
+                        <div className={classes.mensajeAjenoHora}>{horaYMinutos(mensaje.fechaYHora)} hs</div>
                     </span> 
                 </div>
             </div>       

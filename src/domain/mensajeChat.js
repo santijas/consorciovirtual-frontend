@@ -1,9 +1,12 @@
 export class MensajeChat {
-    constructor(idEmisor, nombreEmisor, mensaje, fechaHora ){ 
+    
+    fechaYHora
+    id
+    
+    constructor(idEmisor, nombreEmisor, mensaje ){ 
         this.idEmisor = idEmisor;
         this.nombreEmisor = nombreEmisor;
         this.mensaje = mensaje;
-        this.fechaHora = fechaHora;
     }
 
     static fromJson(JSON) {

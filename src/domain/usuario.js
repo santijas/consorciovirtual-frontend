@@ -11,6 +11,10 @@ export class Usuario {
       this.tipo = tipo
     }
 
+    nombreYApellido(){
+      return this.nombre + " " + this.apellido
+    }
+
     static fromJson(usuarioJSON) {
         return Object.assign(new Usuario(),
         usuarioJSON,

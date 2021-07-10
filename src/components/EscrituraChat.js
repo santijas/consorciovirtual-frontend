@@ -27,7 +27,7 @@ const useStyles = makeStyles ({
 
 
 
-export const EscrituraChat = () => {
+export const EscrituraChat = ({enviarMensaje}) => {
     const classes = useStyles();
     const [mensaje,setMensaje] = useState('')
 
@@ -35,10 +35,15 @@ export const EscrituraChat = () => {
         return mensaje.length > 0
     }
 
+    const ejecutarEnvio = () => {
+        enviarMensaje(mensaje)
+        setMensaje("")
+    }
+
     return (
         <div className={classes.root}>
-            <input className={classes.input} placeholder="Escribí tu mensaje" onChange={(event) => setMensaje(event.target.value)}></input>
-            { validarMensaje() && <StyledButtonPrimary onClick="" >Enviar mensaje</StyledButtonPrimary>}
+            <input className={classes.input} placeholder="Escribí tu mensaje" value={mensaje} onChange={(event) => setMensaje(event.target.value)}></input>
+            { validarMensaje() && <StyledButtonPrimary onClick={() => ejecutarEnvio()} >Enviar mensaje</StyledButtonPrimary>}
             { !validarMensaje() && <StyledButtonPrimary disabled className={classes.buttonDisabled}>Enviar mensaje</StyledButtonPrimary>}
         </div>
     )
