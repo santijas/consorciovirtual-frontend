@@ -168,7 +168,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
             if(unDepartamento)setearEstados(unDepartamento)
         }
         catch(error) {
-            //usarSnack(error.response.data, true)
+            //  usarSnack(error.response.data, true)
         }
     }
 
