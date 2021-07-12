@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, TextField, MenuItem, Divider, Box, List, ListItem } from '@material-ui/core';
+import { Link, TextField, MenuItem, Divider, Box, List, ListItem, Button } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { solicitudService } from "../../services/solicitudService";
 import { usuarioService } from "../../services/usuarioService";
@@ -11,7 +11,6 @@ import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
-import { registroModificacionService } from "../../services/registroModificacionService";
 import { SolicitudTecnica } from '../../domain/solicitudTecnica';
 
 const useStyles = makeStyles({
@@ -166,6 +165,10 @@ const useStyles = makeStyles({
         justifyContent: "space-between",
         width: "100%"
     },
+    inputNota: {
+        width: "100%",
+        marginRight: "16px"
+    },
     autorNota: {
         color: "#159D74",
         fontWeight: 600,
@@ -191,21 +194,6 @@ const estadosDeSolicitud = [
     }
 ]
 
-const notas = [
-    {
-        autor: "Mariano",
-        texto: "El técnico solucionó el problema",
-        fecha: "16/6/2021",
-        hora: "13:38 hs"
-    },
-    {
-        autor: "Mariano",
-        texto: "El técnico visitará el edificio el jueves",
-        fecha: "12/6/2021",
-        hora: "15:30 hs"
-    }
-]
-
 function getModalStyle() {
     const top = 50
     const left = 50
@@ -220,9 +208,11 @@ function getModalStyle() {
 export const ABMCSolicitud = ({ edicion, creacion }) => {
     const classes = useStyles();
     const [solicitud, setSolicitud] = useState('')
+    const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
     const [titulo, setTitulo] = useState('')
     const [detalle, setDetalle] = useState('')
+    const [textoNota, setTextoNota] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -246,6 +236,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 setEstado(unaSolicitud.estado.nombreEstado)
                 setTitulo(unaSolicitud.titulo)
                 setDetalle(unaSolicitud.detalle)
+                setNotas(unaSolicitud.notas)
             }
             setSolicitud(unaSolicitud)
         }
@@ -273,6 +264,10 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const handleChangeType = (event) => {
         setEstado(event.target.value);
         setCampoEditado(true)
+    };
+
+    const escribirTextoNota = (event) => {
+        setTextoNota(event.target.value);
     };
 
     useEffect(() => {
@@ -308,6 +303,20 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
+    }
+
+    const agregarNota = () => {
+        let nota = {
+            autor: usuarioService.usuarioLogueado.nombre,
+            texto: textoNota,
+            fechaHora: new Date()
+        }
+        let nuevaSolicitud = solicitud
+        nuevaSolicitud.notas.push(nota)
+        setSolicitud(nuevaSolicitud)
+        setNotas(solicitud.notas)
+        setTextoNota('')
+        setCampoEditado(true)
     }
 
     const eliminarSolicitud = async () => {
@@ -425,11 +434,16 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                                     <span>{nota.texto}</span>
                                 </div>
                                 <div>
-                                    <span className={classes.fechaNota}>{nota.fecha}</span>
-                                    <Typography variant="body2" align="right">{nota.hora}</Typography>
+                                    <span className={classes.fechaNota}>{(new Date(nota.fechaHora)).toLocaleDateString()}</span>
+                                    <Typography variant="body2" align="right">{`${(new Date(nota.fechaHora)).getHours()}:${(new Date(nota.fechaHora)).getMinutes()}`}</Typography>
                                 </div>
                             </ListItem>})}
-                           
+                            {usuarioService.usuarioLogueado.tipo === "Administrador_consorcio" && 
+                            <ListItem button divider>
+                                <TextField className={classes.inputNota} size="small" id="nota" name="nota" label="Escriba una nota" value={textoNota} variant="outlined" onChange={escribirTextoNota}></TextField>
+                                <Button size="small" variant="outlined" onClick={agregarNota}>Agregar</Button>
+                            </ListItem>
+                            }
                         </List>
                     </div>
                 }

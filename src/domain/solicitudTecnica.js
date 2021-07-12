@@ -1,6 +1,6 @@
 export class SolicitudTecnica {
     
-    constructor(id, tipo, titulo, detalle, fecha, autor, estado){ 
+    constructor(id, tipo, titulo, detalle, fecha, autor, estado, notas){ 
       this.id = id
       this.tipo = tipo
       this.titulo = titulo
@@ -8,6 +8,7 @@ export class SolicitudTecnica {
       this.fecha = fecha
       this.autor = autor
       this.estado = estado
+      this.notas = notas || []
     }
 
     static fromJson(solicitudJSON) {
