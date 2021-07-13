@@ -160,7 +160,7 @@ export const AnularExpensa = () =>{
     const [selectedDate, handleDateChange] = useState(new Date());
     const [expensaGeneral, setExpensaGeneral] = useState() 
     const [cantidadDeptos, setCantidadDeptos] = useState('')
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
 

@@ -158,7 +158,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
@@ -167,24 +167,6 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     let history = useHistory()
     const params = useParams()
 
-    const fetchUsuario = async () =>{
-        try{
-            let unUsuario
-            if(creacion){
-                unUsuario = new Usuario()
-            } else{
-                let listaDepartamentos
-                unUsuario = await usuarioService.getById(params.id)
-                listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
-                setDepartamentos(listaDepartamentos)
-            }
-            setUsuario(unUsuario)
-            setTipoUsuario(unUsuario.tipo) 
-            }
-        catch(error){
-            usarSnack(error.response.data, true)
-        }
-    }
 
     const actualizarValor = (event) => {
         const newState = update(usuario, {
@@ -209,8 +191,27 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
       };
     
     useEffect( ()  =>  {
+        const fetchUsuario = async () =>{
+            try{
+                let unUsuario
+                if(creacion){
+                    unUsuario = new Usuario()
+                } else{
+                    let listaDepartamentos
+                    unUsuario = await usuarioService.getById(params.id)
+                    listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
+                    setDepartamentos(listaDepartamentos)
+                }
+                setUsuario(unUsuario)
+                setTipoUsuario(unUsuario.tipo) 
+                }
+            catch(error){
+                usarSnack(error.response.data, true)
+            }
+        }
+
         fetchUsuario()
-    },[])
+    },[params.id, creacion])
 
     const crearUsuario = async () => {
         try{

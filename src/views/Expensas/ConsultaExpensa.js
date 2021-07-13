@@ -166,25 +166,23 @@ export const ConsultarExpensa = () =>{
     let history = useHistory()
     const params = useParams()
 
-    const fetchExpensa = async () =>{
-        try{
-            let unaExpensa = await expensaService.getById(params.id)
-            setExpensa(unaExpensa) 
-            const gastosEncontrados = await gastoService.getByPeriod(obtenerPeriodoDeMoment(unaExpensa.periodo))
-            setGastos(gastosEncontrados)
-        }catch{
-
+    useEffect( ()  =>  {
+        const fetchData = async () =>{
+            try{
+                let unaExpensa = await expensaService.getById(params.id)
+                setExpensa(unaExpensa) 
+                const gastosEncontrados = await gastoService.getByPeriod(obtenerPeriodoDeMoment(unaExpensa.periodo))
+                setGastos(gastosEncontrados)
+            }catch(error){
+                console.log(error)
+            }
         }
-    }
-    
+        fetchData()
+    },[params.id])
+  
     const backToExpensas = () =>{
         history.push("/expensas")
     }
-
-    useEffect( ()  =>  {
-        fetchExpensa()
-    },[])
-
 
         const renderInput = ( props ) => (
             <TextField 

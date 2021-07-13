@@ -162,7 +162,7 @@ export const ABExpensa = () =>{
     const [selectedDate, handleDateChange] = useState(new Date());
     const [expensaGeneral, setExpensaGeneral] = useState(new ExpensaGeneral()) 
     const [cantidadDeptos, setCantidadDeptos] = useState('')
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
 

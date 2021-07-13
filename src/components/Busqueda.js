@@ -36,9 +36,13 @@ export const Busqueda = ({ busqueda, holder }) => {
     const [textoIngresado, setTextoIngresado] = useState('')
     const classes = useStyles();
 
+    const handleChange = (value) => {
+        setTextoIngresado(value)
+    }
+
     return (
         <div className={classes.contenedorBusqueda}>
-            <input className={classes.inputBusqueda} placeholder={holder} value={textoIngresado} onChange={(event) => setTextoIngresado(event.target.value)}  
+            <input className={classes.inputBusqueda} placeholder={holder} value={textoIngresado} onChange={(event) => handleChange(event.target.value)}  
              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                     busqueda(textoIngresado)

@@ -69,34 +69,37 @@ export const Departamentos = () =>{
     const location = useLocation();
     const classes = useStyles();
     const [departamentos, setDepartamentos] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
+    const [textoBusqueda, setTextoBusqueda] = useState('')
     let history = useHistory()  
-
-
-
-    const fetchAllDepartamentos = async (textoBusqueda) =>{
-      const deptosEncontrados = await departamentoService.getBySearch(textoBusqueda)
-      setDepartamentos(deptosEncontrados)
-    }
 
     const newDepto = () =>{
       history.push("/newdepartamento")
     }
 
-    const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : usarSnack()
-    }
-
-    const usarSnack = () =>{
-      setOpenSnackbar(location.state.openChildSnack)
-      setMensajeSnack(location.state.mensajeChild)
-    }
-
     useEffect( ()  =>  {
-      fetchAllDepartamentos("")
+      const fetchAllDepartamentos = async (textoBusqueda) =>{
+        const deptosEncontrados = await departamentoService.getBySearch(textoBusqueda)
+        setDepartamentos(deptosEncontrados)
+      }
+
+      fetchAllDepartamentos(textoBusqueda)
+
+    },[textoBusqueda])
+
+    useEffect( () =>{
+      const usarSnack = () => {
+        setOpenSnackbar(location.state.openChildSnack)
+        setMensajeSnack(location.state.mensajeChild)
+      }
+
+      const fetchSnack = () => {
+        location.state === undefined? setOpenSnackbar(false) : usarSnack()
+      }
       fetchSnack()
-    },[])
+    },[location.state])
+
 
     return (
         <div className={classes.root} >
@@ -104,7 +107,7 @@ export const Departamentos = () =>{
               Departamentos
             </Typography>
             <div className={classes.contenedorBusqueda}> 
-                <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={fetchAllDepartamentos} />
+                <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={setTextoBusqueda} />
                 <div>
                 <span className={classes.cantidadObject} > {departamentos.length} departamentos </span>
                 <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>

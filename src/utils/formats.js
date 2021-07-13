@@ -9,8 +9,8 @@ export const formatDate = (date) =>{
 
 
 export const splitTipo = (string) =>{
-  const division = string.split("_")
-  return division[0]
+  const division = string.split("_").join(" ")
+  return division
 }
 
 export const splitVisual = (string) =>{

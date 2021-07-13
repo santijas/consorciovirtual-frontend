@@ -27,6 +27,12 @@ class UsuarioService {
         return listaJSON.data
     }
 
+    async getInquilinos() {
+        const tipo = "Inquilino"
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/buscar/usuario`, {params:{ tipo }})
+        return listaJSON.data
+    }
+
     async create(user){
         await axios.put((`${REST_SERVER_URL}/usuario/crear`), user.toJSON())
     }

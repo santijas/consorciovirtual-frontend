@@ -68,33 +68,37 @@ const ColumnasCustom = (dato) => {
 export const Solicitudes = () => {
   const classes = useStyles();
   const [solicitudes, setSolicitudes] = useState([])
-  const [openSnackbar, setOpenSnackbar] = useState('')
+  const [openSnackbar, setOpenSnackbar] = useState(false)
   const [mensajeSnack, setMensajeSnack] = useState()
+  const [textoBusqueda, setTextoBusqueda] = useState('')
   let history = useHistory()
   let location = useLocation()
 
-  const fetchAllSolicitudes = async (textoBusqueda) => {
-    const solicitudesEncontradas = await solicitudService.getAllSolicitudes(textoBusqueda)
-    setSolicitudes(solicitudesEncontradas)
-  }
+
 
   const newSolicitud = () => {
     history.push("/newsolicitud")
   }
 
   useEffect(() => {
-    fetchAllSolicitudes("")
-    fetchSnack()
-  }, [])
+    const fetchAllSolicitudes = async (textoBusqueda) => {
+      const solicitudesEncontradas = await solicitudService.getAllSolicitudes(textoBusqueda)
+      setSolicitudes(solicitudesEncontradas)
+    }
+    fetchAllSolicitudes(textoBusqueda)
+  }, [textoBusqueda])
 
-  const fetchSnack = () => {
-    location.state === undefined ? setOpenSnackbar(false) : usarSnack()
-  }
-
-  const usarSnack = () => {
+  useEffect( () =>{
+    const usarSnack = () => {
       setOpenSnackbar(location.state.openChildSnack)
       setMensajeSnack(location.state.mensajeChild)
-  }
+    }
+
+    const fetchSnack = () => {
+      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    }
+    fetchSnack()
+  },[location.state])
 
   return (
     <div className={classes.root} >
@@ -102,7 +106,7 @@ export const Solicitudes = () => {
         Solicitudes técnicas
       </Typography>
       <div className={classes.contenedorBusqueda}>
-        <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={fetchAllSolicitudes} />
+        <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={ setTextoBusqueda } />
         <div>
           <span className={classes.cantidadObject} > {solicitudes.length} solicitudes técnicas </span>
           <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>

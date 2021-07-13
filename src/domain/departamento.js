@@ -1,6 +1,6 @@
 export class Departamento {
 
-    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados,estadoDeCuenta){ 
+    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados, estadoDeCuenta){ 
       this.id = id
       this.propietario = propietario
       this.inquilino = inquilino
@@ -9,7 +9,7 @@ export class Departamento {
       this.nroDepartamento = nroDepartamento
       this.porcentajeExpensa = porcentajeExpensa
       this.metrosCuadrados = metrosCuadrados
-      // this.estadoDeCuenta = estadoDeCuenta
+      this.estadoDeCuenta = estadoDeCuenta
     }
 
     static fromJson(deptoJSON) {
@@ -26,23 +26,12 @@ export class Departamento {
     }
 }
 
-export class DepartamentoVistaDTO {
+export class DepartamentoConUsuarios {
 
-    constructor(id, piso,letraNro, propietario, inquilino, actividad, estadoCuenta){
-      this.id = id;
-      this.piso = piso;
-      this.letraNro = letraNro;
-      this.propietario = propietario;
-      this.inquilino =inquilino;
-      this.actividad = actividad;
-      this.estadoCuenta = estadoCuenta;
-    }
-
-    static fromJson(deptoVistaJSON) {
-      return Object.assign(new DepartamentoVistaDTO(),
-      deptoVistaJSON,
-        { }
-      )
+    constructor(departamento, propietarioId, inquilinoId){
+      this.departamento = departamento
+      this.propietarioId = propietarioId;
+      this.inquilinoId = inquilinoId;
     }
 
     toJSON() {

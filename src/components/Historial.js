@@ -31,12 +31,14 @@ export const Historial = ({tipo, id, update}) => {
     const [registrosModificacion, setRegistrosModificacion] = useState([])
 
     useEffect( ()  =>  {
+        const fetchRegistrosModificacion = async () => {
+            setRegistrosModificacion(await registroModificacionService.getByTipoYId(tipo, id))
+        }
+       
         fetchRegistrosModificacion()
-    },[update])
+    },[tipo, id, update])
 
-    const fetchRegistrosModificacion = async () => {
-        setRegistrosModificacion(await registroModificacionService.getByTipoYId(tipo, id))
-    }
+
 
     const filterFirstLetters = (name) => {
         return name.match(/\b(\w)/g).join('')
@@ -48,7 +50,7 @@ export const Historial = ({tipo, id, update}) => {
                         Historial de cambios
                     </Typography>
                     <Box display="flex" flexDirection="column" mt={5}>
-                        {registrosModificacion.map((registro) => {return (
+                        {registrosModificacion.map((registro) => (
                             <Box display="flex" mb={3} key={registro.id}> 
                                 <Avatar style={{backgroundColor: avatarColours(registro.usuarioModificador)} }  className={classes.avatar}>{filterFirstLetters(registro.usuarioModificador)}</Avatar>
                                 <Box display="flex" flexDirection="column">
@@ -56,7 +58,7 @@ export const Historial = ({tipo, id, update}) => {
                                     <span className={classes.spanFecha}>{registro.fechaHoraModificacion}</span>
                                 </Box>
                             </Box>
-                         )})}
+                         ))}
                     </Box>
                 </Box>
     )

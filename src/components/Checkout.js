@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { ActiveChat, Loading } from '../assets/icons';
+import { Loading } from '../assets/icons';
 import { REST_SERVER_URL } from '../services/configuration';
 
 
@@ -9,7 +9,6 @@ export const Checkout = ({expensaId}) => {
   const [preferenceId, setPreferenceId] = useState(null);
 
   useEffect(() => {
-    // luego de montarse el componente, le pedimos al backend el preferenceId
     axios.get(`${REST_SERVER_URL}/checkout`, {params:{ expensaId }}).then((order) => {
       setPreferenceId(order.data);
     });
@@ -34,8 +33,8 @@ useEffect(() => {
             id: preferenceId
         },
         render: {
-              container: '.cho-container', // Indica dónde se mostrará el botón de pago
-              label: 'Pagar expensa', // Cambia el texto del botón de pago (opcional)
+              container: '.cho-container',
+              label: 'Pagar expensa',
         },
         openMode: 'modal',
       })
@@ -46,6 +45,6 @@ useEffect(() => {
 
 
   return (
-     <div className="cho-container">{!preferenceId && <Loading>Waiting</Loading>}</div>
+     <div className="cho-container">{!preferenceId && <Loading/>}</div>
   );
 }

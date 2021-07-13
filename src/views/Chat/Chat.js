@@ -32,7 +32,7 @@ const useStyles = makeStyles ({
 export const Chat = () => {
     
     const classes = useStyles();
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
     const [mensajes,setMensajes] = useState('')
 

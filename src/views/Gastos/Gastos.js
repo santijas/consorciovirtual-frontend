@@ -64,32 +64,39 @@ export const Gastos = () =>{
     const classes = useStyles();
     const location = useLocation();
     const [gastos, setGastos] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
+    const [textoBusqueda, setTextoBusqueda] = useState('')
     let history = useHistory()
 
-    const fetchAll = async (textoBusqueda) =>{
-      const gastosEncontrados = await gastoService.getBySearch(textoBusqueda)
-      setGastos(gastosEncontrados)
-    }
+
 
     const newUser = () =>{
       history.push("/newgasto")
     }
-    
-    const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : usarSnack()
-    }
 
-    const usarSnack = () =>{
-      setOpenSnackbar(location.state.openChildSnack)
-      setMensajeSnack(location.state.mensajeChild)
-    }
- 
     useEffect( ()  =>  {
-        fetchAll("")
-        fetchSnack()
-    },[])
+      const fetchAll = async (textoBusqueda) =>{
+        const gastosEncontrados = await gastoService.getBySearch(textoBusqueda)
+        setGastos(gastosEncontrados)
+      }
+
+      fetchAll(textoBusqueda)
+  },[textoBusqueda])
+    
+    useEffect( () =>{
+      const usarSnack = () => {
+        setOpenSnackbar(location.state.openChildSnack)
+        setMensajeSnack(location.state.mensajeChild)
+      }
+
+      const fetchSnack = () => {
+        location.state === undefined? setOpenSnackbar(false) : usarSnack()
+      }
+      fetchSnack()
+    },[location.state])
+ 
+
 
     return (
         <div className={classes.root} >
@@ -97,7 +104,7 @@ export const Gastos = () =>{
              Gastos
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-              <Busqueda holder="Buscá por título o monto" busqueda={fetchAll} />
+              <Busqueda holder="Buscá por título o monto" busqueda={setTextoBusqueda} />
               <div>
                <span className={classes.cantidadObject} > {gastos.length} gastos </span>
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>

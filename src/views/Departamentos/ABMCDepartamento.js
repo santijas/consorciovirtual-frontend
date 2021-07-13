@@ -11,6 +11,7 @@ import { Chevron } from '../../assets/icons';
 import { Departamento } from '../../domain/departamento';
 import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
+import { Usuario } from '../../domain/usuario';
 
 const useStyles = makeStyles({
     root: {
@@ -142,48 +143,55 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
-    const [usuarios, setUsuarios] = useState('')
-     // A MODIFICAR PARA EL FINAL
+    const [usuarios, setUsuarios] = useState([])
+    const [inquilinos, setInquilinos] = useState([])
     const [propietarioId, setPropietarioId] = useState(null)
-    const [inquilinoId, setInquilinoId] = useState(null)
-    const [propDepto, setPropDepto] = useState('')
-    const [inqDepto,setInqDepto] = useState('')
+    const [inquilinoId ,setInquilinoId] = useState(null)
 
 
     let history = useHistory()
     const params = useParams()
 
-    const fetchDepartamento = async () => {
-        try {
-            let unDepartamento
-            if (creacion) {
-                unDepartamento = new Departamento()
-            } else {
-                unDepartamento = await departamentoService.getById(params.id)
-            }
-            if(unDepartamento)setearEstados(unDepartamento)
-        }
-        catch(error) {
-            //  usarSnack(error.response.data, true)
-        }
-    }
+    useEffect( () => {
+        const fetchDepartamento = async () => {
+            try {
+                let unDepartamento
+                if (creacion) {
+                    unDepartamento = new Departamento()
+                } else {
+                    unDepartamento = await departamentoService.getById(params.id)
+                    setPropietarioId(unDepartamento.propietario.id)
+                    if(unDepartamento.inquilino){
+                        setInquilinoId(unDepartamento.inquilino.id)
+                    }
+                }
+                setDepartamento(unDepartamento)
 
-     // A MODIFICAR PARA EL FINAL
-    const setearEstados = (depto) => {
-        setDepartamento(depto)
-        setPropDepto(depto.propietario)
-        setInqDepto(depto.inquilino)
-        setPropietarioId(depto.propietario.id)
-        setInquilinoId(depto.inquilino.id)
-    }
+            }
+            catch(error) {
+                usarSnack(error.response.data, true)
+            }
+        }
+        
+        fetchDepartamento()
+        fetchAllUsers('')
+        fetchAllInquilinos()
+    }, [params.id, creacion])
+
 
     const fetchAllUsers = async (textoBusqueda) => {
         const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
         setUsuarios(usuariosEncontrados)
+    }
+
+    const fetchAllInquilinos = async () => {
+        const usuariosEncontrados = await usuarioService.getInquilinos()
+        setInquilinos(usuariosEncontrados)
+        console.log(usuariosEncontrados)
     }
 
     const actualizarValor = (event) => {
@@ -202,16 +210,12 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         setOpenModal(true)
     }
 
-    useEffect(() => {
-        fetchDepartamento()
-        fetchAllUsers('')
-    }, [])
 
     const crearDepartamento = async () => {
         try {
 
             if (validarDepartamento()) {        
-                await departamentoService.create(departamento, propDepto)
+                await departamentoService.create(departamento, propietarioId)
                 history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento creado correctamente."})
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -224,7 +228,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const modificarDepartamento = async () => {
         try {
             if (validarDepartamento()){
-                await departamentoService.update(departamento,propDepto, inqDepto)
+                await departamentoService.update(departamento, propietarioId, inquilinoId)
                 setCambiosGuardados(true)
                 setCampoEditado(false)
                 usarSnack("Departamento modificado correctamente", false)
@@ -260,26 +264,16 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         setOpenSnackbar(true)
     }
 
-
-     // A MODIFICAR PARA EL FINAL
     const changePropietario = (event) => {
-        
-        setPropietarioId(event.target.value)  
+        setPropietarioId(event.target.value)
         setCampoEditado(true)     
-        setPropDepto( selectUsuario(event.target.value) )
     }
 
-     // A MODIFICAR PARA EL FINAL
     const changeInquilino = (event) => {
         setInquilinoId(event.target.value)
         setCampoEditado(true)
-        setInqDepto( selectUsuario(event.target.value) )
     }
 
-     // A MODIFICAR PARA EL FINAL
-    const selectUsuario = (pos) => {
-        return [...usuarios].filter(us => us.id === pos)
-    }
 
     const bodyModal = (
 
@@ -342,7 +336,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         <div className={classes.contenedorInput}>
                             <span className={classes.span}>Propietario</span>
                             {departamento &&
-                                <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={changePropietario} name="propietario" variant="outlined" >
+                                <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={ changePropietario } name="propietario" variant="outlined" >
                                     {usuarios.map((option) => (
                                         <MenuItem key={option.id} value={option.id}>
                                             {option.id}.  {option.nombre} {option.apellido}
@@ -358,27 +352,21 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                     </div>
 
                      
-                    { usuarios && departamento && edicion && !creacion &&
+                    { inquilinos && departamento && edicion && !creacion &&
                     <div className={classes.contenedorInput}>
                         <span className={classes.span}>Inquilino</span>
-                        {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={changeInquilino} name="inquilino" variant="outlined" >
-                        <MenuItem key={0} value={null}>
+                        {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={ changeInquilino } name="inquilino" variant="outlined" >
+                                    <MenuItem key={0} value={null}>
                                         Sin Inquilino
                                     </MenuItem>
-                            {usuarios && usuarios.map((option) => (
-                                <MenuItem key={option.id} value={option.id}>
-                                        {option.id} {option.nombre} {option.apellido}
+                            {inquilinos && inquilinos.map((option) => (
+                                    <MenuItem key={option.id} value={option.id}>
+                                        {option.id}. {option.nombre} {option.apellido}
                                     </MenuItem>
                                 ))}
                         </TextField> }
                     </div> } 
 
-                    {edicion && !creacion &&
-                        <div className={classes.contenedorInput}>
-                            {/* <span className={classes.spanDisabled}></span>
-                        <span className={classes.inputsDisabled}></span> */}
-                        </div>
-                    }
                 </form>
 
             </div>
@@ -390,7 +378,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
                     </div>
                 }
-                {edicion && !creacion && propDepto &&
+                {edicion && !creacion && propietarioId &&
                     <div className={classes.contenedorBotones}>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarDepartamento}>Guardar cambios</StyledButtonPrimary>

@@ -64,33 +64,38 @@ const ColumnasCustom = (dato) => {
 export const Anuncios = () => {
     const classes = useStyles();
     const [anuncios, setAnuncios] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
+    const [textoBusqueda, setTextoBusqueda] = useState('')
     let history = useHistory()
     let location = useLocation()
 
-    const fetchAllAnuncios = async (textoBusqueda) => {
-        const anunciosEncontrados = await anuncioService.getAllAnuncios(textoBusqueda)
-        setAnuncios(anunciosEncontrados)
-    }
+
 
     const newAnuncio = () => {
         history.push("/newAnuncio")
     }
 
     useEffect(() => {
-        fetchAllAnuncios("")
+        const fetchAllAnuncios = async (textoBusqueda) => {
+            const anunciosEncontrados = await anuncioService.getAllAnuncios(textoBusqueda)
+            setAnuncios(anunciosEncontrados)
+        }
+
+        fetchAllAnuncios(textoBusqueda)
+    }, [textoBusqueda])
+
+    useEffect( () =>{
+        const usarSnack = () => {
+          setOpenSnackbar(location.state.openChildSnack)
+          setMensajeSnack(location.state.mensajeChild)
+        }
+  
+        const fetchSnack = () => {
+          location.state === undefined? setOpenSnackbar(false) : usarSnack()
+        }
         fetchSnack()
-    }, [])
-
-    const fetchSnack = () => {
-        location.state === undefined ? setOpenSnackbar(false) : usarSnack()
-    }
-
-    const usarSnack = () => {
-        setOpenSnackbar(location.state.openChildSnack)
-        setMensajeSnack(location.state.mensajeChild)
-    }
+      },[location.state])
 
     return (
         <div className={classes.root} >
@@ -98,7 +103,7 @@ export const Anuncios = () => {
                 Anuncios
             </Typography>
             <div className={classes.contenedorBusqueda}>
-                <Busqueda holder="Buscá por fecha, título o autor" busqueda={fetchAllAnuncios} />
+                <Busqueda holder="Buscá por fecha, título o autor" busqueda={setTextoBusqueda} />
                 <div>
                     <span className={classes.cantidadObject} > {anuncios.length} anuncios </span>
                     <StyledButtonPrimary onClick={newAnuncio}>Agregar anuncio</StyledButtonPrimary>

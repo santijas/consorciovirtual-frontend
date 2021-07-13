@@ -72,15 +72,10 @@ export const Expensas = () =>{
     const location = useLocation();
     const classes = useStyles();
     const [expensas, setExpensas] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
-    const [render, setRender] = useState('')
+    const [textoBusqueda, setTextoBusqueda] = useState('')
     let history = useHistory()
-
-    const fetchAll = async (textoBusqueda) =>{
-      const expensasEncontradas = await expensaService.getBySearch(textoBusqueda)
-      setExpensas(expensasEncontradas)
-    }
 
     const newExpensa = () =>{
       history.push("/newexpensa")
@@ -89,21 +84,27 @@ export const Expensas = () =>{
     const anularExpensa = () =>{
       history.push("/anularexpensa")
     }
-    const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : usarSnack()
-    }
-
-    const usarSnack = () =>{
-      setOpenSnackbar(location.state.openChildSnack)
-      setMensajeSnack(location.state.mensajeChild)
-      setRender(location.state.render)
-    }
 
     useEffect( ()  =>  {
-        fetchSnack()
-        fetchAll("")
-        console.log("RENDER!")
-    },[render])
+      const fetchAll = async (textoBusqueda) =>{
+        const expensasEncontradas = await expensaService.getBySearch(textoBusqueda)
+        setExpensas(expensasEncontradas)
+      }
+
+        fetchAll(textoBusqueda)
+    },[textoBusqueda])
+
+    useEffect( () =>{
+      const usarSnack = () => {
+        setOpenSnackbar(location.state.openChildSnack)
+        setMensajeSnack(location.state.mensajeChild)
+      }
+
+      const fetchSnack = () => {
+        location.state === undefined? setOpenSnackbar(false) : usarSnack()
+      }
+      fetchSnack()
+    },[location.state])
 
     return (
         <div className={classes.root} >
@@ -111,7 +112,7 @@ export const Expensas = () =>{
              Expensas
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-              <Busqueda holder="Buscá por departamento o monto" busqueda={fetchAll} />
+              <Busqueda holder="Buscá por departamento o monto" busqueda={setTextoBusqueda} />
               <div className={classes.contenedorBotones}>
                <span className={classes.cantidadObject} > {expensas.length} expensas </span>
               <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>

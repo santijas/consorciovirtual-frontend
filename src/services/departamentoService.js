@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { REST_SERVER_URL } from './configuration'
-import { Departamento } from '../domain/departamento'
+import { Departamento, DepartamentoConUsuarios } from '../domain/departamento'
 import { usuarioService } from '../services/usuarioService';
 
 class DepartamentoService {
@@ -16,17 +16,15 @@ class DepartamentoService {
          return Departamento.fromJson(departamentoJson.data)
     }
 
-     // A MODIFICAR PARA EL FINAL
-    async create(depto,propietario){
-        depto.propietario = propietario[0]
-        await axios.put((`${REST_SERVER_URL}/departamento/crear`), Departamento.fromJson(depto).toJSON())
+    async create(depto, propietarioId){
+        const departamento = new DepartamentoConUsuarios(depto, propietarioId, null)
+        await axios.put((`${REST_SERVER_URL}/departamento/crear`), departamento.toJSON())
     }
 
-    // A MODIFICAR PARA EL FINAL
-    async update(depto,propietario,inquilino){
-        if(!propietario) depto.propietario = propietario[0]
-        if(inquilino!=null) depto.inquilino = inquilino[0]
-        await axios.put(`${REST_SERVER_URL}/departamento/modificar`, Departamento.fromJson(depto).toJSON())
+    async update(depto, propietarioId, inquilinoId){
+        const departamento = new DepartamentoConUsuarios(depto, propietarioId, inquilinoId)
+        const idLogueado = usuarioService.usuarioLogueado.id
+        await axios.put(`${REST_SERVER_URL}/departamento/modificar`, departamento.toJSON(),  {params:  {idLogueado} })
     }
 
     async delete(id){

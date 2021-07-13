@@ -66,38 +66,40 @@ const ColumnasCustom = (dato) => {
   )
 }
 
-
-
 export const Usuarios = () =>{
-    const location = useLocation();
+    const location = useLocation()
     let history = useHistory()  
-    const classes = useStyles();
+    const classes = useStyles()
     const [usuarios, setUsuarios] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState('')
+    const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
+    const [textoBusqueda, setTextoBusqueda] = useState('')
 
-    const fetchAllUsers = async (textoBusqueda) =>{
-      const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
-      setUsuarios(usuariosEncontrados)
-    }
+    useEffect( ()  =>  {
+      const fetchAllUsers = async (textoBusqueda) => {
+        const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
+        setUsuarios(usuariosEncontrados)
+      }
+
+      fetchAllUsers(textoBusqueda)
+      
+    },[textoBusqueda])
+
+    useEffect( () =>{
+      const usarSnack = () => {
+        setOpenSnackbar(location.state.openChildSnack)
+        setMensajeSnack(location.state.mensajeChild)
+      }
+
+      const fetchSnack = () => {
+        location.state === undefined? setOpenSnackbar(false) : usarSnack()
+      }
+      fetchSnack()
+    },[location.state])
 
     const newUser = () =>{
       history.push("/newuser")
     }
-    
-    const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : usarSnack()
-    }
-
-    const usarSnack = () =>{
-      setOpenSnackbar(location.state.openChildSnack)
-      setMensajeSnack(location.state.mensajeChild)
-    }
-
-    useEffect( ()  =>  {
-      fetchAllUsers("")
-      fetchSnack()
-    },[])
 
     return (
         <div className={classes.root} >
@@ -105,7 +107,7 @@ export const Usuarios = () =>{
              Usuarios 
            </Typography>
            <div className={classes.contenedorBusqueda}> 
-              <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={fetchAllUsers} />
+              <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={setTextoBusqueda} />
               <div>
                <span className={classes.cantidadObject} > {usuarios.length} usuarios </span>
               <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>

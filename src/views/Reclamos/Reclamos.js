@@ -67,33 +67,36 @@ const ColumnasCustom = (dato) => {
 export const Reclamos = () => {
   const classes = useStyles();
   const [reclamos, setReclamos] = useState([])
-  const [openSnackbar, setOpenSnackbar] = useState('')
-  const [mensajeSnack, setMensajeSnack] = useState()
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [mensajeSnack, setMensajeSnack] = useState('')
+  const [textoBusqueda, setTextoBusqueda] = useState('')
   let history = useHistory()
   let location = useLocation()
 
-  const fetchAllReclamos = async (textoBusqueda) => {
-    const reclamosEncontrados = await reclamoService.getAll(textoBusqueda)
-    setReclamos(reclamosEncontrados)
-  }
 
   const newReclamo = () => {
     history.push("/newreclamo")
   }
 
   useEffect(() => {
-    fetchAllReclamos("")
-    fetchSnack()
-  }, [])
+    const fetchAllReclamos = async (textoBusqueda) => {
+      const reclamosEncontrados = await reclamoService.getAll(textoBusqueda)
+      setReclamos(reclamosEncontrados)
+    }
+    fetchAllReclamos(textoBusqueda)
+  }, [textoBusqueda])
 
-  const fetchSnack = () => {
-    location.state === undefined ? setOpenSnackbar(false) : usarSnack()
-  }
-
-  const usarSnack = () => {
+  useEffect( () =>{
+    const usarSnack = () => {
       setOpenSnackbar(location.state.openChildSnack)
       setMensajeSnack(location.state.mensajeChild)
-  }
+    }
+
+    const fetchSnack = () => {
+      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    }
+    fetchSnack()
+  },[location.state])
 
   return (
     <div className={classes.root} >
@@ -101,7 +104,7 @@ export const Reclamos = () => {
         Reclamos
       </Typography>
       <div className={classes.contenedorBusqueda}>
-        <Busqueda holder="Buscá por id, asunto o estado" busqueda={fetchAllReclamos} />
+        <Busqueda holder="Buscá por id, asunto o estado" busqueda={setTextoBusqueda} />
         <div>
           <span className={classes.cantidadObject} > {reclamos.length} reclamos </span>
           <StyledButtonPrimary onClick={newReclamo} >Agregar Reclamo</StyledButtonPrimary>

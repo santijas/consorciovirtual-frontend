@@ -111,6 +111,14 @@ export const Tabla = ({datos,headers,ColumnasCustom, heightEnd, defaultSort, def
       return stableSort(datos, getComparator(order, orderBy))
     }
 
+    const typeOrder = () =>{
+      if(page===1){
+        return ordenarDatos().slice( 0, pageSize) 
+      }else{
+        return ordenarDatos().slice( (page-1)  * pageSize, (page-1) * pageSize + pageSize)
+      } 
+    }
+
     return (
     <TableContainer className={classes.container} component={Paper}>
       <Table className={classes.table} aria-label="customized table">
@@ -136,7 +144,7 @@ export const Tabla = ({datos,headers,ColumnasCustom, heightEnd, defaultSort, def
             </TableHead>
         <TableBody>
           { (pageSize > 0
-            ? (page===1? ordenarDatos().slice( 0, pageSize) : ordenarDatos().slice( (page-1)  * pageSize, (page-1) * pageSize + pageSize))
+            ? typeOrder()
             : (ordenarDatos()))
             .map((dato) => (
                     ColumnasCustom(dato)
