@@ -9,6 +9,7 @@ import { usuarioService } from "../../services/usuarioService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
+import { Notas } from '../../components/Notas'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { SolicitudTecnica } from '../../domain/solicitudTecnica';
@@ -145,41 +146,6 @@ const useStyles = makeStyles({
     contenedorDescripcion: {
         width: "100%",
         display: "block"
-    },
-    contenedorNotas: {
-        display: "block",
-        textAlign: "left"
-    },
-    notas: {
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#e7e7e7",
-        width: "100%",
-        fontSize: "14px",
-        marginBottom: 15,
-        marginLeft: 10,
-        marginTop: 6
-    },
-    nota: {
-        display: "flex",
-        justifyContent: "space-between",
-        width: "100%"
-    },
-    inputNota: {
-        width: "100%",
-        marginRight: "16px"
-    },
-    autorNota: {
-        color: "#159D74",
-        fontWeight: 600,
-        marginRight: 10
-    },
-    fechaNota: {
-        color: "grey",
-        display: "block"
-    },
-    infoNota: {
-        marginLeft: 10
     }
 });
 
@@ -212,7 +178,6 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const [estado, setEstado] = useState('')
     const [titulo, setTitulo] = useState('')
     const [detalle, setDetalle] = useState('')
-    const [textoNota, setTextoNota] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -230,17 +195,17 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             if (creacion) {
                 unaSolicitud = new SolicitudTecnica()
                 unaSolicitud.fecha = new Date()
-                unaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
+                unaSolicitud.autor = { id: usuarioService.usuarioLogueado.id }
             } else {
                 unaSolicitud = await solicitudService.getById(params.id)
                 setEstado(unaSolicitud.estado.nombreEstado)
                 setTitulo(unaSolicitud.titulo)
-                setDetalle(unaSolicitud.detalle)
                 setNotas(unaSolicitud.notas)
+                setDetalle(unaSolicitud.detalle)
             }
             setSolicitud(unaSolicitud)
         }
-        catch(error) {
+        catch (error) {
             usarSnack(error.response.data, true)
         }
     }
@@ -266,10 +231,6 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         setCampoEditado(true)
     };
 
-    const escribirTextoNota = (event) => {
-        setTextoNota(event.target.value);
-    };
-
     useEffect(() => {
         fetchSolicitud()
     }, [])
@@ -278,8 +239,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         try {
             if (validarSolicitud()) {
                 let nuevaSolicitud = solicitud
-                nuevaSolicitud.autor = {id: usuarioService.usuarioLogueado.id}
-                nuevaSolicitud.estado = {id: 1}
+                nuevaSolicitud.autor = { id: usuarioService.usuarioLogueado.id }
+                nuevaSolicitud.estado = { id: 1 }
                 await solicitudService.create(nuevaSolicitud)
                 history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica creada correctamente." })
             } else {
@@ -303,20 +264,6 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
-    }
-
-    const agregarNota = () => {
-        let nota = {
-            autor: usuarioService.usuarioLogueado.nombre,
-            texto: textoNota,
-            fechaHora: new Date()
-        }
-        let nuevaSolicitud = solicitud
-        nuevaSolicitud.notas.push(nota)
-        setSolicitud(nuevaSolicitud)
-        setNotas(solicitud.notas)
-        setTextoNota('')
-        setCampoEditado(true)
     }
 
     const eliminarSolicitud = async () => {
@@ -416,38 +363,16 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 </form>
 
                 <div className={classes.contenedorDescripcion}>
-                        <div className={classes.contenedorInputDescripcion}>
-                            <span className={classes.spanDisabled}>Descripción</span>
-                            {edicion ? <span className={classes.span}>{solicitud.detalle}</span>
-                                : <TextField className={classes.inputs} id="detalle" name="detalle" variant="outlined" value={solicitud.detalle || ''} onChange={(event) => actualizarValor(event)}></TextField>}
-                        </div>
+                    <div className={classes.contenedorInputDescripcion}>
+                        <span className={classes.spanDisabled}>Descripción</span>
+                        {edicion ? <span className={classes.span}>{solicitud.detalle}</span>
+                            : <TextField className={classes.inputs} id="detalle" name="detalle" variant="outlined" value={solicitud.detalle || ''} onChange={(event) => actualizarValor(event)}></TextField>}
                     </div>
+                </div>
 
                 {(edicion && !creacion) &&
-                    <div className={classes.contenedorNotas}>
-                        <span className={classes.spanDisabled}>Notas</span>
-
-                        <List className={classes.notas} disablePadding>
-                            {notas.map((nota) => { return <ListItem button className={classes.nota} divider>
-                                <div>
-                                    <span className={classes.autorNota}>{nota.autor}: </span>
-                                    <span>{nota.texto}</span>
-                                </div>
-                                <div>
-                                    <span className={classes.fechaNota}>{(new Date(nota.fechaHora)).toLocaleDateString()}</span>
-                                    <Typography variant="body2" align="right">{`${(new Date(nota.fechaHora)).getHours()}:${(new Date(nota.fechaHora)).getMinutes()}`}</Typography>
-                                </div>
-                            </ListItem>})}
-                            {usuarioService.usuarioLogueado.tipo === "Administrador_consorcio" && 
-                            <ListItem button divider>
-                                <TextField className={classes.inputNota} size="small" id="nota" name="nota" label="Escriba una nota" value={textoNota} variant="outlined" onChange={escribirTextoNota}></TextField>
-                                <Button size="small" variant="outlined" onClick={agregarNota}>Agregar</Button>
-                            </ListItem>
-                            }
-                        </List>
-                    </div>
+                    <Notas notas={notas} dato={solicitud} setCampoEditado={setCampoEditado}></Notas>
                 }
-
 
             </div>
 
@@ -471,8 +396,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 }
                 <Divider className={classes.divider} />
 
-                { edicion && !creacion &&
-                    <Historial tipo="SOLICITUD_TECNICA" id={params.id} update={cambiosGuardados}/>
+                {edicion && !creacion &&
+                    <Historial tipo="SOLICITUD_TECNICA" id={params.id} update={cambiosGuardados} />
                 }
 
             </div>

@@ -7,6 +7,7 @@ import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { reclamoService } from "../../services/reclamoService";
 import { usuarioService } from "../../services/usuarioService";
 import { Historial } from '../../components/Historial'
+import { Notas } from '../../components/Notas'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
@@ -173,6 +174,7 @@ function getModalStyle() {
 export const ABMCReclamo = ({ edicion, creacion }) => {
     const classes = useStyles();
     const [reclamo, setReclamo] = useState('')
+    const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
     const [asunto, setAsunto] = useState('')
     const [mensaje, setMensaje] = useState('')
@@ -195,11 +197,12 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             unReclamo.autor = { id: usuarioService.usuarioLogueado.id }
         } else {
             unReclamo = await reclamoService.getById(params.id)
+            setNotas(unReclamo.notas)
+            setEstado(unReclamo.estado)
+            setAsunto(unReclamo.asunto)
+            setMensaje(unReclamo.mensaje)
         }
         setReclamo(unReclamo)
-        setEstado(unReclamo.estado)
-        setAsunto(unReclamo.asunto)
-        setMensaje(unReclamo.mensaje)
     }
 
     const actualizarValor = (event) => {
@@ -249,7 +252,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             nuevoReclamo.estado = {}
             nuevoReclamo.estado.nombreEstado = estado
             nuevoReclamo.estado.id = (estado === 'Pendiente') ? 1 : 2
-            nuevoReclamo.autor = {id: nuevoReclamo.idAutor}
+            nuevoReclamo.autor = { id: nuevoReclamo.idAutor }
             await reclamoService.update(nuevoReclamo)
             setCambiosGuardados(true)
             setCampoEditado(false)
@@ -364,6 +367,10 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                     </div>
                 </div>
 
+                {(edicion && !creacion) &&
+                    <Notas notas={notas} dato={reclamo} setCampoEditado={setCampoEditado}></Notas>
+                }
+                
             </div>
 
             <div className={classes.buttonLog}>
