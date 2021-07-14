@@ -67,8 +67,7 @@ export const Notas = ({ notas, dato, setCampoEditado }) => {
         if (textoNota) {
             let nota = {
                 autor: usuarioService.usuarioLogueado.nombre,
-                texto: textoNota,
-                fechaHora: new Date()
+                texto: textoNota
             }
             dato.notas.push(nota)
             setTextoNota('')
@@ -99,8 +98,8 @@ export const Notas = ({ notas, dato, setCampoEditado }) => {
                             <span>{nota.texto}</span>
                         </div>
                         <div>
-                            <span className={classes.fechaNota}>{(new Date(nota.fechaHora)).toLocaleDateString()}</span>
-                            <Typography variant="body2" align="right">{(new Date(nota.fechaHora)).toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Typography>
+                            <span className={classes.fechaNota}>{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleDateString() : new Date().toLocaleDateString()}</span>
+                            <Typography variant="body2" align="right">{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleTimeString().replace(/(.*)\D\d+/, '$1') : new Date().toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Typography>
                         </div>
                     </ListItem>
                 })}
