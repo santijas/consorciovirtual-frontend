@@ -1,15 +1,15 @@
 import axios from 'axios'
-import { MensajeChat } from '../domain/mensajeChat'
+import { MensajeChat, MensajeRequest } from '../domain/mensajeChat'
 import { REST_SERVER_URL } from './configuration'
 import SockJS from 'sockjs-client'
 import { Stomp } from '@stomp/stompjs'
+import { usuarioService } from './usuarioService'
 
 class ChatService {
 
-    // sockjs = new SockJS('/ws-chat');
     webSocket
     stompClient = null;
-    connect() {
+    connect(getMensajes) {
          
         // var socket = new SockJS('http://localhost:8080/ws-chat');
         // let stompClient = Stomp.over(socket);
@@ -25,9 +25,9 @@ class ChatService {
             console.log("CONECTADO POR WS")
         }
 
-        this.webSocket.onmessage = (event) => {
+        this.webSocket.onmessage = async  (event) => {
             const mensajes = JSON.parse(event.data);
-            console.log("SE RECIBE: ", mensajes)
+            getMensajes()
         };
       
         this.webSocket.onclose = (event) => {
@@ -36,7 +36,7 @@ class ChatService {
     }
 
     sendMessage(mensaje){
-        this.webSocket.send(JSON.stringify(mensaje));
+        this.webSocket.send(JSON.stringify( {mensaje} ));
       }
     
     closeWebSocket() {
@@ -48,6 +48,11 @@ class ChatService {
         return mensajesJson.data.map(mensaje => MensajeChat.fromJson(mensaje))
     }
 
+    async enviarMensaje(mensaje,usuarioId){
+        const mensajeAEnviar = new MensajeRequest(usuarioId,mensaje)
+        await axios.post(`${REST_SERVER_URL}/mensajes/send`, mensajeAEnviar  )
+        console.log("MENSAJE ENVIADO")
+    }
 }
 
 export const chatService = new ChatService()

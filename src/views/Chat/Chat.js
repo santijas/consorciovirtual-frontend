@@ -35,25 +35,33 @@ export const Chat = () => {
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
     const [mensajes,setMensajes] = useState('')
+    // const [conexion, setConexion] = useSate(true)
+
 
     const getMensajes = async () => {
       let listaMensajes = await chatService.getMensajes()
-      console.log(listaMensajes)
+      console.log("SE CARGA LISTA DE MENSAJES")
       setMensajes(listaMensajes)
     }
 
-    const enviarMensaje = (mensaje) => {
-      let mensajeAEnviar = new MensajeChat(
-        usuarioService.usuarioLogueado.id,
-        usuarioService.usuarioLogueado.nombreYApellido,mensaje)
-      chatService.sendMessage(mensajeAEnviar)
+    const enviarMensaje = async (mensaje) => {
+      await chatService.enviarMensaje(mensaje,usuarioService.usuarioLogueado.id)
+
+      //Se pone un delay ya que uno va por http y el otro por websocket
+      setTimeout(() => chatService.sendMessage(mensaje), 500 )
     }
 
     useEffect( ()  =>  {
       getMensajes()
-      chatService.connect()
-  },[])
+      chatService.connect(getMensajes)
 
+      return () => {
+        chatService.closeWebSocket()
+        console.log("WS DESCONECTADO")
+      }
+    },[])
+
+    
     return (
       
       <div className={classes.root} >

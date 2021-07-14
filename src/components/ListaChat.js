@@ -3,10 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { makeStyles, Typography } from '@material-ui/core';
 import { horaYMinutos, soloFecha } from '../utils/formats'; 
+import { usuarioService } from '../services/usuarioService'
 
-
-//SE TIENE QUE BORRAR
-const iDusuarioHardcodeado = 1
 
 const useStyles = makeStyles ({
     root: {
@@ -69,7 +67,7 @@ export const ListaChat = ({listaDeMensajes}) => {
  
     const mensajeBloque = (mensaje) => {
         //SE TIENE QUE LIGAR CON EL ID DE USUARIO POSTA
-        return iDusuarioHardcodeado == mensaje.idEmisor? 
+        return idUsuario == mensaje.idEmisor? 
             <div className={classes.mensajePropio}>
                 <span className={classes.mensajePropioInterno}>{mensaje.mensaje}</span>
                 <span className={classes.mensajeAjenoFechaHora}>
@@ -92,6 +90,7 @@ export const ListaChat = ({listaDeMensajes}) => {
     
     useEffect( ()  =>  {
         getMensajes()
+        setIdUsuario(usuarioService.usuarioLogueado.id)
     })
 
     return (

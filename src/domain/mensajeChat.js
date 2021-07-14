@@ -17,3 +17,14 @@ export class MensajeChat {
         return { ...this }
     }
 }
+
+export class MensajeRequest {
+    constructor(idEmisor,mensaje){
+        this.idEmisor = idEmisor
+        this.mensaje = mensaje
+    }
+
+    toJSON() {
+        return { ...this }
+    }
+}
