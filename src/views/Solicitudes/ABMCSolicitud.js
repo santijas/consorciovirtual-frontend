@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, TextField, MenuItem, Divider, Box, List, ListItem, Button } from '@material-ui/core';
+import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { solicitudService } from "../../services/solicitudService";
-import { usuarioService } from "../../services/usuarioService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
@@ -13,6 +12,7 @@ import { Notas } from '../../components/Notas'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { SolicitudTecnica } from '../../domain/solicitudTecnica';
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles({
     root: {
@@ -160,6 +160,17 @@ const estadosDeSolicitud = [
     }
 ]
 
+const tiposDeSolicitud = [
+    {
+        value: 'Interna',
+        label: 'Interna',
+    },
+    {
+        value: 'Externa',
+        label: 'Externa',
+    }
+]
+
 function getModalStyle() {
     const top = 50
     const left = 50
@@ -176,8 +187,10 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const [solicitud, setSolicitud] = useState('')
     const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
+    const [tipo, setTipo] = useState('')
     const [titulo, setTitulo] = useState('')
     const [detalle, setDetalle] = useState('')
+    const {user, setUser} = useContext(UserContext);
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -195,7 +208,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             if (creacion) {
                 unaSolicitud = new SolicitudTecnica()
                 unaSolicitud.fecha = new Date()
-                unaSolicitud.autor = { id: usuarioService.usuarioLogueado.id }
+                unaSolicitud.autor = { id: user.id }
             } else {
                 unaSolicitud = await solicitudService.getById(params.id)
                 setEstado(unaSolicitud.estado.nombreEstado)
@@ -231,6 +244,10 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         setCampoEditado(true)
     };
 
+    const cambiarTipoSolicitud = (event) => {
+        setTipo(event.target.value)
+    }
+
     useEffect(() => {
         fetchSolicitud()
     }, [])
@@ -239,8 +256,9 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         try {
             if (validarSolicitud()) {
                 let nuevaSolicitud = solicitud
-                nuevaSolicitud.autor = { id: usuarioService.usuarioLogueado.id }
+                nuevaSolicitud.autor = { id: user.id }
                 nuevaSolicitud.estado = { id: 1 }
+                nuevaSolicitud.tipo = tipo
                 await solicitudService.create(nuevaSolicitud)
                 history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica creada correctamente." })
             } else {
@@ -276,7 +294,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     }
 
     const validarSolicitud = () => {
-        return solicitud.titulo && solicitud.detalle
+        return solicitud.titulo && solicitud.detalle && tipo
     }
 
     const usarSnack = (mensaje, esError) => {
@@ -342,7 +360,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Autor</span>
-                        {creacion ? <span className={classes.span}>{usuarioService.usuarioLogueado.nombre + " " + usuarioService.usuarioLogueado.apellido}</span>
+                        {creacion ? <span className={classes.span}>{user.nombre + " " + user.apellido}</span>
                             : <span className={classes.span}>{solicitud.nombreAutor}</span>}
                     </div>
 
@@ -358,6 +376,18 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                         <span className={classes.spanDisabled}>Titulo</span>
                         {edicion ? <span className={classes.span}>{solicitud.titulo}</span>
                             : <TextField className={classes.inputs} id="titulo" variant="outlined" value={solicitud.titulo || ''} onChange={(event) => actualizarValor(event)}></TextField>}
+                    </div>
+
+                    <div className={classes.contenedorInput}>
+                        <span className={classes.spanDisabled}>Tipo</span>
+                        {edicion ? <span className={classes.span}>{solicitud.tipo}</span>
+                            : <TextField className={classes.inputs} id="tipoSolicitud" select onChange={cambiarTipoSolicitud} value={tipo || ''} variant={'outlined'} >
+                            {tiposDeSolicitud.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>}
                     </div>
 
                 </form>

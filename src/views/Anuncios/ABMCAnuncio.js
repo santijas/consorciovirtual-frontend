@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import { Chevron } from '../../assets/icons';
 import { Anuncio } from '../../domain/anuncio';
 import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
+import { UserContext } from '../../hooks/UserContext'; 
 
 const useStyles = makeStyles({
     root: {
@@ -149,6 +150,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
     const [usuarios, setUsuarios] = useState('')
+    const {user, setUser} = useContext(UserContext);
 
     let history = useHistory()
     const params = useParams()
@@ -291,7 +293,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
 
                     <div className={classes.contenedorInputDerecha}>
                         <span className={classes.span}>Autor</span>
-                        <span className={classes.span}>{edicion ? anuncio.nombreAutor : usuarioService.usuarioLogueado.nombre + " " + usuarioService.usuarioLogueado.apellido}</span>
+                        <span className={classes.span}>{edicion ? anuncio.nombreAutor : user.nombre + " " + user.apellido}</span>
                     </div>
 
                     <div className={classes.contenedorInput}>

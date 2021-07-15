@@ -1,7 +1,8 @@
 import { Typography, makeStyles } from '@material-ui/core';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { TextField, List, ListItem, Button } from '@material-ui/core';
 import { usuarioService } from "../services/usuarioService";
+import { UserContext } from '../hooks/UserContext'; 
 
 const useStyles = makeStyles((theme) => ({
     tittle: {
@@ -62,11 +63,12 @@ export const Notas = ({ notas, dato, setCampoEditado }) => {
     const classes = useStyles();
     const [textoNota, setTextoNota] = useState('')
     const [textoInvalido, setTextoInvalido] = useState(false)
+    const {user, setUser} = useContext(UserContext);
 
     const agregarNota = () => {
         if (textoNota) {
             let nota = {
-                autor: usuarioService.usuarioLogueado.nombre,
+                autor: user.nombre,
                 texto: textoNota
             }
             dato.notas.push(nota)
@@ -103,7 +105,7 @@ export const Notas = ({ notas, dato, setCampoEditado }) => {
                         </div>
                     </ListItem>
                 })}
-                {usuarioService.usuarioLogueado.tipo === "Administrador_consorcio" &&
+                {user.tipo === "Administrador_consorcio" &&
                     <ListItem button divider>
                         <TextField error={textoInvalido} className={classes.inputNota} size="small" id="nota" name="nota" label="Escriba una nota" value={textoNota} variant="outlined" onChange={escribirNota}></TextField>
                         <Button size="small" variant="outlined" onClick={agregarNota}>Agregar</Button>

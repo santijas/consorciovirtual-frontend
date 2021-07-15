@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Busqueda } from '../../components/Busqueda'
 // import { StyledButtonPrimary } from '../../components/Buttons.js'
 import { useHistory, useLocation } from 'react-router-dom';
@@ -8,8 +8,7 @@ import { EscrituraChat } from '../../components/EscrituraChat';
 import { chatService } from '../../services/chatService';
 import { usuarioService } from '../../services/usuarioService';
 import { MensajeChat } from '../../domain/mensajeChat';
-
-
+import { UserContext } from '../../hooks/UserContext'; 
 
 const useStyles = makeStyles ({
     root: {
@@ -35,6 +34,8 @@ export const Chat = () => {
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState('')
     const [mensajes,setMensajes] = useState('')
+    const {user, setUser} = useContext(UserContext);
+
     // const [conexion, setConexion] = useSate(true)
 
 
@@ -45,7 +46,7 @@ export const Chat = () => {
     }
 
     const enviarMensaje = async (mensaje) => {
-      await chatService.enviarMensaje(mensaje,usuarioService.usuarioLogueado.id)
+      await chatService.enviarMensaje(mensaje, user.id)
 
       //Se pone un delay ya que uno va por http y el otro por websocket
       setTimeout(() => chatService.sendMessage(mensaje), 500 )

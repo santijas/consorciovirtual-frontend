@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { Reclamo } from '../../domain/reclamo';
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles({
     root: {
@@ -185,6 +186,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
     const [modalStyle] = useState(getModalStyle);
+    const {user, setUser} = useContext(UserContext);
 
     let history = useHistory()
     const params = useParams()
@@ -194,7 +196,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         if (creacion) {
             unReclamo = new Reclamo()
             unReclamo.fecha = new Date()
-            unReclamo.autor = { id: usuarioService.usuarioLogueado.id }
+            unReclamo.autor = { id: user.id }
         } else {
             unReclamo = await reclamoService.getById(params.id)
             setNotas(unReclamo.notas)
@@ -234,7 +236,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         try {
             if (validarReclamo()) {
                 let nuevoReclamo = reclamo
-                nuevoReclamo.autor = { id: usuarioService.usuarioLogueado.id }
+                nuevoReclamo.autor = { id: user.id }
                 nuevoReclamo.estado = { id: 1 }
                 await reclamoService.create(nuevoReclamo)
                 history.push("/reclamos", { openChildSnack: true, mensajeChild: "Reclamo creado correctamente." })
@@ -339,7 +341,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Autor</span>
-                        {creacion ? <span className={classes.span}>{usuarioService.usuarioLogueado.nombre + " " + usuarioService.usuarioLogueado.apellido}</span>
+                        {creacion ? <span className={classes.span}>{user.nombre + " " + user.apellido}</span>
                             : <span className={classes.span}>{reclamo.nombreAutor}</span>}
                     </div>
 

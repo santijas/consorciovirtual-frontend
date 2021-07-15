@@ -29,7 +29,7 @@ class SolicitudService {
     }
 
     async delete(id){
-        axios.put(`${REST_SERVER_URL}/solicitud/eliminar/${id}`)
+        await axios.put(`${REST_SERVER_URL}/solicitud/eliminar/${id}`)
     }
 
 }
