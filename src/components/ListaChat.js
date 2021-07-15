@@ -14,7 +14,16 @@ const useStyles = makeStyles ({
         display: "flex",
         flexDirection: "column-reverse",
         padding: "30px 20px",
+        overflow: "auto",
+        //Estos comandos son para que no se muestren la barra del overflow.
+        scrollbarWidth: "none",         //En Firefox
+        msOverflowStyle: "none",        // En Edge
+            "&::-webkit-scrollbar": {   // En Chrome
+                display: "none",
+            },
       },
+    // root: {
+    // },
     mensajePropio: {
         display: "flex",
         flexDirection: "row-reverse",
@@ -53,7 +62,8 @@ const useStyles = makeStyles ({
     },
     mensajeAjenoHora: {
         fontWeight: "bold"
-    }
+    },
+
 })
 
 export const ListaChat = ({listaDeMensajes}) => {
@@ -68,7 +78,7 @@ export const ListaChat = ({listaDeMensajes}) => {
     const mensajeBloque = (mensaje) => {
         //SE TIENE QUE LIGAR CON EL ID DE USUARIO POSTA
         return idUsuario == mensaje.idEmisor? 
-            <div className={classes.mensajePropio}>
+            <div className={classes.mensajePropio} key={mensaje.id}>
                 <span className={classes.mensajePropioInterno}>{mensaje.mensaje}</span>
                 <span className={classes.mensajeAjenoFechaHora}>
                     <div>{soloFecha(mensaje.fechaYHora)}</div>
@@ -76,7 +86,7 @@ export const ListaChat = ({listaDeMensajes}) => {
                 </span>
             </div>
         :    
-            <div className={classes.mensajeAjeno}>
+            <div className={classes.mensajeAjeno} key={mensaje.id}>
                 <div className={classes.mensajeAjenoNombre}>{mensaje.nombreEmisor}</div>
                 <div className={classes.mensajeAjenoInterno}>
                     <span className={classes.mensajeAjenoMensaje}>{mensaje.mensaje}</span>
