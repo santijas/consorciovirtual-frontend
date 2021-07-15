@@ -2,19 +2,12 @@ import axios from 'axios'
 import { REST_SERVER_URL } from './configuration'
 import { Usuario } from "../domain/usuario";
 
-
-
 class UsuarioService {
     
     usuarioLogueado = new Usuario()
 
     usuarioAJson(usuarioJSON) {
         return Usuario.fromJson(usuarioJSON)
-    }
-    
-    async loguearUsuario(usuario){     
-        const usuarioJson = await axios.post(`${REST_SERVER_URL}/login`, usuario.toJSON())
-        this.usuarioLogueado = this.usuarioAJson(usuarioJson.data)
     }
 
     async getById(id){
@@ -38,14 +31,15 @@ class UsuarioService {
     }
 
     async update(user){
-        const idLogueado = this.usuarioLogueado.id
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.put(`${REST_SERVER_URL}/usuario/modificar`, user.toJSON(), {params:  {idLogueado} })
     }
 
     async delete(id){
-        const idLogueado = this.usuarioLogueado.id
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.delete(`${REST_SERVER_URL}/usuario/eliminar/${id}`,  {params:  {idLogueado} })
     }
+
 }
 
 export const usuarioService = new UsuarioService()

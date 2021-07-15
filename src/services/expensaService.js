@@ -2,7 +2,6 @@ import axios from 'axios'
 import { ExpensaDeDepartamento } from '../domain/expensa'
 import { ExpensaGeneral } from '../domain/expensaGeneral'
 import { REST_SERVER_URL } from './configuration'
-import { usuarioService } from './usuarioService';
 
 class ExpensaService {
 
@@ -21,7 +20,7 @@ class ExpensaService {
     }
 
     async getBySearch(palabraBuscada) {
-        const idLogueado = usuarioService.usuarioLogueado.id
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         const listaJSON = await axios.get(`${REST_SERVER_URL}/expensas`, {params:{ idLogueado, palabraBuscada }})
         return listaJSON.data
     }

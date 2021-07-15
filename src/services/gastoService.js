@@ -30,7 +30,7 @@ class GastoService{
     }
 
     async update(gasto){
-        const idLogueado = usuarioService.usuarioLogueado.id
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.put((`${REST_SERVER_URL}/gasto/modificar`), gasto.toJSON(), {params:{ idLogueado }})
     }
 

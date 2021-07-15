@@ -179,3 +179,10 @@ button.mercadopago-button {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #acb8bb;
 }
+
+.loading{
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  height: 100%
+}

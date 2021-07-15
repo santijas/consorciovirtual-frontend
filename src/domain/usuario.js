@@ -1,10 +1,9 @@
 export class Usuario {
     
-    constructor(id, nombre, apellido, username, fechaNacimiento, dni, correo, tipo){ 
+    constructor(id, nombre, apellido, fechaNacimiento, dni, correo, tipo){ 
       this.id = id
       this.nombre = nombre
       this.apellido = apellido
-      this.username = username
       this.fechaNacimiento = fechaNacimiento
       this.dni = dni
       this.correo = correo

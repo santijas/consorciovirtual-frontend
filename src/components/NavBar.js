@@ -1,8 +1,9 @@
 import { Drawer, List, ListItem, ListItemIcon, makeStyles } from '@material-ui/core';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { ActiveApartment, ActiveUser, NonActiveUser, NonActiveApartment, ActiveAnnouncement, NonActiveAnnouncement, ActiveClaims, NonActiveClaims, ActiveRequest, NonActiveRequest, ActiveInquiline, NonActiveInquiline, ActiveGastos, NonActiveGastos, ActiveExpenses, NonActiveExpenses, ActiveDocuments, NonActiveDocuments, ActiveChat, NonActiveChat } from '../assets/icons';
+import { UserContext } from '../hooks/UserContext';
 import { usuarioService } from '../services/usuarioService.js'
 
 const drawerWidth = 240;
@@ -36,7 +37,8 @@ export const NavBar = () => {
   const classes = useStyles();
   let history = useHistory();
   const [selected, setSelected] = useState('usuarios')
-  const tipoUsuario = usuarioService.usuarioLogueado.tipo
+  const { user, setUser } = useContext(UserContext);
+
 
   const handleSelectMenu = (menu) => {
     setSelected(menu)
@@ -53,10 +55,10 @@ export const NavBar = () => {
       anchor="left"
     >
       <div className={classes.toolbar} />
-
+      { user &&
       <List>
 
-        {(tipoUsuario === "Administrador" || tipoUsuario === "Administrador_consorcio") &&
+        {(user.tipo === "Administrador" || user.tipo === "Administrador_consorcio") &&
           <ListItem button key="Usuarios" onClick={() => handleSelectMenu("usuarios")}>
             <ListItemIcon>{selected === "usuarios" ? <ActiveUser className="navicon activecolor" /> : <NonActiveUser className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "usuarios") ? "activecolor activesize" : "font"}`}>Usuarios</span>
@@ -85,14 +87,14 @@ export const NavBar = () => {
             <span className={`${(selected === "solicitudes") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
           </ListItem>
 
-        {tipoUsuario === "Propietario" &&
+        {user.tipo === "Propietario" &&
           <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("inquilinos")}>
             <ListItemIcon>{selected === "inquilinos" ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "inquilinos") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
           </ListItem>
         }
 
-        {(tipoUsuario === "Administrador" || tipoUsuario === "Administrador_consorcio") &&
+        {(user.tipo === "Administrador" || user.tipo === "Administrador_consorcio") &&
           <ListItem button key="Gastos" onClick={() => handleSelectMenu("gastos")}>
             <ListItemIcon>{selected === "gastos" ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "gastos") ? "activecolor activesize" : "font"}`}>Gastos</span>
@@ -115,6 +117,7 @@ export const NavBar = () => {
           </ListItem>
 
       </List>
+      }
     </Drawer>
   )
 }

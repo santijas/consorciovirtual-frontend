@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Loading } from '../assets/icons';
+import ReactLoading from 'react-loading';
 import { REST_SERVER_URL } from '../services/configuration';
 
 
@@ -45,6 +45,6 @@ useEffect(() => {
 
 
   return (
-     <div className="cho-container">{!preferenceId && <Loading/>}</div>
+     <div className="cho-container">{!preferenceId && <div className="loading"><ReactLoading type="spin" color="#159D74" height={50} width={50} className="spin"/> </div>}</div>
   );
 }

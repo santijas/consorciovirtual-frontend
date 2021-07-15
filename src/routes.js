@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { createBrowserHistory } from "history";
-import { React } from 'react'
+import { React, useContext, useEffect } from 'react'
 import { NavBar } from './components/NavBar'
 import { Login } from './views/Login'
 import { Header } from './components/Header'
@@ -16,14 +16,14 @@ import { ABMCUsuario } from './views/Usuarios/ABMCUsuario'
 import { ABMCGasto } from './views/Gastos/ABMCGasto'
 import { Gastos } from './views/Gastos/Gastos'
 import { Expensas } from './views/Expensas/Expensas'
-import { usuarioService } from './services/usuarioService'
 import { Redirect } from 'react-router'
 import { ABMCDepartamento } from './views/Departamentos/ABMCDepartamento'
 import { ABExpensa } from './views/Expensas/ABExpensa'
 import { ConsultarExpensa } from './views/Expensas/ConsultaExpensa'
 import { AnularExpensa } from './views/Expensas/AnularExpensa'
 import { Chat } from './views/Chat/Chat.js'
-
+import { UserContext } from './hooks/UserContext';
+import ReactLoading from 'react-loading';
 
 
 export const Routes = () => {
@@ -32,45 +32,56 @@ export const Routes = () => {
     return (
         <Router history={history}>    
               <Switch>
-                <Route exact={true} path="/"><Login/></Route>
-                <Route>
+                <Route exact={true} path="/">
+                    <Login/>
+                </Route>
                     <div className="App">
                         <Route><Header/></Route> 
                         <Route><NavBar/></Route> 
-                        <PrivateRoute path="/usuarios" component={Usuarios}></PrivateRoute>
+                        <PrivateRoute path="/usuarios" exact={true} component={Usuarios}></PrivateRoute>
                         <Route path="/newuser"><ABMCUsuario creacion={true} edicion={false}/></Route>
                         <Route path="/usuario/:id"><ABMCUsuario creacion={false} edicion={true} /></Route>
-                        <Route path="/departamentos"><Departamentos/></Route>
+                        <Route path="/departamentos" component={Departamentos}></Route>
                         <Route path="/newdepartamento"><ABMCDepartamento creacion={true} edicion={false}/></Route>
                         <Route path="/departamento/:id"><ABMCDepartamento creacion={false} edicion={true} /></Route>
-                        <Route path="/anuncios"><Anuncios/></Route>
+                        <Route path="/anuncios" component={Anuncios}></Route>
                         <Route path="/newanuncio"><ABMCAnuncio creacion={true} edicion={false}/></Route>
                         <Route path="/anuncio/:id"><ABMCAnuncio creacion={false} edicion={true}/></Route>
-                        <Route path="/reclamos"><Reclamos/></Route>
+                        <Route path="/reclamos" component={Reclamos}></Route>
                         <Route path="/newreclamo"><ABMCReclamo creacion={true} edicion={false}/></Route>
                         <Route path="/reclamo/:id"><ABMCReclamo creacion={false} edicion={true}/></Route>
-                        <Route path="/solicitudes"><Solicitudes/></Route>
+                        <Route path="/solicitudes" component={Solicitudes}></Route>
                         <Route path="/newsolicitud"><ABMCSolicitud creacion={true} edicion={false}/></Route>
                         <Route path="/solicitud/:id"><ABMCSolicitud creacion={false} edicion={true} /></Route>
-                        <Route path="/gastos"><Gastos/></Route>
+                        <Route path="/gastos" component={AnularExpensa}><Gastos/></Route>
                         <Route path="/newgasto"><ABMCGasto creacion={true} edicion={false}/></Route>
                         <Route path="/gasto/:id"><ABMCGasto creacion={false} edicion={true} /></Route>
-                        <Route path="/expensas"><Expensas/></Route>
-                        <Route path="/newexpensa"><ABExpensa/></Route>
-                        <Route path="/expensa/:id"><ConsultarExpensa/></Route>
-                        <Route path="/anularexpensa"><AnularExpensa/></Route>
-                        <Route path="/chat"><Chat/></Route>
+                        <Route path="/expensas" component={Expensas}></Route>
+                        <Route path="/newexpensa" component={ABExpensa} ></Route>
+                        <Route path="/expensa/:id" component={ConsultarExpensa}></Route>
+                        <Route path="/anularexpensa" component={AnularExpensa}></Route>
+                        <Route path="/chat" component={Chat}></Route>
                     </div>
-                </Route>
-            </Switch>
-        </Router>
+                </Switch>
+       </Router>
     )
 }
 
-const PrivateRoute = ({path, component}) => {
-    const authenticated = usuarioService.usuarioLogueado.id !== undefined
 
-    return (authenticated
-    ? <Route path={path} component={component}></Route>
-    : <Redirect exact={true} to="/" ></Redirect>)
-}
+export default function PrivateRoute(props) {
+    const { user, isLoading } = useContext(UserContext);
+    const { component: Component, ...rest } = props;
+
+    if(isLoading) {
+        return <div className="loading"><ReactLoading type="spin" color="#159D74" height={150} width={150} className="spin" /></div>
+    }
+    
+    if(user){
+       return ( <Route {...rest} render={(props) => 
+            (<Component {...props}/>)
+             }
+          />
+        )}
+
+    return <Redirect path='/' component={Login}/>
+ }

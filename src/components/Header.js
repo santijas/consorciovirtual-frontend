@@ -1,5 +1,5 @@
 import { Avatar, Button, makeStyles, Menu, MenuItem } from '@material-ui/core';
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { Desplegable } from '../assets/icons';
@@ -7,6 +7,7 @@ import { avatarColours } from '../utils/avatarColours';
 import { usuarioService } from '../services/usuarioService.js'
 import { splitTipo } from '../utils/formats';
 import Logo from '../assets/logo.png'
+import { UserContext } from '../hooks/UserContext';
 
 const useStyles = makeStyles({
     root: {
@@ -71,8 +72,9 @@ const useStyles = makeStyles({
 export const Header = () =>{
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const nombre = `${usuarioService.usuarioLogueado.nombre} ${usuarioService.usuarioLogueado.apellido}`
-    const tipoCuenta = `${usuarioService.usuarioLogueado.tipo}`
+    const [nombre, setNombre] = useState()
+    const { user, setUser } = useContext(UserContext);
+
     let history = useHistory()
 
     const handleClick = (event) => {
@@ -83,26 +85,34 @@ export const Header = () =>{
         setAnchorEl(null);
     };
 
-    const filterFirstLetters = (name) => {
+    const filterFirstLetters = (nombre, apellido) => {
+        const name = nombre + " " + apellido
         return name.match(/\b(\w)/g).join('')
     }   
 
-    const goToLogin = () =>{
+    const logout = () =>{
+        window.localStorage.removeItem('loggedUser')
+        setUser(null)
         history.push("/")
     }
+
+    useEffect( () =>{
+        
+    },[user])
 
         return (
             <header className={classes.root}>
                 <div className={classes.tittle}>
                     <img src={Logo} className={classes.logo}/>
                 </div>
+                { user &&
                 <div className={classes.loguedUser} >
-                        <Avatar style={{backgroundColor: avatarColours(nombre)}} className={classes.avatar} >{filterFirstLetters(nombre)}</Avatar>
+                        <Avatar style={{backgroundColor: avatarColours(user.nombre)}} className={classes.avatar} >{filterFirstLetters(user.nombre, user.apellido)}</Avatar>
                         <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                           <div className={classes.contenedorBoton}> 
                                 <div className={classes.nombreTipo}>
-                                    {nombre} 
-                                    <span className={classes.span}>{splitTipo(tipoCuenta)}</span>
+                                    {user.nombre + " " + user.apellido} 
+                                    <span className={classes.span}>{splitTipo(user.tipo)}</span>
                                 </div> 
                                 <Desplegable className={classes.desplegable}/>
                         </div>
@@ -116,10 +126,11 @@ export const Header = () =>{
                             onClose={handleClose}
                             className={classes.menuUser}
                         >
-                            <MenuItem onClick={ goToLogin } >Logout</MenuItem>
+                            <MenuItem onClick={ logout } >Logout</MenuItem>
                         </Menu>
+                        
                 </div>
-
+            }   
             </header>
         )
 }

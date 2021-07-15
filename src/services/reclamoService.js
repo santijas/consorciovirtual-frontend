@@ -10,7 +10,7 @@ class ReclamoService {
     }
 
     async getAll(busqueda) {
-        const idLogueado = usuarioService.usuarioLogueado.id
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         const listaJSON = await axios.get(`${REST_SERVER_URL}/reclamos/?palabraBuscada=${busqueda}`, {params:  {idLogueado}})
         return listaJSON.data
     }
@@ -25,7 +25,7 @@ class ReclamoService {
     }
 
     async update(reclamo){
-        const idLogueado = usuarioService.usuarioLogueado.id
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.put(`${REST_SERVER_URL}/reclamo/modificar`, reclamo.toJSON(), {params:  {idLogueado} })
     }
 

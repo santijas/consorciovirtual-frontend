@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Avatar, TextField, FormControlLabel, Checkbox, Link, Paper, Grid, Box, Typography } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,6 +10,8 @@ import Logo from '../assets/logo.png'
 import { StyledButtonPrimary } from '../components/Buttons'
 import Fondo from '../assets/background.jpg'
 import { NonActiveAnnouncement, NonActiveChat, NonActiveExpenses, NonActiveGastos, NonActiveInquiline, NonActiveRequest } from '../assets/icons.js';
+import { SnackbarComponent } from '../components/Snackbar.js';
+import useAuth from '../hooks/UseAuth.js';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,20 +67,67 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Login = () => {
-  let [correo, setCorreo] = useState('')
-  let [password, setPassword] = useState('')
+  const [correo, setCorreo] = useState(window.localStorage.getItem("mailLogged") || "")
+  const [password, setPassword] = useState('')
+  const [remember, setRemember] = useState(false)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [mensajeSnack, setMensajeSnack] = useState('')
 
   let history = useHistory()
   const classes = useStyles();
+  const { loginUser } = useAuth();
 
-  const loginUser = async (e) => {
+  useEffect(() =>{
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
+
+     if(window.localStorage.getItem('mailLogged')){
+      setRemember(true)
+     }
+
+     if(loggedUserJSON){
+       const user = JSON.parse(loggedUserJSON)
+       setCorreo(user.correo)
+       setPassword(user.password)
+    }
+  },[])
+
+
+  const handleRememberStorage = () =>{
+    if(remember){
+      window.localStorage.setItem('mailLogged', correo)
+    } else{
+      window.localStorage.removeItem('mailLogged')
+    }
+  }
+
+  const redirectTypeUser = (user) =>{
+    if(user.tipo === "Propietario" || user.tipo === "Inquilino"){
+      history.push("/departamentos")
+    }else{
+      history.push('/usuarios')
+    }
+  }
+
+  const handleLogin = async (e) => {
     e.preventDefault()
-    const usuario = new Usuario()
-    usuario.correo = correo
-    usuario.password = password
-    await usuarioService.loguearUsuario(usuario)
-    history.push('/usuarios')
+
+    try{
+      const logueado = await loginUser(correo, password)
+      handleRememberStorage()
+      redirectTypeUser(logueado)
+    }catch(e){
+      usarSnack(e.message)
+    }
 } 
+
+  const handleChange = (event) => {
+    setRemember(event.target.checked);
+  };
+
+  const usarSnack = (message) => {
+    setOpenSnackbar(true)
+    setMensajeSnack(message)
+  }
 
   return (
   <Box className={classes.root}>
@@ -102,6 +151,7 @@ export const Login = () => {
               label="Correo electronico"
               autoComplete="email"
               autoFocus
+              value={correo}
               onChange={(e) => setCorreo(e.target.value)}
             />
             <TextField
@@ -113,10 +163,11 @@ export const Login = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value={remember} checked={remember}  onChange={handleChange} color="primary" />}
               label="Recordarme"
             />
             <StyledButtonPrimary
@@ -124,7 +175,7 @@ export const Login = () => {
               fullWidth
               variant="contained"
               className={classes.submit}
-              onClick={loginUser}
+              onClick={handleLogin}
             >
               Ingresar
             </StyledButtonPrimary>
@@ -171,6 +222,9 @@ export const Login = () => {
       </Box>
 
     </Box>
+    <SnackbarComponent snackColor={"#F23D4F"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
   </Box>
+  
+        
   );
 }
