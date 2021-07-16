@@ -257,13 +257,13 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                     Volver a reclamos
                 </Link>
                 {creacion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Nuevo reclamo
                     </Typography>
                 }
 
                 {!creacion && edicion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Modificar reclamo
                     </Typography>
                 }

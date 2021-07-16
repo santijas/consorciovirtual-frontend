@@ -346,13 +346,13 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                     Volver a gastos
                 </Link>
                 { creacion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Nuevo gasto
                      </Typography>
                 }
                 
                 { !creacion && edicion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                     Modificar gasto
                     </Typography>
                 }
