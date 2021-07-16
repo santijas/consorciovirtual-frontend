@@ -174,7 +174,7 @@ function getModalStyle() {
 
 export const ABMCReclamo = ({ edicion, creacion }) => {
     const classes = useStyles();
-    const [reclamo, setReclamo] = useState('')
+    const [reclamo, setReclamo] = useState(new Reclamo())
     const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
     const [asunto, setAsunto] = useState('')
@@ -370,7 +370,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} dato={reclamo} setCampoEditado={setCampoEditado}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas}></Notas>
                 }
                 
             </div>

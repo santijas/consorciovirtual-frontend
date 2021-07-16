@@ -1,8 +1,8 @@
 import { Typography, makeStyles } from '@material-ui/core';
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { TextField, List, ListItem, Button } from '@material-ui/core';
-import { usuarioService } from "../services/usuarioService";
-import { UserContext } from '../hooks/UserContext'; 
+import { UserContext } from '../hooks/UserContext';
+import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
 const useStyles = makeStyles((theme) => ({
     tittle: {
@@ -32,14 +32,15 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: "#e7e7e7",
         width: "100%",
         fontSize: "14px",
-        marginBottom: 15,
+        marginBottom: 15, 
         marginLeft: 10,
         marginTop: 6
     },
     nota: {
         display: "flex",
         justifyContent: "space-between",
-        width: "100%"
+        width: "100%",
+        cursor: "default"
     },
     inputNota: {
         width: "100%",
@@ -56,10 +57,15 @@ const useStyles = makeStyles((theme) => ({
     },
     infoNota: {
         marginLeft: 10
+    },
+    seccionDerecha: {
+        display: "flex",
+        alignItems: "center",
+        gap: 8
     }
 }));
 
-export const Notas = ({ notas, dato, setCampoEditado }) => {
+export const Notas = ({ notas, setCampoEditado, update }) => {
     const classes = useStyles();
     const [textoNota, setTextoNota] = useState('')
     const [textoInvalido, setTextoInvalido] = useState(false)
@@ -71,18 +77,24 @@ export const Notas = ({ notas, dato, setCampoEditado }) => {
                 autor: user.nombre,
                 texto: textoNota
             }
-            dato.notas.push(nota)
-            setTextoNota('')
+            notas.push(nota)
             setCampoEditado(true)
+            setTextoNota('')
             setTextoInvalido(false)
         } else {
             setTextoInvalido(true)
         }
-    }
+     }
 
     const escribirNota = (event) => {
         setTextoNota(event.target.value);
     };
+
+    const eliminarNota = (notaAEliminar) => {
+        notas.splice(notas.indexOf(notaAEliminar), 1)
+        update(notas.filter(nota => nota !== notaAEliminar))
+        setCampoEditado(true)
+    }
 
     return (
         <div className={classes.contenedorNotas}>
@@ -99,9 +111,12 @@ export const Notas = ({ notas, dato, setCampoEditado }) => {
                             <span className={classes.autorNota}>{nota.autor}: </span>
                             <span>{nota.texto}</span>
                         </div>
-                        <div>
+                        <div className={classes.seccionDerecha}>
+                            <div>
                             <span className={classes.fechaNota}>{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleDateString() : new Date().toLocaleDateString()}</span>
                             <Typography variant="body2" align="right">{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleTimeString().replace(/(.*)\D\d+/, '$1') : new Date().toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Typography>
+                            </div> 
+                            {user.tipo === 'Administrador_consorcio' && <Button variant="outlined" onClick={() => eliminarNota(nota)}><DeleteForeverSharpIcon color="error"></DeleteForeverSharpIcon></Button> }
                         </div>
                     </ListItem>
                 })}

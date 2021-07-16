@@ -184,13 +184,13 @@ function getModalStyle() {
 
 export const ABMCSolicitud = ({ edicion, creacion }) => {
     const classes = useStyles();
-    const [solicitud, setSolicitud] = useState('')
+    const [solicitud, setSolicitud] = useState(new SolicitudTecnica())
     const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
     const [tipo, setTipo] = useState('')
     const [titulo, setTitulo] = useState('')
     const [detalle, setDetalle] = useState('')
-    const {user, setUser} = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -307,6 +307,14 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         setOpenSnackbar(true)
     }
 
+    const agregarNota = () => {
+
+    }
+
+    const eliminarNota = () => {
+
+    }
+
     const bodyModal = (
 
         <div style={modalStyle} className={classes.paper}>
@@ -382,12 +390,12 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                         <span className={classes.spanDisabled}>Tipo</span>
                         {edicion ? <span className={classes.span}>{solicitud.tipo}</span>
                             : <TextField className={classes.inputs} id="tipoSolicitud" select onChange={cambiarTipoSolicitud} value={tipo || ''} variant={'outlined'} >
-                            {tiposDeSolicitud.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>}
+                                {tiposDeSolicitud.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>}
                     </div>
 
                 </form>
@@ -401,7 +409,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} dato={solicitud} setCampoEditado={setCampoEditado}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas}></Notas>
                 }
 
             </div>
