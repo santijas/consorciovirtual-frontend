@@ -1,6 +1,6 @@
 import { Typography, makeStyles } from '@material-ui/core';
-import React, { useState, useEffect, useContext } from 'react'
-import { TextField, List, ListItem, Button } from '@material-ui/core';
+import React, { useState, useContext } from 'react'
+import { TextField, List, ListItem, Button, IconButton } from '@material-ui/core';
 import { UserContext } from '../hooks/UserContext';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
@@ -62,6 +62,9 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
         gap: 8
+    },
+    botonEliminarNota: {
+        backgroundColor: "#c3c3c387"
     }
 }));
 
@@ -92,7 +95,8 @@ export const Notas = ({ notas, setCampoEditado, update }) => {
 
     const eliminarNota = (notaAEliminar) => {
         notas.splice(notas.indexOf(notaAEliminar), 1)
-        update(notas.filter(nota => nota !== notaAEliminar))
+        notas = notas.filter(nota => nota !== notaAEliminar)
+        update(notas)
         setCampoEditado(true)
     }
 
@@ -116,7 +120,7 @@ export const Notas = ({ notas, setCampoEditado, update }) => {
                             <span className={classes.fechaNota}>{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleDateString() : new Date().toLocaleDateString()}</span>
                             <Typography variant="body2" align="right">{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleTimeString().replace(/(.*)\D\d+/, '$1') : new Date().toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Typography>
                             </div> 
-                            {user.tipo === 'Administrador_consorcio' && <Button variant="outlined" onClick={() => eliminarNota(nota)}><DeleteForeverSharpIcon color="error"></DeleteForeverSharpIcon></Button> }
+                            {user.tipo === 'Administrador_consorcio' && <IconButton className={classes.botonEliminarNota} onClick={() => eliminarNota(nota)}><DeleteForeverSharpIcon color="error"></DeleteForeverSharpIcon></IconButton> }
                         </div>
                     </ListItem>
                 })}

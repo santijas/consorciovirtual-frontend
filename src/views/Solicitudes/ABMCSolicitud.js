@@ -230,6 +230,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             let nuevaSolicitud = solicitud
             nuevaSolicitud.estado.nombreEstado = estado
             nuevaSolicitud.estado.id = (estado === 'Pendiente') ? 1 : 2
+            nuevaSolicitud.notas = notas
             await solicitudService.update(solicitud)
             setCambiosGuardados(true)
             setCampoEditado(false)
@@ -251,15 +252,6 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
     const validarSolicitud = () => {
         return solicitud.titulo && solicitud.detalle && tipo
-    }
-
-
-    const agregarNota = () => {
-
-    }
-
-    const eliminarNota = () => {
-
     }
 
     const bodyModal = (
