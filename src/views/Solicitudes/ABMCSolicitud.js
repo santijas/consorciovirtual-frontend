@@ -13,33 +13,10 @@ import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { SolicitudTecnica } from '../../domain/solicitudTecnica';
 import { UserContext } from '../../hooks/UserContext';
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
-    root: {
-        display: 'flex',
-        marginLeft: 300,
-        flexDirection: "row",
-        height: "100%",
-        boxSizing: "unset"
-    },
-    tittle: {
-        textAlign: "left",
-    },
-    contenedorForm: {
-        paddingTop: 30,
-        display: "flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog: {
-        paddingTop: 30,
-        display: "flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link: {
         color: "#159D74",
         textAlign: "left",
@@ -64,20 +41,6 @@ const useStyles = makeStyles({
         backgroundColor: "white",
         textAlign: "left"
     },
-    contenedorInput: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
     contenedorInputDescripcion: {
         display: "flex",
         flexDirection: "column",
@@ -93,11 +56,6 @@ const useStyles = makeStyles({
     botones: {
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones: {
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -194,9 +152,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
 
     let history = useHistory()
@@ -297,16 +253,6 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         return solicitud.titulo && solicitud.detalle && tipo
     }
 
-    const usarSnack = (mensaje, esError) => {
-        if (esError) {
-            setSnackColor("#F23D4F")
-        } else {
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
-
     const bodyModal = (
 
         <div style={modalStyle} className={classes.paper}>
@@ -323,8 +269,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
     return (
 
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToSolicitudes}>
                     <Chevron className={classes.chevron} />
                     Volver a solicitudes técnicas
@@ -342,12 +288,12 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Nro de solicitud técnica</span>
                         <span className={classes.nroSolicitud}>{edicion ? solicitud.id : '-'}</span>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span} >Estado</span>
                         <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoSolicitud" select disabled={creacion} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Activa' : ''} variant={creacion ? 'filled' : 'outlined'} >
                             {estadosDeSolicitud.map((option) => (
@@ -356,27 +302,27 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Autor</span>
                         {creacion ? <span className={classes.span}>{user.nombre + " " + user.apellido}</span>
                             : <span className={classes.span}>{solicitud.nombreAutor}</span>}
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Fecha</span>
                         <div className={classes.contenedorFecha}>
                             <span className={classes.span}>{edicion ? solicitud.fecha : (new Date()).toLocaleDateString()}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Titulo</span>
                         {edicion ? <span className={classes.span}>{solicitud.titulo}</span>
                             : <TextField className={classes.inputs} id="titulo" variant="outlined" value={solicitud.titulo || ''} onChange={(event) => actualizarValor(event)}></TextField>}
-                    </div>
+                    </LeftInputBox>
 
                     <div className={classes.contenedorInput}>
                         <span className={classes.spanDisabled}>Tipo</span>
@@ -404,17 +350,17 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                     <Notas notas={notas} dato={solicitud} setCampoEditado={setCampoEditado}></Notas>
                 }
 
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
                 {creacion &&
-                    <div className={classes.contenedorBotones}>
+                    <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearSolicitud()} >Crear solicitud técnica</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToSolicitudes}>Cancelar</StyledButtonSecondary>
-                    </div>
+                    </ButtonBox>
                 }
                 {edicion && !creacion &&
-                    <div className={classes.contenedorBotones}>
+                    <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarSolicitud}>Guardar cambios</StyledButtonPrimary>
                         }
@@ -422,7 +368,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                             <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                         }
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar solicitud</StyledButtonSecondary>
-                    </div>
+                    </ButtonBox>
                 }
                 <Divider className={classes.divider} />
 
@@ -430,13 +376,13 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                     <Historial tipo="SOLICITUD_TECNICA" id={params.id} update={cambiosGuardados} />
                 }
 
-            </div>
+            </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
 
-        </div>
+        </RootBoxABM>
 
     )
 }

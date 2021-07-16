@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
+import { Link, TextField, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { anuncioService } from "../../services/anuncioService";
 import { Historial } from '../../components/Historial'
@@ -11,35 +11,11 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { Anuncio } from '../../domain/anuncio';
 import update from 'immutability-helper';
-import { usuarioService } from '../../services/usuarioService';
 import { UserContext } from '../../hooks/UserContext'; 
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, FullInputBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
-    root: {
-        display: 'flex',
-        marginLeft: 300,
-        flexDirection: "row",
-        height: "100%",
-        boxSizing: "unset"
-    },
-    tittle: {
-        textAlign: "left",
-    },
-    contenedorForm: {
-        paddingTop: 30,
-        display: "flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog: {
-        paddingTop: 30,
-        display: "flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link: {
         color: "#159D74",
         textAlign: "left",
@@ -59,30 +35,10 @@ const useStyles = makeStyles({
         flexWrap: "wrap",
         justifyContent: "space-between",
         marginTop: 30,
-
     },
     inputs: {
         backgroundColor: "white",
         textAlign: "left"
-    },
-    contenedorInput: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50
-    },
-    contenedorInputDerecha: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50
-    },
-    contenedorInputAnchoCompleto: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%"
     },
     span: {
         textAlign: "left",
@@ -102,11 +58,6 @@ const useStyles = makeStyles({
         color: "grey",
         fontSize: 16,
         marginBottom: 6,
-    },
-    contenedorBotones: {
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -145,9 +96,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [usuarios, setUsuarios] = useState('')
     const {user, setUser} = useContext(UserContext);
@@ -155,25 +104,24 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     let history = useHistory()
     const params = useParams()
 
-    const fetchAnuncio = async () => {
-        try {
-            let unAnuncio
-            if (creacion) {
-                unAnuncio = new Anuncio()
-            } else {
-                unAnuncio = await anuncioService.getById(params.id)
+
+    useEffect(() => {
+        const fetchAnuncio = async () => {
+            try {
+                let unAnuncio
+                if (creacion) {
+                    unAnuncio = new Anuncio()
+                } else {
+                    unAnuncio = await anuncioService.getById(params.id)
+                }
+                setAnuncio(unAnuncio)
             }
-            setAnuncio(unAnuncio)
+            catch(error) {
+                usarSnack(error.response.data, true)
+            }
         }
-        catch {
-
-        }
-    }
-
-    const fetchAllUsers = async (textoBusqueda) => {
-        const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
-        setUsuarios(usuariosEncontrados)
-    }
+        fetchAnuncio()
+    }, [params.id, creacion])
 
     const actualizarValor = (event) => {
         const newState = update(anuncio, {
@@ -190,11 +138,6 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     const popupModal = () => {
         setOpenModal(true)
     }
-
-    useEffect(() => {
-        fetchAnuncio()
-        fetchAllUsers('')
-    }, [])
 
     const crearAnuncio = async () => {
         try {
@@ -238,16 +181,6 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
         return anuncio.titulo && anuncio.fechaVencimiento && anuncio.descripcion
     }
 
-    const usarSnack = (mensaje, esError) => {
-        if (esError) {
-            setSnackColor("#F23D4F")
-        } else {
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
-
     const bodyModal = (
         <div style={modalStyle} className={classes.paper}>
             <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este anuncio?</h2>
@@ -263,67 +196,68 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
 
     return (
 
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToAnuncios}>
                     <Chevron className={classes.chevron} />
                     Volver a anuncios
                 </Link>
                 {creacion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Nuevo anuncio
                     </Typography>
                 }
 
                 {!creacion && edicion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Modificar anuncio
                     </Typography>
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Fecha</span>
                         <div className={classes.contenedorFecha}>
                             <span className={classes.span}>{edicion ? anuncio.fechaCreacion : (new Date()).toLocaleDateString()}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Autor</span>
-                        <span className={classes.span}>{edicion ? anuncio.nombreAutor : user.nombre + " " + user.apellido}</span>
-                    </div>
+                        <span className={classes.span}>{edicion ? anuncio.nombreAutor : user?.nombreYApellido()}</span>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+
+                    <LeftInputBox>
                         <span className={classes.span} >Título</span>
                         <TextField className={classes.inputs} id="titulo" value={anuncio.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <RightInputBox>
                         <span className={classes.span}>Vencimiento</span>
                         <TextField className={classes.inputs} id="fechaVencimiento" value={anuncio.fechaVencimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaVencimiento" type="date" variant="outlined" />
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInputAnchoCompleto}>
+                    <FullInputBox>
                         <span className={classes.span}>Descripción</span>
                         <TextField className={classes.inputs} id="descripcion" value={anuncio.descripcion || ''} onChange={(event) => actualizarValor(event)} name="descripcion" variant="outlined" />
-                    </div>
+                    </FullInputBox>
 
                 </form>
 
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
                     {creacion &&
-                        <div className={classes.contenedorBotones}>
+                        <ButtonBox>
                             <StyledButtonPrimary className={classes.botones} onClick={() => crearAnuncio()} >Crear anuncio</StyledButtonPrimary>
                             <StyledButtonSecondary className={classes.botones} onClick={backToAnuncios}>Cancelar</StyledButtonSecondary>
-                        </div>
+                        </ButtonBox>
                     }
                     {edicion && !creacion &&
-                        <div className={classes.contenedorBotones}>
+                        <ButtonBox>
                             {campoEditado &&
                                 <StyledButtonPrimary className={classes.botones} onClick={modificarAnuncio}>Guardar cambios</StyledButtonPrimary>
                             }
@@ -331,7 +265,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                                 <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                             }
                             <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar anuncio</StyledButtonSecondary>
-                        </div>
+                        </ButtonBox>
                     }
                     <Divider className={classes.divider} />
 
@@ -339,13 +273,13 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                         <Historial tipo="ANUNCIO" id={params.id} update={cambiosGuardados} />
                     }
 
-                </div>
+                </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
 
-        </div>
+        </RootBoxABM>
 
     )
 }

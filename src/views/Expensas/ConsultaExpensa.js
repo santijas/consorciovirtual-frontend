@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
@@ -12,33 +12,11 @@ import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../
 import { gastoService } from '../../services/gastoService';
 import { expensaService } from '../../services/expensaService';
 import { Checkout } from '../../components/Checkout';
+import { UserContext } from '../../hooks/UserContext';
+import { StyledButtonPrimary } from '../../components/Buttons';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      flexDirection: "row",
-      height: "100%",
-      boxSizing: "unset"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorForm:{
-        paddingTop:30,
-        display:"flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog:{
-        paddingTop:30,
-        display:"flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link:{
         color: "#159D74",
         textAlign:"left",
@@ -64,20 +42,6 @@ const useStyles = makeStyles ({
         backgroundColor: "white",
         textAlign: "left"
     },
-    contenedorInput:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
     span:{
         textAlign:"left",
         marginLeft: 10,
@@ -86,11 +50,6 @@ const useStyles = makeStyles ({
     botones:{
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones:{
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -162,6 +121,7 @@ export const ConsultarExpensa = () =>{
     const classes = useStyles();
     const [gastos, setGastos] = useState('') 
     const [expensa, setExpensa] = useState()
+    const { user, setUser } = useContext(UserContext);
 
     let history = useHistory()
     const params = useParams()
@@ -184,6 +144,14 @@ export const ConsultarExpensa = () =>{
         history.push("/expensas")
     }
 
+    const habilitarPago = () =>{
+        return expensa.estado !== "Pagada" && !user.esAdmin() 
+    }
+
+    const registrarPago = () =>{
+       history.push(`/payment/success/${expensa.id}`)
+    }
+
         const renderInput = ( props ) => (
             <TextField 
             className={classes.inputsDate} 
@@ -197,22 +165,22 @@ export const ConsultarExpensa = () =>{
 
     return (
         
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToExpensas}>
                     <Chevron className={classes.chevron}/>
                     Volver a expensas
                 </Link>
 
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Expensa
                      </Typography>
         
-            {expensa &&
+                {expensa &&
                 <form className={classes.form} noValidate autoComplete="off">
                     
                    
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Período</span>
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
@@ -225,33 +193,33 @@ export const ConsultarExpensa = () =>{
                                 disableToolbar
                             />
                         </MuiPickersUtilsProvider>
-                    </div>
+                    </LeftInputBox>
                     
                     
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Monto a pagar</span>
                         <span className={classes.inputsDisabled}>$ {expensa.montoAPagar}</span>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Valor de expensa común</span>
                         <span className={classes.inputsDisabled}>$ {numeroConPuntos(expensa.valorDepartamentoComun) || ' - '}</span>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Valor de expensa extraordinaria</span>
                         <span className={classes.inputsDisabled}>$ {numeroConPuntos(expensa.valorDepartamentoExtraordinaria) || ' - ' }</span>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Propietario</span>
                         <span className={classes.inputsDisabled}> {expensa.propietario || ' - '}</span>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Departamento</span>
                         <span className={classes.inputsDisabled}> {expensa.unidad || ' - ' }</span>
-                    </div>
+                    </RightInputBox>
                    
                 </form> 
                  }
@@ -265,20 +233,26 @@ export const ConsultarExpensa = () =>{
                     </Box>
                 </div>
                 }
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
 
-                {expensa &&
-                <div className={classes.contenedorBotones}>
+                {expensa && habilitarPago() &&
+                <ButtonBox>
                     <Checkout expensaId={expensa.id} />
-                </div>
+                </ButtonBox>
+                 }
+
+                {expensa && user.esAdmin() &&
+                <ButtonBox>
+                    <StyledButtonPrimary className={classes.botones} onClick={ registrarPago } >Registrar Pago</StyledButtonPrimary>
+                </ButtonBox>
                  }
                 <Divider className={classes.divider} />
 
-            </div>
+            </RightFormBox>
             
-         </div>
+         </RootBoxABM>
 
     )
 }

@@ -11,34 +11,10 @@ import { Chevron } from '../../assets/icons';
 import { Departamento } from '../../domain/departamento';
 import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
-import { Usuario } from '../../domain/usuario';
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
-    root: {
-        display: 'flex',
-        marginLeft: 300,
-        flexDirection: "row",
-        height: "100%",
-        boxSizing: "unset"
-    },
-    tittle: {
-        textAlign: "left",
-    },
-    contenedorForm: {
-        paddingTop: 30,
-        display: "flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog: {
-        paddingTop: 30,
-        display: "flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link: {
         color: "#159D74",
         textAlign: "left",
@@ -58,25 +34,10 @@ const useStyles = makeStyles({
         flexWrap: "wrap",
         justifyContent: "space-between",
         marginTop: 30,
-
     },
     inputs: {
         backgroundColor: "white",
         textAlign: "left"
-    },
-    contenedorInput: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
     },
     span: {
         textAlign: "left",
@@ -86,11 +47,6 @@ const useStyles = makeStyles({
     botones: {
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones: {
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -143,9 +99,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [usuarios, setUsuarios] = useState([])
     const [inquilinos, setInquilinos] = useState([])
@@ -254,16 +208,6 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         return departamento.nroDepartamento && departamento.torre && departamento.piso && departamento.metrosCuadrados
     }
 
-    const usarSnack = (mensaje, esError) => {
-        if (esError) {
-            setSnackColor("#F23D4F")
-        } else {
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
-
     const changePropietario = (event) => {
         setPropietarioId(event.target.value)
         setCampoEditado(true)     
@@ -291,49 +235,49 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
     return (
 
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToUsers}>
                     <Chevron className={classes.chevron} />
                     Volver a departamentos
                 </Link>
                 {creacion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Nuevo departamento
                     </Typography>
                 }
 
                 {!creacion && edicion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Modificar departamento
                     </Typography>
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
 
-                <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Piso</span>
                         <TextField className={classes.inputs} id="piso" value={departamento.piso || ''} onChange={(event) => actualizarValor(event)} name="piso" variant="outlined" />
-                    </div>
+                    </LeftInputBox>
                     
                     
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Departamento</span>
                         <TextField className={classes.inputs} id="nroDepartamento" value={departamento.nroDepartamento || ''} onChange={(event) => actualizarValor(event)} name="nroDepartamento" variant="outlined" />
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span} >Torre</span>
                         <TextField className={classes.inputs} id="torre" value={departamento.torre || ''} onChange={(event) => actualizarValor(event)} name="torre" variant="outlined" />
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Superficie (m2)</span>
                         <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" type="number"/>
-                    </div>
+                    </RightInputBox>
 
                     {usuarios && departamento &&
-                        <div className={classes.contenedorInput}>
+                        <LeftInputBox>
                             <span className={classes.span}>Propietario</span>
                             {departamento &&
                                 <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={ changePropietario } name="propietario" variant="outlined" >
@@ -343,17 +287,17 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                         </MenuItem>
                                     ))}
                                 </TextField>}
-                        </div>
+                        </LeftInputBox>
                     }
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Porcentaje de expensas (%)</span>
                         <TextField className={classes.inputs} id="porcentajeExpensa" onChange={(event) => actualizarValor(event)} value={departamento.porcentajeExpensa || ''} name="porcentajeExpensa" variant="outlined" type="number" />
-                    </div>
+                    </RightInputBox>
 
                      
                     { inquilinos && departamento && edicion && !creacion &&
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Inquilino</span>
                         {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={ changeInquilino } name="inquilino" variant="outlined" >
                                     <MenuItem key={0} value={null}>
@@ -365,21 +309,21 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                     </MenuItem>
                                 ))}
                         </TextField> }
-                    </div> } 
+                    </LeftInputBox> } 
 
                 </form>
 
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
                 {creacion &&
-                    <div className={classes.contenedorBotones}>
+                    <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearDepartamento()} >Crear departamento</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
-                    </div>
+                    </ButtonBox>
                 }
                 {edicion && !creacion && propietarioId &&
-                    <div className={classes.contenedorBotones}>
+                    <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarDepartamento}>Guardar cambios</StyledButtonPrimary>
                         }
@@ -387,7 +331,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                         }
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar Departamento</StyledButtonSecondary>
-                    </div>
+                    </ButtonBox>
                 }
                 <Divider className={classes.divider} />
                 
@@ -395,13 +339,13 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                     <Historial tipo="DEPARTAMENTO" id={params.id} update={cambiosGuardados}/>
                 }
 
-            </div>
+            </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
 
-        </div>
+        </RootBoxABM>
 
     )
 }

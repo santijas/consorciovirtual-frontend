@@ -17,33 +17,10 @@ import 'moment/locale/es'
 import moment from 'moment';
 import {FileUploader} from '../../components/FileUploader'
 import { app } from '../../base';
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      flexDirection: "row",
-      height: "100%",
-      boxSizing: "unset"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorForm:{
-        paddingTop:30,
-        display:"flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog:{
-        paddingTop:30,
-        display:"flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link:{
         color: "#159D74",
         textAlign:"left",
@@ -69,20 +46,6 @@ const useStyles = makeStyles ({
         backgroundColor: "white",
         textAlign: "left"
     },
-    contenedorInput:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
     span:{
         textAlign:"left",
         marginLeft: 10,
@@ -91,11 +54,6 @@ const useStyles = makeStyles ({
     botones:{
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones:{
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -211,9 +169,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [tipoGasto, setTipoGasto] = useState()
     const [rubro, setRubro] = useState()
@@ -330,16 +286,6 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         return gasto.periodo && gasto.titulo && gasto.importe
     }
 
-    const usarSnack = (mensaje, esError) =>{
-        if(esError){
-            setSnackColor("#F23D4F")
-        }else{
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
-
     const handleChangeType = (event) => {
         gasto.tipo = event.target.value
         setTipoGasto(event.target.value)
@@ -393,8 +339,8 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     return (
         
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToGastos}>
                     <Chevron className={classes.chevron}/>
                     Volver a gastos
@@ -414,7 +360,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                 <form className={classes.form} noValidate autoComplete="off">
                     
                     {   creacion &&
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Período</span>
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
@@ -426,11 +372,11 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                                 TextFieldComponent={renderInput}
                             />
                         </MuiPickersUtilsProvider>
-                    </div>
+                    </LeftInputBox>
                     }
 
                     {   !creacion && edicion &&
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Período</span>
                         <MuiPickersUtilsProvider utils={MomentUtils}  locale={moment().locale('es')}>
                             <DatePicker
@@ -442,22 +388,23 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                                 onChange={(event) => actualizarValor(event)}
                             />
                         </MuiPickersUtilsProvider>
-                    </div>
+                    </LeftInputBox>
                     }
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span} >Titulo</span>
                         <TextField className={classes.inputs} id="titulo" value={gasto.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
-                    </div>
+                    </RightInputBox>
 
                     { !creacion && edicion &&
-                        <div className={classes.contenedorInput}>
+                        <LeftInputBox>
                         <span className={classes.span}>Tipo</span>
                         <TextField className={classes.inputs} id="tipo" value={gasto.tipo || ''} onChange={(event) => actualizarValor(event)} name="tipo"  variant="outlined" disabled/>
-                    </div>
+                    </LeftInputBox>
                     }
+
                     { creacion && !edicion &&
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Tipo</span>
                         <TextField className={classes.inputs} id="tipo" select onChange={ handleChangeType } value={gasto.tipo || ''} variant="outlined" >
                                 {tipoDeGasto.map((option) => (
@@ -466,14 +413,15 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </div>
+                    </LeftInputBox>
                     }
-                    <div className={classes.contenedorInputDerecha}>
+
+                    <RightInputBox>
                         <span className={classes.span}>Monto</span>
                         <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe"  variant="outlined" type="number"/>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Rubro</span>
                         <TextField className={classes.inputs} id="rubro" select onChange={ handleChangeRubro } value={gasto.rubro || ''} variant="outlined" >
                                 {rubros.map((option) => (
@@ -482,21 +430,21 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </div>
+                    </LeftInputBox>
 
                 { creacion && !edicion &&
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Archivo</span>
                         <FileUploader
                         onFileSelectSuccess={(file) => setSelectedFile(file)}
                         onFileSelectError={({ error }) => alert(error)}
                         />
-                    </div>
+                    </RightInputBox>
                 }
 
                 { !creacion && edicion &&
                     
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Archivo</span>
                         {
                             gasto.url ?
@@ -512,23 +460,23 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         }
                         
                         
-                    </div>
+                    </RightInputBox>
                 }
 
 
                 </form> 
                       
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
                 { creacion &&
-                <div className={classes.contenedorBotones}>
+                <ButtonBox>
                     <StyledButtonPrimary className={classes.botones} onClick={() => crearGasto() } >Crear gasto</StyledButtonPrimary>
                     <StyledButtonSecondary className={classes.botones} onClick={ backToGastos }>Cancelar</StyledButtonSecondary>
-                </div>
+                </ButtonBox>
                 }
                 { edicion && !creacion &&
-                <div className={classes.contenedorBotones}>
+                <ButtonBox>
                     {campoEditado &&
                         <StyledButtonPrimary className={classes.botones} onClick={ modificarGasto }>Guardar cambios</StyledButtonPrimary>
                     }   
@@ -536,7 +484,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                     }
                     <StyledButtonSecondary className={classes.botones} onClick={ popupModal }>Eliminar gasto</StyledButtonSecondary>
-                </div>
+                </ButtonBox>
                 }
                 <Divider className={classes.divider} />
                 
@@ -544,13 +492,13 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                     <Historial tipo='GASTO' id={params.id} update={cambiosGuardados}/>
                 }
 
-            </div>
+            </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
                 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={ () => setOpenModal(false) }/>
             
-         </div>
+         </RootBoxABM>
 
     )
 }

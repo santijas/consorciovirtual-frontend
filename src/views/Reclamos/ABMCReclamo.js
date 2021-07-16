@@ -5,7 +5,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { reclamoService } from "../../services/reclamoService";
-import { usuarioService } from "../../services/usuarioService";
 import { Historial } from '../../components/Historial'
 import { Notas } from '../../components/Notas'
 import { SnackbarComponent } from '../../components/Snackbar'
@@ -14,33 +13,10 @@ import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { Reclamo } from '../../domain/reclamo';
 import { UserContext } from '../../hooks/UserContext';
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
-    root: {
-        display: 'flex',
-        marginLeft: 300,
-        flexDirection: "row",
-        height: "100%",
-        boxSizing: "unset"
-    },
-    tittle: {
-        textAlign: "left",
-    },
-    contenedorForm: {
-        paddingTop: 30,
-        display: "flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog: {
-        paddingTop: 30,
-        display: "flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link: {
         color: "#159D74",
         textAlign: "left",
@@ -65,20 +41,6 @@ const useStyles = makeStyles({
         backgroundColor: "white",
         textAlign: "left"
     },
-    contenedorInput: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha: {
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
     contenedorInputDescripcion: {
         display: "flex",
         flexDirection: "column",
@@ -94,11 +56,6 @@ const useStyles = makeStyles({
     botones: {
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones: {
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -182,9 +139,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const {user, setUser} = useContext(UserContext);
 
@@ -278,15 +233,6 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         return reclamo.asunto && reclamo.mensaje
     }
 
-    const usarSnack = (mensaje, esError) => {
-        if (esError) {
-            setSnackColor("#F23D4F")
-        } else {
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
 
     const bodyModal = (
 
@@ -304,8 +250,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
     return (
 
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToReclamos}>
                     <Chevron className={classes.chevron} />
                     Volver a reclamos
@@ -323,12 +269,12 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Nro de reclamo</span>
                         <span className={classes.nroReclamo}>{edicion ? reclamo.id : '-'}</span>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span} >Estado</span>
                         <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={creacion} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Activo' : ''} variant={creacion ? 'filled' : 'outlined'} >
                             {estadosDeReclamo.map((option) => (
@@ -337,27 +283,27 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Autor</span>
                         {creacion ? <span className={classes.span}>{user.nombre + " " + user.apellido}</span>
                             : <span className={classes.span}>{reclamo.nombreAutor}</span>}
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Fecha</span>
                         <div className={classes.contenedorFecha}>
                             <span className={classes.span}>{edicion ? reclamo.fecha : (new Date()).toLocaleDateString()}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Asunto</span>
                         {edicion ? <span className={classes.span}>{reclamo.asunto}</span>
                             : <TextField className={classes.inputs} id="asunto" variant="outlined" value={reclamo.asunto || ''} onChange={(event) => actualizarValor(event)}></TextField>}
-                    </div>
+                    </LeftInputBox>
 
                 </form>
 
@@ -373,17 +319,17 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                     <Notas notas={notas} dato={reclamo} setCampoEditado={setCampoEditado}></Notas>
                 }
                 
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
                 {creacion &&
-                    <div className={classes.contenedorBotones}>
+                    <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={crearReclamo}>Crear reclamo</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToReclamos}>Cancelar</StyledButtonSecondary>
-                    </div>
+                    </ButtonBox>
                 }
                 {edicion && !creacion &&
-                    <div className={classes.contenedorBotones}>
+                    <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarReclamo}>Guardar cambios</StyledButtonPrimary>
                         }
@@ -391,7 +337,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                             <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                         }
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar reclamo</StyledButtonSecondary>
-                    </div>
+                    </ButtonBox>
                 }
                 <Divider className={classes.divider} />
 
@@ -399,13 +345,13 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                     <Historial tipo="RECLAMO" id={params.id} update={cambiosGuardados} />
                 }
 
-            </div>
+            </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
 
-        </div>
+        </RootBoxABM>
 
     )
 }

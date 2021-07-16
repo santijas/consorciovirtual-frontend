@@ -7,31 +7,14 @@ import { useLocation } from 'react-router-dom';
 import { solicitudService } from '../../services/solicitudService';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { SnackbarComponent } from '../../components/Snackbar'
+import useSnack from '../../hooks/UseSnack';
+import { RootBox, SearchBox } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    marginLeft: 300,
-    marginTop: 30,
-    marginRight: 50,
-    flexDirection: "column"
-  },
-  tittle: {
-    textAlign: "left",
-  },
-  contenedorBusqueda: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: 20
-  },
   cantidadObject: {
     fontWeight: 300,
     marginRight: 10
   },
-  departamento: {
-    display: "flex"
-  }
-
 });
 
 const headers = [
@@ -68,8 +51,7 @@ const ColumnasCustom = (dato) => {
 export const Solicitudes = () => {
   const classes = useStyles();
   const [solicitudes, setSolicitudes] = useState([])
-  const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [mensajeSnack, setMensajeSnack] = useState()
+  const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
   let history = useHistory()
   let location = useLocation()
@@ -89,34 +71,32 @@ export const Solicitudes = () => {
   }, [textoBusqueda])
 
   useEffect( () =>{
-    const usarSnack = () => {
-      setOpenSnackbar(location.state.openChildSnack)
-      setMensajeSnack(location.state.mensajeChild)
-    }
 
     const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+      if(location.state !== undefined){
+        usarSnack(location.state.mensajeChild, false)
+      }
     }
     fetchSnack()
   },[location.state])
 
   return (
-    <div className={classes.root} >
-      <Typography component="h2" variant="h5" className={classes.tittle}>
+    <RootBox >
+      <Typography component="h2" variant="h5" className="tittle">
         Solicitudes técnicas
       </Typography>
-      <div className={classes.contenedorBusqueda}>
+      <SearchBox>
         <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={ setTextoBusqueda } />
         <div>
           <span className={classes.cantidadObject} > {solicitudes.length} solicitudes técnicas </span>
           <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>
         </div>
-      </div>
+      </SearchBox>
       <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"}/>
     
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
-    </div>
+    </RootBox>
 
   )
 }

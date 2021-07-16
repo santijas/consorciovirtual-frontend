@@ -58,7 +58,7 @@ export const NavBar = () => {
       { user &&
       <List>
 
-        {(user.tipo === "Administrador" || user.tipo === "Administrador_consorcio") &&
+        { user.esAdmin() &&
           <ListItem button key="Usuarios" onClick={() => handleSelectMenu("usuarios")}>
             <ListItemIcon>{selected === "usuarios" ? <ActiveUser className="navicon activecolor" /> : <NonActiveUser className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "usuarios") ? "activecolor activesize" : "font"}`}>Usuarios</span>
@@ -87,14 +87,14 @@ export const NavBar = () => {
             <span className={`${(selected === "solicitudes") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
           </ListItem>
 
-        {user.tipo === "Propietario" &&
+        { user.esPropietario() &&
           <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("inquilinos")}>
             <ListItemIcon>{selected === "inquilinos" ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "inquilinos") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
           </ListItem>
         }
 
-        {(user.tipo === "Administrador" || user.tipo === "Administrador_consorcio") &&
+        { user.esAdmin() &&
           <ListItem button key="Gastos" onClick={() => handleSelectMenu("gastos")}>
             <ListItemIcon>{selected === "gastos" ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "gastos") ? "activecolor activesize" : "font"}`}>Gastos</span>

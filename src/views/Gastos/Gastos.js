@@ -7,32 +7,15 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { gastoService } from '../../services/gastoService';
 import { SnackbarComponent } from '../../components/Snackbar';
 import { dosDecimales, formatDate, numeroConPuntos } from '../../utils/formats';
+import useSnack from '../../hooks/UseSnack';
+import { RootBox, SearchBox } from '../../components/Contenedores';
 
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      marginTop: 30,
-      marginRight: 50,
-      flexDirection: "column"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorBusqueda:{
-      display: "flex",
-      justifyContent: "space-between",
-      marginTop: 20
-    },
     cantidadObject:{
       fontWeight: 300,
       marginRight: 10
     },
-    departamento:{
-      display:"flex"
-    }
-
   });
 
 const headers = [
@@ -64,8 +47,7 @@ export const Gastos = () =>{
     const classes = useStyles();
     const location = useLocation();
     const [gastos, setGastos] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState('')
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     let history = useHistory()
 
@@ -84,37 +66,35 @@ export const Gastos = () =>{
       fetchAll(textoBusqueda)
   },[textoBusqueda])
     
-    useEffect( () =>{
-      const usarSnack = () => {
-        setOpenSnackbar(location.state.openChildSnack)
-        setMensajeSnack(location.state.mensajeChild)
-      }
+  useEffect( () =>{
 
-      const fetchSnack = () => {
-        location.state === undefined? setOpenSnackbar(false) : usarSnack()
+    const fetchSnack = () => {
+      if(location.state !== undefined){
+        usarSnack(location.state.mensajeChild, false)
       }
-      fetchSnack()
-    },[location.state])
+    }
+    fetchSnack()
+  },[location.state])
  
 
 
     return (
-        <div className={classes.root} >
-           <Typography component="h2" variant="h5" className={classes.tittle}>
+        <RootBox>
+           <Typography component="h2" variant="h5" className="tittle">
              Gastos
            </Typography>
-           <div className={classes.contenedorBusqueda}> 
+           <SearchBox> 
               <Busqueda holder="Buscá por título o monto" busqueda={setTextoBusqueda} />
               <div>
                <span className={classes.cantidadObject} > {gastos.length} gastos </span>
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>
               </div>
-           </div>
+           </SearchBox>
             <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
 
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         
-         </div>
+         </RootBox>
 
     )
 }

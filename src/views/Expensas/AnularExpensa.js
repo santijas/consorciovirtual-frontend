@@ -13,33 +13,10 @@ import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../
 import { departamentoService } from '../../services/departamentoService';
 import { expensaService } from '../../services/expensaService';
 import { SnackbarComponent } from '../../components/Snackbar';
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      flexDirection: "row",
-      height: "100%",
-      boxSizing: "unset"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorForm:{
-        paddingTop:30,
-        display:"flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog:{
-        paddingTop:30,
-        display:"flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link:{
         color: "#159D74",
         textAlign:"left",
@@ -65,20 +42,6 @@ const useStyles = makeStyles ({
         backgroundColor: "white",
         textAlign: "left"
     },
-    contenedorInput:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
     span:{
         textAlign:"left",
         marginLeft: 10,
@@ -87,11 +50,6 @@ const useStyles = makeStyles ({
     botones:{
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones:{
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -160,9 +118,8 @@ export const AnularExpensa = () =>{
     const [selectedDate, handleDateChange] = useState(new Date());
     const [expensaGeneral, setExpensaGeneral] = useState() 
     const [cantidadDeptos, setCantidadDeptos] = useState('')
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack,  usarSnack, snackColor } = useSnack();
+    
 
     let history = useHistory()
 
@@ -200,15 +157,6 @@ export const AnularExpensa = () =>{
         }
     }
 
-    const usarSnack = (mensaje, esError) =>{
-        if(esError){
-            setSnackColor("#F23D4F")
-        }else{
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
-    }
     
     useEffect( ()  =>  {
         fetchExpensasPeriodo()
@@ -235,21 +183,21 @@ export const AnularExpensa = () =>{
 
     return (
         
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToExpensas}>
                     <Chevron className={classes.chevron}/>
                     Volver a expensas
                 </Link>
 
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Anular expensas
                      </Typography>
                 { expensaGeneral &&
                 <form className={classes.form} noValidate autoComplete="off">
                     
                    
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Período</span>
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
@@ -263,23 +211,23 @@ export const AnularExpensa = () =>{
                                 TextFieldComponent={renderInput}
                             />
                         </MuiPickersUtilsProvider>
-                    </div>
+                    </LeftInputBox>
                     
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Cantidad de departamentos</span>
                         <span className={classes.inputsDisabled}>{cantidadDeptos}</span>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Valor total de expensa común</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaComun || ' - '}</span>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Valor total de expensa extraordinaria</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
-                    </div>
+                    </RightInputBox>
                 </form> 
                 }
                 {expensas.length !== 0 && 
@@ -292,19 +240,19 @@ export const AnularExpensa = () =>{
                     </Box>
                 </div>
                 }
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
 
-                <div className={classes.contenedorBotones}>
+                <ButtonBox>
                     <StyledButtonSecondary className={classes.botones} onClick={ anularExpensa } >Anular expensas</StyledButtonSecondary>
-                </div>
+                </ButtonBox>
 
                 <Divider className={classes.divider} />
                 <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
-            </div>
+            </RightFormBox>
             
-         </div>
+         </RootBoxABM>
 
     )
 }

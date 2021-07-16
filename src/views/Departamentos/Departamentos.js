@@ -6,23 +6,10 @@ import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
 import { SnackbarComponent } from '../../components/Snackbar';
+import useSnack from '../../hooks/UseSnack';
+import { RootBox, SearchBox } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      marginTop: 30,
-      marginRight: 50,
-      flexDirection: "column"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorBusqueda:{
-      display: "flex",
-      justifyContent: "space-between",
-      marginTop: 20
-    },
     cantidadObject:{
       fontWeight: 300,
       marginRight: 10
@@ -69,8 +56,7 @@ export const Departamentos = () =>{
     const location = useLocation();
     const classes = useStyles();
     const [departamentos, setDepartamentos] = useState([])
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState('')
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     let history = useHistory()  
 
@@ -89,34 +75,32 @@ export const Departamentos = () =>{
     },[textoBusqueda])
 
     useEffect( () =>{
-      const usarSnack = () => {
-        setOpenSnackbar(location.state.openChildSnack)
-        setMensajeSnack(location.state.mensajeChild)
-      }
 
       const fetchSnack = () => {
-        location.state === undefined? setOpenSnackbar(false) : usarSnack()
+        if(location.state !== undefined){
+          usarSnack(location.state.mensajeChild, false)
+        }
       }
       fetchSnack()
     },[location.state])
 
 
     return (
-        <div className={classes.root} >
-            <Typography component="h2" variant="h5" className={classes.tittle}>
+        <RootBox>
+            <Typography component="h2" variant="h5" className="tittle">
               Departamentos
             </Typography>
-            <div className={classes.contenedorBusqueda}> 
+            <SearchBox> 
                 <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={setTextoBusqueda} />
                 <div>
                 <span className={classes.cantidadObject} > {departamentos.length} departamentos </span>
                 <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
                 </div>
-            </div>
+            </SearchBox>
             <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         
-         </div>
+         </RootBox>
 
     )
 }

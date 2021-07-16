@@ -24,6 +24,7 @@ import { AnularExpensa } from './views/Expensas/AnularExpensa'
 import { Chat } from './views/Chat/Chat.js'
 import { UserContext } from './hooks/UserContext';
 import ReactLoading from 'react-loading';
+import Payment from './views/Expensas/Payment';
 
 
 export const Routes = () => {
@@ -60,6 +61,7 @@ export const Routes = () => {
                         <Route path="/newexpensa" component={ABExpensa} ></Route>
                         <Route path="/expensa/:id" component={ConsultarExpensa}></Route>
                         <Route path="/anularexpensa" component={AnularExpensa}></Route>
+                        <Route path="/payment/success/:id*" component={Payment}></Route>
                         <Route path="/chat" component={Chat}></Route>
                     </div>
                 </Switch>
@@ -73,7 +75,7 @@ export default function PrivateRoute(props) {
     const { component: Component, ...rest } = props;
 
     if(isLoading) {
-        return <div className="loading"><ReactLoading type="spin" color="#159D74" height={150} width={150} className="spin" /></div>
+        return <div className="loadingAbs"><ReactLoading type="spin" color="#159D74" height={150} width={150} className="spin" /></div>
     }
     
     if(user){

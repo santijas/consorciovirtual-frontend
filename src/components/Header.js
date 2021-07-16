@@ -85,9 +85,8 @@ export const Header = () =>{
         setAnchorEl(null);
     };
 
-    const filterFirstLetters = (nombre, apellido) => {
-        const name = nombre + " " + apellido
-        return name.match(/\b(\w)/g).join('')
+    const filterFirstLetters = (nombre) => {
+        return nombre.match(/\b(\w)/g).join('')
     }   
 
     const logout = () =>{
@@ -107,7 +106,7 @@ export const Header = () =>{
                 </div>
                 { user &&
                 <div className={classes.loguedUser} >
-                        <Avatar style={{backgroundColor: avatarColours(user.nombre)}} className={classes.avatar} >{filterFirstLetters(user.nombre, user.apellido)}</Avatar>
+                        <Avatar style={{backgroundColor: avatarColours(user.nombre)}} className={classes.avatar} >{filterFirstLetters(user.nombreYApellido())}</Avatar>
                         <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                           <div className={classes.contenedorBoton}> 
                                 <div className={classes.nombreTipo}>

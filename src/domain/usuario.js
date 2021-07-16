@@ -10,6 +10,14 @@ export class Usuario {
       this.tipo = tipo
     }
 
+    esAdmin(){
+      return this.tipo === "Administrador" || this.tipo === "Administrador_consorcio"
+    }
+
+    esPropietario(){
+      return this.tipo === "Propietario"
+    }
+
     nombreYApellido(){
       return this.nombre + " " + this.apellido
     }

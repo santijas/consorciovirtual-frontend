@@ -16,33 +16,9 @@ import update from 'immutability-helper';
 import { ExpensaGeneral } from '../../domain/expensaGeneral';
 import { expensaService } from '../../services/expensaService';
 import { SnackbarComponent } from '../../components/Snackbar';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      flexDirection: "row",
-      height: "100%",
-      boxSizing: "unset"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorForm:{
-        paddingTop:30,
-        display:"flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog:{
-        paddingTop:30,
-        display:"flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link:{
         color: "#159D74",
         textAlign:"left",
@@ -68,20 +44,6 @@ const useStyles = makeStyles ({
         backgroundColor: "white",
         textAlign: "left"
     },
-    contenedorInput:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
     span:{
         textAlign:"left",
         marginLeft: 10,
@@ -90,11 +52,6 @@ const useStyles = makeStyles ({
     botones:{
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones:{
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -133,10 +90,10 @@ const useStyles = makeStyles ({
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
       },
-      inputsDate:{
-          textTransform: "capitalize",
-          cursor: "pointer"
-      }
+    inputsDate:{
+        textTransform: "capitalize",
+        cursor: "pointer"
+    }
   });
 
   const ColumnasCustom = (dato) => {
@@ -247,21 +204,21 @@ export const ABExpensa = () =>{
 
     return (
         
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToExpensas}>
                     <Chevron className={classes.chevron}/>
                     Volver a expensas
                 </Link>
 
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Calcular expensas {}
                      </Typography>
         
                 <form className={classes.form} noValidate autoComplete="off">
                     
                    
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Período</span>
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
@@ -275,23 +232,23 @@ export const ABExpensa = () =>{
                                 TextFieldComponent={renderInput}
                             ></DatePicker>
                         </MuiPickersUtilsProvider>
-                    </div>
+                    </LeftInputBox>
                     
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Cantidad de departamentos</span>
                         <span className={classes.inputsDisabled}>{cantidadDeptos}</span>
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Valor total de expensa común</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaComun || ' - '}</span>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Valor total de expensa extraordinaria</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
-                    </div>
+                    </RightInputBox>
                 </form> 
                 {gastos.length !== 0 && 
                 <div>
@@ -303,19 +260,19 @@ export const ABExpensa = () =>{
                     </Box>
                 </div>
                 }
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
 
-                <div className={classes.contenedorBotones}>
+                <ButtonBox>
                     <StyledButtonPrimary className={classes.botones} onClick={ generarExpensa } >Generar expensas</StyledButtonPrimary>
-                </div>
+                </ButtonBox>
 
                 <Divider className={classes.divider} />
                 <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
-            </div>
+            </RightFormBox>
             
-         </div>
+         </RootBoxABM>
 
     )
 }

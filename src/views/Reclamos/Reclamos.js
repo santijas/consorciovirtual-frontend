@@ -7,31 +7,14 @@ import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory } from 'react-router-dom';
 import { SnackbarComponent } from '../../components/Snackbar'
 import { useLocation } from 'react-router-dom';
+import useSnack from '../../hooks/UseSnack';
+import { RootBox, SearchBox } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
-  root: {
-    display: 'flex',
-    marginLeft: 300,
-    marginTop: 30,
-    marginRight: 50,
-    flexDirection: "column"
-  },
-  tittle: {
-    textAlign: "left",
-  },
-  contenedorBusqueda: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: 20
-  },
   cantidadObject: {
     fontWeight: 300,
     marginRight: 10
   },
-  departamento: {
-    display: "flex"
-  }
-
 });
 
 const headers = [
@@ -67,8 +50,7 @@ const ColumnasCustom = (dato) => {
 export const Reclamos = () => {
   const classes = useStyles();
   const [reclamos, setReclamos] = useState([])
-  const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [mensajeSnack, setMensajeSnack] = useState('')
+  const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
   let history = useHistory()
   let location = useLocation()
@@ -87,34 +69,32 @@ export const Reclamos = () => {
   }, [textoBusqueda])
 
   useEffect( () =>{
-    const usarSnack = () => {
-      setOpenSnackbar(location.state.openChildSnack)
-      setMensajeSnack(location.state.mensajeChild)
-    }
 
     const fetchSnack = () => {
-      location.state === undefined? setOpenSnackbar(false) : usarSnack()
+      if(location.state !== undefined){
+        usarSnack(location.state.mensajeChild, false)
+      }
     }
     fetchSnack()
   },[location.state])
 
   return (
-    <div className={classes.root} >
-      <Typography component="h2" variant="h5" className={classes.tittle}>
+    <RootBox>
+      <Typography component="h2" variant="h5" className="tittle">
         Reclamos
       </Typography>
-      <div className={classes.contenedorBusqueda}>
+      <SearchBox>
         <Busqueda holder="Buscá por id, asunto o estado" busqueda={setTextoBusqueda} />
         <div>
           <span className={classes.cantidadObject} > {reclamos.length} reclamos </span>
           <StyledButtonPrimary onClick={newReclamo} >Agregar Reclamo</StyledButtonPrimary>
         </div>
-      </div>
+      </SearchBox>
       <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"} />
 
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
-    </div>
+    </RootBox>
 
   )
 }

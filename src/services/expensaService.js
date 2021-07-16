@@ -46,6 +46,11 @@ class ExpensaService {
     async anularExpensas(periodo) {
         return await axios.get(`${REST_SERVER_URL}/expensas/anular`, {params:{ periodo }})
     }
+
+    async pagarExpensa(idExpensa){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        return await axios.put(`${REST_SERVER_URL}/expensas/pagar/${idExpensa}/${idLogueado}`)
+    }
 }
 
 export const expensaService = new ExpensaService()

@@ -11,33 +11,10 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { Usuario } from '../../domain/usuario';
 import update from 'immutability-helper';
+import useSnack from '../../hooks/UseSnack';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
-    root: {
-      display: 'flex',
-      marginLeft: 300,
-      flexDirection: "row",
-      height: "100%",
-      boxSizing: "unset"
-    },
-    tittle:{
-        textAlign: "left",
-    },
-    contenedorForm:{
-        paddingTop:30,
-        display:"flex",
-        width: "100%",
-        flexDirection: "column",
-        paddingRight: 50
-    },
-    buttonLog:{
-        paddingTop:30,
-        display:"flex",
-        backgroundColor: "white",
-        height: "100%",
-        width: "600px",
-        flexDirection: "column"
-    },
     link:{
         color: "#159D74",
         textAlign:"left",
@@ -57,25 +34,10 @@ const useStyles = makeStyles ({
         flexWrap: "wrap",
         justifyContent: "space-between",
         marginTop: 30,
-        
     },
     inputs:{
         backgroundColor: "white",
         textAlign: "left"
-    },
-    contenedorInput:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
-    },
-    contenedorInputDerecha:{
-        display: "flex",
-        flexDirection: "column",
-        flex: "50%",
-        maxWidth: 400,
-        marginBottom: 50,
     },
     span:{
         textAlign:"left",
@@ -85,11 +47,6 @@ const useStyles = makeStyles ({
     botones:{
         display: "flex",
         marginTop: 10,
-    },
-    contenedorBotones:{
-        display: "flex",
-        flexDirection: "column",
-        margin: "10px 50px"
     },
     divider: {
         marginTop: 40
@@ -154,13 +111,10 @@ const tiposDeUsuario = [
 export const ABMCUsuario = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [usuario, setUsuario] = useState('')
-    const [tipoUsuario, setTipoUsuario] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [mensajeSnack, setMensajeSnack] = useState()
-    const [snackColor, setSnackColor] = useState()
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [departamentos, setDepartamentos] = useState([])
 
@@ -186,7 +140,6 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
 
     const handleChangeType = (event) => {
         usuario.tipo = event.target.value
-        setTipoUsuario(event.target.value);
         setCampoEditado(true)
       };
     
@@ -202,8 +155,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                     listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
                     setDepartamentos(listaDepartamentos)
                 }
-                setUsuario(unUsuario)
-                setTipoUsuario(unUsuario.tipo) 
+                setUsuario(unUsuario) 
                 }
             catch(error){
                 usarSnack(error.response.data, true)
@@ -252,17 +204,11 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     }
 
     const validarUsuario = () =>{
-        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo
+        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && validarDni()
     }
 
-    const usarSnack = (mensaje, esError) =>{
-        if(esError){
-            setSnackColor("#F23D4F")
-        }else{
-            setSnackColor("#00A650")
-        }
-        setMensajeSnack(mensaje)
-        setOpenSnackbar(true)
+    const validarDni = () =>{
+        return usuario.dni.length === 8
     }
 
     const bodyModal = (
@@ -281,51 +227,51 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
 
     return (
         
-        <div className={classes.root} >
-            <div className={classes.contenedorForm}>
+        <RootBoxABM>
+            <FormBox>
                 <Link className={classes.link} onClick={backToUsers}>
                     <Chevron className={classes.chevron}/>
                     Volver a usuarios
                 </Link>
                 { creacion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                         Nuevo usuario
                      </Typography>
                 }
                 
                 { !creacion && edicion &&
-                    <Typography component="h2" variant="h5" className={classes.tittle}>
+                    <Typography component="h2" variant="h5" className="tittle">
                     Modificar usuario
                     </Typography>
                 }
         
                 <form className={classes.form} noValidate autoComplete="off">
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Nombre</span>
                         <TextField className={classes.inputs} id="nombre" value={usuario.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span} >Apellido</span>
                         <TextField className={classes.inputs} id="apellido" value={usuario.apellido || ''} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>DNI</span>
                         <TextField className={classes.inputs} id="dni" value={usuario.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" type="number"/>
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>E-mail</span>
                         <TextField className={classes.inputs} id="correo" value={usuario.correo || ''} onChange={(event) => actualizarValor(event)} name="correo"  variant="outlined" />
-                    </div>
+                    </RightInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.span}>Fecha de nacimiento</span>
                         <TextField className={classes.inputs} id="fechaNacimiento" value={usuario.fechaNacimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
-                    </div>
+                    </LeftInputBox>
 
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.span}>Tipo de usuario</span>
                         <TextField className={classes.inputs} id="tipoUsuario" select onChange={ handleChangeType } value={usuario.tipo || ''} variant="outlined" >
                                 {tiposDeUsuario.map((option) => (
@@ -334,42 +280,42 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </div>
+                    </RightInputBox>
                     
                     { edicion && !creacion && departamentos.length > 0 &&
-                    <div className={classes.contenedorInput}>
+                    <LeftInputBox>
                         <span className={classes.spanDisabled}>Piso</span>
                         {
                             departamentos.map((departamento)=>(
                                 <span style={{ marginBottom : 6}} key={departamento.id} className={classes.inputsDisabled}>{departamento.piso || ''}</span>
                             ))
                         }
-                    </div>
+                    </LeftInputBox>
                     }
                     
                     { edicion && !creacion && departamentos.length > 0 &&
-                    <div className={classes.contenedorInputDerecha}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Departamento</span>
                                {
                             departamentos.map((departamento)=>(
                                 <span style={{ marginBottom : 6}} key={departamento.id} className={classes.inputsDisabled}>{departamento.nroDepartamento || ''}</span>
                             ))
                         }
-                    </div>
+                    </RightInputBox>
                     }
                 </form> 
                       
-            </div>
+            </FormBox>
 
-            <div className={classes.buttonLog}>
+            <RightFormBox>
                 { creacion &&
-                <div className={classes.contenedorBotones}>
+                <ButtonBox>
                     <StyledButtonPrimary className={classes.botones} onClick={() => crearUsuario() } >Crear usuario</StyledButtonPrimary>
                     <StyledButtonSecondary className={classes.botones} onClick={ backToUsers }>Cancelar</StyledButtonSecondary>
-                </div>
+                </ButtonBox>
                 }
                 { edicion && !creacion &&
-                <div className={classes.contenedorBotones}>
+                <ButtonBox>
                     {campoEditado &&
                         <StyledButtonPrimary className={classes.botones} onClick={ modificarUsuario }>Guardar cambios</StyledButtonPrimary>
                     }   
@@ -377,7 +323,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                         <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                     }
                     <StyledButtonSecondary className={classes.botones} onClick={ popupModal }>Eliminar usuario</StyledButtonSecondary>
-                </div>
+                </ButtonBox>
                 }
                 <Divider className={classes.divider} />
                 
@@ -385,13 +331,13 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                     <Historial tipo="USUARIO" id={params.id} update={cambiosGuardados}/>
                 }
 
-            </div>
+            </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
                 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={ () => setOpenModal(false) }/>
             
-         </div>
+         </RootBoxABM>
 
     )
 }
