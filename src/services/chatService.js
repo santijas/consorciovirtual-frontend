@@ -27,7 +27,7 @@ class ChatService {
 
         this.webSocket.onmessage = async  (event) => {
             const mensajes = JSON.parse(event.data);
-            getMensajes()
+            getMensajes("")
         };
       
         this.webSocket.onclose = (event) => {
@@ -43,8 +43,8 @@ class ChatService {
         this.webSocket.close();
     }
 
-    async getMensajes(){
-        const mensajesJson = await axios.get(`${REST_SERVER_URL}/mensajes`)
+    async getMensajes(palabraBuscada){
+        const mensajesJson = await axios.get(`${REST_SERVER_URL}/mensajes`,{ params:{ palabraBuscada } } )
         return mensajesJson.data.map(mensaje => MensajeChat.fromJson(mensaje))
     }
 

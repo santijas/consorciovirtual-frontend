@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import { makeStyles, Typography } from '@material-ui/core';
 import { horaYMinutos, soloFecha } from '../utils/formats'; 
@@ -22,8 +22,6 @@ const useStyles = makeStyles ({
                 display: "none",
             },
       },
-    // root: {
-    // },
     mensajePropio: {
         display: "flex",
         flexDirection: "row-reverse",
@@ -66,18 +64,20 @@ const useStyles = makeStyles ({
 
 })
 
-export const ListaChat = ({listaDeMensajes}) => {
+export const ListaChat = ({listaDeMensajes,userId}) => {
     const classes = useStyles();
     const [mensajes,setMensajes] = useState('')
-    const [idUsuario,setIdUsuario] = useState('')
 
     const getMensajes = async () => {
         setMensajes(listaDeMensajes)
     }
- 
+
+
+
+
     const mensajeBloque = (mensaje) => {
         //SE TIENE QUE LIGAR CON EL ID DE USUARIO POSTA
-        return idUsuario == mensaje.idEmisor? 
+        return userId == mensaje.idEmisor? 
             <div className={classes.mensajePropio} key={mensaje.id}>
                 <span className={classes.mensajePropioInterno}>{mensaje.mensaje}</span>
                 <span className={classes.mensajeAjenoFechaHora}>
@@ -100,7 +100,6 @@ export const ListaChat = ({listaDeMensajes}) => {
     
     useEffect( ()  =>  {
         getMensajes()
-        setIdUsuario(usuarioService.usuarioLogueado.id)
     })
 
     return (
