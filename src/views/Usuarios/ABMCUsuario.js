@@ -140,6 +140,10 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
 
     const handleChangeType = (event) => {
         usuario.tipo = event.target.value
+        const newState = update(usuario, {
+            [event.target.tipo]: { $set: event.target.value}
+        })
+        setUsuario(newState)
         setCampoEditado(true)
       };
     

@@ -1,12 +1,11 @@
-body{
-  background-color:#F5F5F5!important;
+*{
+  box-sizing: border-box;
 }
 
-.App {
-  display: flex;
-  text-align: center;
-  flex: 1;
-  flex-direction: column;
+body, html {
+  margin: 0;
+  padding: 0;
+  background-color:#F5F5F5!important;
 }
 
 .App-logo {
@@ -20,16 +19,6 @@ body{
   }
 }
 
-body, html {
-  margin: 0;
-  height: calc(100% - 1em);
-}
-
-#root {
-  display: flex;
-  flex: 1;
-  height: 100%;
-}
 
 .App-header {
   background-color: #282c34;
@@ -156,6 +145,7 @@ button.mercadopago-button {
   padding: 5px 60px;
   border-radius: 2;
   text-transform: none;
+  width: 100%
 }
 
 /* -----Scrollbar----- */
@@ -198,4 +188,5 @@ button.mercadopago-button {
 
 .tittle{
   text-align: left;
+  padding-top: 30px;
 }

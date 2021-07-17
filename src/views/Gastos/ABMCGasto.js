@@ -19,6 +19,7 @@ import {FileUploader} from '../../components/FileUploader'
 import { app } from '../../base';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import axios from 'axios';
 
 const useStyles = makeStyles ({
     link:{
@@ -211,30 +212,45 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         setOpenModal(true)
     }
 
+    const formatName = () =>{
+        let extension = selectedFile.name.split('.').pop();
+        return `Gasto_${gasto.titulo}_${gasto.periodo}_${gasto.rubro}.${extension}`
+    }
+
+
     const onFileUpload = async () => { 
        try{
            if(selectedFile){
-            const storageRef = app.storage().ref()
-            const fileRef = storageRef.child(`Gasto_${gasto.periodo}_${gasto.titulo}`)
-            await fileRef.put(selectedFile).then(() =>{
+            gasto.url = formatName()
+            let formData = new FormData()
+
+            formData.append('file', selectedFile, formatName());
+
+            await axios.post('http://localhost:8080/uploadFile',
+            formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
             })
-            const downloadURL = await fileRef.getDownloadURL()
-            gasto.url = downloadURL
+
            }
        }catch(error){
             usarSnack(error.response.data, true)
        }
       }
 
-      const onDownload = () => {
-        const link = document.createElement("a");
-        link.setAttribute("href", gasto.url);
-        link.setAttribute("target", "_blank");
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      const onDownload = async () => {
+        try{
+            const response = await axios.get(`http://localhost:8080/downloadFile/${gasto.url}`)
+            let a = document.createElement('a');
+            a.href = response.config.url;
+            a.download = 'gastos';
+            a.click();
+        } catch(error){
+            usarSnack(error.response.data, true)
+       }            
       }
+    
     
     useEffect( ()  =>  {
         fetchGasto()
@@ -245,7 +261,6 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             if(validarGasto()){
                 await onFileUpload()  
-                console.log(gasto)
                 await gastoService.create(gasto)
                 history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})  
             }else{

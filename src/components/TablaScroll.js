@@ -35,7 +35,6 @@ export const StyledTableRowScroll = withStyles((theme) => ({
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 700,
     borderCollapse: "collapse",
     
   },

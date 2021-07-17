@@ -13,13 +13,13 @@ const useStyles = makeStyles({
     root: {
       background: "white",
       width: "100%",
-      position: "sticky",
+      position: "fixed",
       top:0,
       zIndex: 1300,
       height: 70,
       boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
       display: "flex",
-      justifyContent: "space-between"
+      justifyContent: "space-between",
     },
     tittle:{
         alignSelf:"center",

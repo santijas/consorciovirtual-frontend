@@ -16,7 +16,6 @@ import useAuth from '../hooks/UseAuth.js';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100vh',
     display: "flex",
     flexDirection: "column",
     width:"100%"
