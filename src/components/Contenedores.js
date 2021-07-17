@@ -4,7 +4,7 @@ export const RootBox = withStyles((theme) => ({
     root:{
         display: 'flex',
         marginLeft: 300,
-        marginTop: 70,
+        marginTop: 110,
         marginRight: 50,
         flexDirection: "column",
     },
@@ -28,9 +28,9 @@ export const FormBox = withStyles((theme) => ({
         paddingRight: 500,
         outline: 0,
         overflowY: "auto",
-        paddingTop: 50,
         marginBottom: 100,
-        maxWidth: "1400px"
+        maxWidth: "1400px",
+        paddingTop: 40
     },
     }))(Box);
 
