@@ -5,6 +5,8 @@ import { NavBar } from './components/NavBar'
 import { Login } from './views/Login'
 import { Header } from './components/Header'
 import { Usuarios } from './views/Usuarios/Usuarios'
+import { TelefonosUtiles } from './views/TelefonosUtiles/TelefonosUtiles'
+import { ABMCTelefonoUtil } from './views/TelefonosUtiles/ABMCTelefonoUtil'
 import { Departamentos } from './views/Departamentos/Departamentos'
 import { Anuncios } from './views/Anuncios/Anuncios'
 import { ABMCAnuncio } from './views/Anuncios/ABMCAnuncio'
@@ -63,6 +65,9 @@ export const Routes = () => {
                         <Route path="/anularexpensa" component={AnularExpensa}></Route>
                         <Route path="/payment/success/:id*" component={Payment}></Route>
                         <Route path="/chat" component={Chat}></Route>
+                        <Route path="/telefonosUtiles" component={TelefonosUtiles}></Route>
+                        <Route path="/newTelefonoUtil"><ABMCTelefonoUtil creacion={true} edicion={false}/></Route>
+                        <Route path="/telefonoUtil/:id"><ABMCTelefonoUtil creacion={false} edicion={true} /></Route>
                     </div>
                 </Switch>
        </Router>

@@ -202,6 +202,25 @@ export const ActiveApartment = (props) => {
     )
   } 
 
+  export const ActiveTelefonosUtiles = (props) => {
+    return (
+      <SvgIcon {...props} viewBox="0 0 32 32">
+        <circle cx="16" cy="16" r="16" fill="#159D74"/>
+        <path fillRule="evenodd" clipRule="evenodd" d="M16 7C11.0294 7 7 11.0294 7 16C7 20.9706 11.0294 25 16 25H20.5C21.8978 25 22.5967 25 23.1481 24.7716C23.8831 24.4672 24.4672 23.8831 24.7716 23.1481C25 22.5967 25 21.8978 25 20.5V16C25 11.0294 20.9706 7 16 7ZM12 15C12 14.4477 12.4477 14 13 14H19C19.5523 14 20 14.4477 20 15C20 15.5523 19.5523 16 19 16H13C12.4477 16 12 15.5523 12 15ZM15 19C15 18.4477 15.4477 18 16 18H19C19.5523 18 20 18.4477 20 19C20 19.5523 19.5523 20 19 20H16C15.4477 20 15 19.5523 15 19Z" fill="white"/> 
+      </SvgIcon>
+    )
+  } 
+
+  export const NonActiveTelefonosUtiles = (props) => {
+    return (
+      <SvgIcon {...props} viewBox="0 0 32 32">
+        <path d="M8 16C8 11.5817 11.5817 8 16 8V8C20.4183 8 24 11.5817 24 16V21.0909C24 21.9375 24 22.3608 23.8739 22.6989C23.6712 23.2425 23.2425 23.6712 22.6989 23.8739C22.3608 24 21.9375 24 21.0909 24H16C11.5817 24 8 20.4183 8 16V16Z" stroke="#5C5C5C" strokeWidth="2" fill="white" />
+        <path d="M13 15L19 15" stroke="#5C5C5C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M16 19H19" stroke="#5C5C5C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </SvgIcon>
+    )
+  } 
+
   export const Desplegable = (props) => {
     return (
       <SvgIcon {...props} viewBox="0 0 32 32">

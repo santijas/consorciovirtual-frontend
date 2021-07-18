@@ -76,6 +76,15 @@ export const FullInputBox = withStyles((theme) => ({
     },
     }))(Box);
 
+export const CompleteInputBox = withStyles((theme) => ({
+    root:{
+        display: "flex",
+        flexDirection: "column",
+        flex: "100%",
+        marginBottom: 50
+    },
+    }))(Box);
+
 
 export const ButtonBox = withStyles((theme) => ({
     root:{

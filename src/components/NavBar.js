@@ -2,7 +2,7 @@ import { Drawer, List, ListItem, ListItemIcon, makeStyles } from '@material-ui/c
 import React, { useContext, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
-import { ActiveApartment, ActiveUser, NonActiveUser, NonActiveApartment, ActiveAnnouncement, NonActiveAnnouncement, ActiveClaims, NonActiveClaims, ActiveRequest, NonActiveRequest, ActiveInquiline, NonActiveInquiline, ActiveGastos, NonActiveGastos, ActiveExpenses, NonActiveExpenses, ActiveDocuments, NonActiveDocuments, ActiveChat, NonActiveChat } from '../assets/icons';
+import { ActiveApartment, ActiveUser, NonActiveUser, NonActiveApartment, ActiveAnnouncement, NonActiveAnnouncement, ActiveClaims, NonActiveClaims, ActiveRequest, NonActiveRequest, ActiveInquiline, NonActiveInquiline, ActiveGastos, NonActiveGastos, ActiveExpenses, NonActiveExpenses, ActiveDocuments, NonActiveDocuments, ActiveChat, NonActiveChat, ActiveTelefonosUtiles, NonActiveTelefonosUtiles } from '../assets/icons';
 import { UserContext } from '../hooks/UserContext';
 import { usuarioService } from '../services/usuarioService.js'
 
@@ -114,6 +114,11 @@ export const NavBar = () => {
           <ListItem button key="Chat" onClick={() => handleSelectMenu("chat")}>
             <ListItemIcon>{selected === "chat" ? <ActiveChat className="navicon" /> : <NonActiveChat className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "chat") ? "activecolor activesize" : "font"}`}>Chat</span>
+          </ListItem>
+
+          <ListItem button key="TelefonosUtiles" onClick={() => handleSelectMenu("telefonosUtiles")}>
+            <ListItemIcon>{selected === "telefonosUtiles" ? <ActiveTelefonosUtiles className="navicon" /> : <NonActiveTelefonosUtiles className="navicon" />}</ListItemIcon>
+            <span className={`${(selected === "telefonosUtiles") ? "activecolor activesize" : "font"}`}>Teléfonos Útiles</span>
           </ListItem>
 
       </List>
