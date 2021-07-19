@@ -39,7 +39,7 @@ const useStyles = makeStyles ({
         <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
-        <StyledTableCell className="tableNormal" component="th" scope="row">Modificado hace {Math.floor(Math.random() * 10)} horas</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
         { estadoDeCuenta(dato.estadoCuenta) }
       </StyledTableRow>
     )

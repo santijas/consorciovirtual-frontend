@@ -1,6 +1,6 @@
 export class Departamento {
 
-    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados, estadoDeCuenta){ 
+    constructor(id, propietario, inquilino, torre, piso, nroDepartamento, porcentajeExpensa,metrosCuadrados, estadoDeCuenta, ultimaModificacion){ 
       this.id = id
       this.propietario = propietario
       this.inquilino = inquilino
@@ -10,9 +10,11 @@ export class Departamento {
       this.porcentajeExpensa = porcentajeExpensa
       this.metrosCuadrados = metrosCuadrados
       this.estadoDeCuenta = estadoDeCuenta
+      this.ultimaModificacion = ultimaModificacion
     }
 
     static fromJson(deptoJSON) {
+      console.log("fromJson: " + deptoJSON)
       return Object.assign(new Departamento(),
       deptoJSON,
         { }
