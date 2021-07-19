@@ -1,24 +1,24 @@
-import React, { useEffect, useState, Fragment } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
-import { registroModificacionService } from "../../services/registroModificacionService";
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
 import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { Gasto } from '../../domain/gasto';
+import { Factura } from '../../domain/factura';
 import { gastoService } from '../../services/gastoService';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
 import {FileUploader} from '../../components/FileUploader'
-import { app } from '../../base';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
 
 const useStyles = makeStyles ({
@@ -41,7 +41,6 @@ const useStyles = makeStyles ({
         flexWrap: "wrap",
         justifyContent: "space-between",
         marginTop: 30,
-        
     },
     inputs:{
         backgroundColor: "white",
@@ -94,6 +93,26 @@ const useStyles = makeStyles ({
           fontSize: 14,
           marginTop: 4,
           cursor: "pointer"
+      },
+      acordeon:{
+        display:"flex",
+        flexDirection:"column",
+        justifyContent: "space-between",
+        width: "100%",
+        borderRadius: "6px",
+        boxShadow: "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
+      },
+      heading:{
+          fontWeight: 600,
+
+      },
+      resetStyle:{
+        transition:"none"
+      },
+      bodyAcordeon:{
+        display:"flex",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
       }
   });
 
@@ -167,13 +186,12 @@ const useStyles = makeStyles ({
 export const ABMCGasto = ({edicion, creacion}) =>{
     const classes = useStyles();
     const [gasto, setGasto] = useState('')
+    const [factura, setFactura] = useState()
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
-    const [tipoGasto, setTipoGasto] = useState()
-    const [rubro, setRubro] = useState()
     const [selectedDate, handleDateChange] = useState(new Date());
     const [selectedFile, setSelectedFile] = useState(null);
 
@@ -183,13 +201,16 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const fetchGasto = async () =>{
         try{
             let unGasto
+            let unaFactura
             if(creacion){
                 unGasto = new Gasto()
+                unaFactura = new Factura()
             } else{
                 unGasto = await gastoService.getById(params.id)
+                unaFactura = new Factura()
             }
             setGasto(unGasto) 
-            console.log(unGasto)
+            setFactura(unaFactura)
             }
         catch(error){
             usarSnack(error.response.data, true)
@@ -201,6 +222,14 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             [event.target.id]: { $set: event.target.value}
         })
         setGasto(newState)
+        setCampoEditado(true)
+    }
+
+    const actualizarValorFactura = (event) => {
+        const newState = update(factura, {
+            [event.target.id]: { $set: event.target.value}
+        })
+        setFactura(newState)
         setCampoEditado(true)
     }
 
@@ -302,13 +331,18 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     }
 
     const handleChangeType = (event) => {
-        gasto.tipo = event.target.value
-        setTipoGasto(event.target.value)
+        const newState = update(gasto, {
+            tipo: { $set: event.target.value}
+        })
+        setGasto(newState)
+        setCampoEditado(true)
       };
 
       const handleChangeRubro = (event) => {
-        gasto.rubro = event.target.value
-        setRubro(event.target.value)
+        const newState = update(gasto, {
+            rubro: { $set: event.target.value}
+        })
+        setGasto(newState)
         setCampoEditado(true)
       };
 
@@ -478,7 +512,51 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                     </RightInputBox>
                 }
 
+                    { factura &&
+                    <Accordion className={classes.acordeon}>
+                        <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                        className={classes.resetStyle}
+                        >
+                        <Typography className={classes.heading}>Datos de facturación</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails className={classes.bodyAcordeon}>
 
+                            <LeftInputBox>
+                                <span className={classes.span}>Numero de factura</span>
+                                <TextField className={classes.inputs} id="numeroFactura" value={factura.numeroFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="numeroFactura" variant="outlined" />
+                            </LeftInputBox>
+
+                            <RightInputBox>
+                                <span className={classes.span}>Fecha de facturación</span>
+                                <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura"  variant="outlined"/>
+                            </RightInputBox>
+
+                            <LeftInputBox>
+                                <span className={classes.span}>Cuit Proveedor</span>
+                                <TextField className={classes.inputs} id="cuitProveedor" value={factura.cuitProveedor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitProveedor" variant="outlined" />
+                            </LeftInputBox>
+
+                            <RightInputBox>
+                                <span className={classes.span}>Cuit Receptor</span>
+                                <TextField className={classes.inputs} id="cuitReceptor" value={factura.cuitReceptor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitReceptor"  variant="outlined"/>
+                            </RightInputBox>
+
+                            <LeftInputBox>
+                                <span className={classes.span}>CAE</span>
+                                <TextField className={classes.inputs} id="cae" value={factura.cae || ''} onChange={(event) => actualizarValorFactura(event)} name="cae" variant="outlined" />
+                            </LeftInputBox>
+
+                            <RightInputBox>
+                                <span className={classes.span}>Importe</span>
+                                <TextField className={classes.inputs} id="importe" value={factura.importe || ''} onChange={(event) => actualizarValorFactura(event)} name="importe"  variant="outlined" type="number"/>
+                            </RightInputBox>
+
+                        </AccordionDetails>
+                    </Accordion>
+                }
                 </form> 
                       
             </FormBox>

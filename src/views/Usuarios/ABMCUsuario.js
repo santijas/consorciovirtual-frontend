@@ -12,6 +12,7 @@ import { Chevron } from '../../assets/icons';
 import { Usuario } from '../../domain/usuario';
 import update from 'immutability-helper';
 import useSnack from '../../hooks/UseSnack';
+import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
@@ -76,6 +77,10 @@ const useStyles = makeStyles ({
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
       },
+      createSpan:{
+          marginBottom: 10,
+          fontWeight: 600
+      }
   });
 
 const tiposDeUsuario = [
@@ -117,6 +122,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [departamentos, setDepartamentos] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     let history = useHistory()
     const params = useParams()
@@ -139,10 +145,10 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     }
 
     const handleChangeType = (event) => {
-        usuario.tipo = event.target.value
         const newState = update(usuario, {
-            [event.target.tipo]: { $set: event.target.value}
+            tipo: { $set: event.target.value}
         })
+        console.log(newState)
         setUsuario(newState)
         setCampoEditado(true)
       };
@@ -172,6 +178,7 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const crearUsuario = async () => {
         try{
             if(validarUsuario()){
+                setIsLoading(true)
                 await usuarioService.create(usuario)
                 history.push("/usuarios", { openChildSnack : true, mensajeChild: "Usuario creado correctamente."})    
             }else{
@@ -312,12 +319,20 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
             </FormBox>
 
             <RightFormBox>
-                { creacion &&
+                { creacion && !isLoading &&
                 <ButtonBox>
                     <StyledButtonPrimary className={classes.botones} onClick={() => crearUsuario() } >Crear usuario</StyledButtonPrimary>
                     <StyledButtonSecondary className={classes.botones} onClick={ backToUsers }>Cancelar</StyledButtonSecondary>
                 </ButtonBox>
                 }
+
+            { creacion && isLoading &&
+                <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+                    <span className={classes.createSpan}> Creando usuario... </span>
+                    <ReactLoading type="spin" color="#159D74" height={50} width={50} className="spin" />
+                </Box>
+                }
+
                 { edicion && !creacion &&
                 <ButtonBox>
                     {campoEditado &&
