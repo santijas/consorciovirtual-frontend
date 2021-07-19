@@ -7,6 +7,8 @@ import { Header } from './components/Header'
 import { Usuarios } from './views/Usuarios/Usuarios'
 import { TelefonosUtiles } from './views/TelefonosUtiles/TelefonosUtiles'
 import { ABMCTelefonoUtil } from './views/TelefonosUtiles/ABMCTelefonoUtil'
+import { Documentos } from './views/Documentos/Documentos'
+import { ABMCDocumento } from './views/Documentos/ABMCDocumento'
 import { Departamentos } from './views/Departamentos/Departamentos'
 import { Anuncios } from './views/Anuncios/Anuncios'
 import { ABMCAnuncio } from './views/Anuncios/ABMCAnuncio'
@@ -68,6 +70,9 @@ export const Routes = () => {
                         <Route path="/telefonosUtiles" component={TelefonosUtiles}></Route>
                         <Route path="/newTelefonoUtil"><ABMCTelefonoUtil creacion={true} edicion={false}/></Route>
                         <Route path="/telefonoUtil/:id"><ABMCTelefonoUtil creacion={false} edicion={true} /></Route>
+                        <Route path="/documentos" component={Documentos}></Route>
+                        <Route path="/newDocument"><ABMCDocumento creacion={true} edicion={false}/></Route>
+                        <Route path="/documento/:id"><ABMCDocumento creacion={false} edicion={true} /></Route>
                     </div>
                 </Switch>
        </Router>

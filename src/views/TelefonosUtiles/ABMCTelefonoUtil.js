@@ -11,7 +11,7 @@ import { Chevron } from '../../assets/icons';
 import { TelefonoUtil } from '../../domain/telefonoUtil';
 import update from 'immutability-helper';
 import useSnack from '../../hooks/UseSnack';
-import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, FullInputBox, CompleteInputBox } from '../../components/Contenedores';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, CompleteInputBox } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles ({
@@ -121,7 +121,7 @@ export const ABMCTelefonoUtil = ({edicion, creacion}) =>{
     
     // para cargar el telefono por id, o empezar con uno nuevo
     useEffect( ()  =>  {
-        const fetchUsuario = async () =>{
+        const fetchTelefonoUtil = async () =>{
             try{
                 let unTelefonoUtil
                 if(creacion){
@@ -136,7 +136,7 @@ export const ABMCTelefonoUtil = ({edicion, creacion}) =>{
             }
         }
         
-        fetchUsuario()
+        fetchTelefonoUtil()
     },[params.id, creacion])
 
     const crearTelefonoUtil = async () => {
@@ -301,7 +301,7 @@ export const ABMCTelefonoUtil = ({edicion, creacion}) =>{
                 <Divider className={classes.divider} />
                 
                 { edicion && !creacion &&
-                    <Historial tipo="USUARIO" id={params.id} update={cambiosGuardados}/>
+                    <Historial tipo="TELEFONOUTIL" id={params.id} update={cambiosGuardados}/>
                 }
 
             </RightFormBox>
