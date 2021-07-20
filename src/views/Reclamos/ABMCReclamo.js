@@ -277,7 +277,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span} >Estado</span>
-                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={creacion} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Activo' : ''} variant={creacion ? 'filled' : 'outlined'} >
+                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={creacion || user.tipo === 'Inquilino'} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Pendiente' : ''} variant={creacion ? 'filled' : 'outlined'} >
                             {estadosDeReclamo.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}

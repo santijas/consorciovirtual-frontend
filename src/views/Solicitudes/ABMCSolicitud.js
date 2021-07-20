@@ -113,8 +113,20 @@ const estadosDeSolicitud = [
         label: 'Pendiente',
     },
     {
-        value: 'Aprobado',
-        label: 'Aprobado',
+        value: 'Pendiente de aprobación',
+        label: 'Pendiente de aprobación',
+    },
+    {
+        value: 'Resuelto',
+        label: 'Resuelto',
+    },
+    {
+        value: 'Rechazado',
+        label: 'Rechazado',
+    },
+    {
+        value: 'En proceso',
+        label: 'En proceso',
     }
 ]
 
@@ -296,7 +308,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span} >Estado</span>
-                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoSolicitud" select disabled={creacion} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Activa' : ''} variant={creacion ? 'filled' : 'outlined'} >
+                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoSolicitud" select disabled={creacion || user.tipo === 'Inquilino'} onChange={handleChangeType} value={estado || ''} label={creacion ? (creacion && user.tipo === 'Inquilino' ? 'Pendiente de aprobación' : 'Pendiente') : ''} variant={creacion ? 'filled' : 'outlined'} >
                             {estadosDeSolicitud.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
@@ -325,7 +337,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                             : <TextField className={classes.inputs} id="titulo" variant="outlined" value={solicitud.titulo || ''} onChange={(event) => actualizarValor(event)}></TextField>}
                     </LeftInputBox>
 
-                    <div className={classes.contenedorInput}>
+                    <RightInputBox>
                         <span className={classes.spanDisabled}>Tipo</span>
                         {edicion ? <span className={classes.span}>{solicitud.tipo}</span>
                             : <TextField className={classes.inputs} id="tipoSolicitud" select onChange={cambiarTipoSolicitud} value={tipo || ''} variant={'outlined'} >
@@ -335,7 +347,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                                     </MenuItem>
                                 ))}
                             </TextField>}
-                    </div>
+                    </RightInputBox>
 
                 </form>
 
