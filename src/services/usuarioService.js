@@ -28,6 +28,7 @@ class UsuarioService {
 
     async create(user){
         await axios.put((`${REST_SERVER_URL}/usuario/crear`), user.toJSON())
+        axios.post((`${REST_SERVER_URL}/enviarCorreo/usuarioNuevo`), user.toJSON())
     }
 
     async update(user){
