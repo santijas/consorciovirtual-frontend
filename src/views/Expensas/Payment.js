@@ -6,18 +6,49 @@ import { SnackbarComponent } from '../../components/Snackbar';
 import ReactLoading from 'react-loading';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox } from '../../components/Contenedores';
+import { Box } from '@material-ui/core';
+import { Error, Success } from '../../assets/icons';
+import { StyledButtonPrimary } from '../../components/Buttons';
 
 
 const useStyles = makeStyles ({
-    loading:{
+    contenedorLoading:{
         display:"flex",
         justifyContent:"center",
         alignItems:"center",
         flexDirection:"column",
-        heigth: "100%"
+        background:"white",
+        boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.1)",
+        borderRadius: "2px",
+        width: "fit-content",
+        padding: 60,
+        position: "absolute",
+        left: "50%",
+        top: "45%",
+        transform: "translate(-50%,-50%)"
     },
     spin:{
-        marginTop: 100
+        marginBottom: 40
+    },
+    tittle:{
+        fontWeight: 500,
+        fontSize: 24,
+        fontStyle: "normal",
+    },
+    span:{
+        color: "rgba(0, 0, 0, 0.55)",
+        fontSize:24
+    },
+    spanColor:{
+        color: "#159D74",
+        fontSize:24
+    },
+    icon:{
+        fontSize: 60,
+        marginBottom: 30
+    },
+    button:{
+        marginTop: 30
     }
   });
 
@@ -43,25 +74,47 @@ export const Payment = () =>{
         pagarExpensa()
     },[params.id])
 
+    const redirectExpensas = () =>{
+        history.push("/expensas")
+    }
+
 
     return (
         <RootBox>
            {isLoading
-           ?<div className={classes.loading}>
-               <Typography component="h2" variant="h5" className="tittle">
-                Generando comprobante de pago de expensa N#{params.id}
+           ?<Box className={classes.contenedorLoading}>
+                <ReactLoading type="spin" color="#159D74" height={80} width={80} className={classes.spin} />
+               <Typography component="h3" variant="h5" className={classes.tittle}>
+                Generando comprobante de pago
                 </Typography>
-                <ReactLoading type="spin" color="#159D74" height={150} width={150} className={classes.spin} />
-           </div>
+                <span className={classes.span}>Expensa #{params.id}</span>
+           </Box>
             :
             <div>
                 {error && 
-                <div> {error}
-                </div>}
+                    <Box className={classes.contenedorLoading}>
+                                <Error className={classes.icon}/>
+                                <Typography component="h3" variant="h5" className={classes.tittle}>
+                                 ¡Ha habido un error!
+                                </Typography>
+                                <div>
+                                    <span className={classes.span}>No se ha podido generar el comprobante.</span>
+                                </div>
+                                <StyledButtonPrimary className={classes.button} onClick={ redirectExpensas }>Volver a expensas</StyledButtonPrimary>
+                    </Box>
+                }
                 {!error &&
-                <div>Se ha enviado el comprobante de pago de la expensa a su correo electrónico.
-
-                </div>
+                <Box className={classes.contenedorLoading}>
+                    <Success className={classes.icon}/>
+                    <Typography component="h3" variant="h5" className={classes.tittle}>
+                     ¡Listo!
+                    </Typography>
+                    <div>
+                        <span className={classes.span}>Se envió el comprobante de pago a </span>
+                        <span className={classes.spanColor}>santi.ranieri@gmail.com</span>
+                    </div>
+                    <StyledButtonPrimary className={classes.button} onClick={ redirectExpensas }>Volver a expensas</StyledButtonPrimary>
+                </Box>
                 }
             </div>
             }

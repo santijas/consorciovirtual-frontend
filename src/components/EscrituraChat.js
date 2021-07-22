@@ -42,7 +42,11 @@ export const EscrituraChat = ({enviarMensaje}) => {
 
     return (
         <div className={classes.root}>
-            <input className={classes.input} placeholder="Escribí tu mensaje" value={mensaje} onChange={(event) => setMensaje(event.target.value)}></input>
+            <input className={classes.input} placeholder="Escribí tu mensaje" value={mensaje} onChange={(event) => setMensaje(event.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                ejecutarEnvio()
+                            }}}></input>
             { validarMensaje() && <StyledButtonPrimary onClick={() => ejecutarEnvio()} >Enviar mensaje</StyledButtonPrimary>}
             { !validarMensaje() && <StyledButtonPrimary disabled className={classes.buttonDisabled}>Enviar mensaje</StyledButtonPrimary>}
         </div>

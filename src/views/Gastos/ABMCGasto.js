@@ -84,7 +84,8 @@ const useStyles = makeStyles ({
         padding: "0 30px 32px 32px"
       },
       inputsDate:{
-          textTransform: "capitalize"
+          textTransform: "capitalize",
+          cursor: "pointer"
       },
       delete:{
           textAlign: "left",
