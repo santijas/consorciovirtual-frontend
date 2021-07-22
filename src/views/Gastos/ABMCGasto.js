@@ -198,7 +198,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     let history = useHistory()
     const params = useParams()
 
-    const fetchGasto = async () =>{
+    const fetchData = async () =>{
         try{
             let unGasto
             let unaFactura
@@ -282,15 +282,15 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     
     
     useEffect( ()  =>  {
-        fetchGasto()
+        fetchData()
     },[])
 
-    const crearGasto = async () => {
+    const createData = async () => {
         try{
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             if(validarGasto()){
                 await onFileUpload()  
-                await gastoService.create(gasto)
+                await gastoService.create(gasto, factura)
                 history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})  
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -300,7 +300,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         }
     }
 
-    const modificarGasto = async () => {
+    const updateData = async () => {
         try {
             if (validarGasto()){
                 await onFileUpload()
@@ -317,7 +317,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
         setCambiosGuardados(false)
     }
 
-    const eliminarGasto = async () => {
+    const deleteData = async () => {
         try {
             await gastoService.delete(gasto.id)
             history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto eliminado correctamente."})    
@@ -365,7 +365,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este gasto?</h2>
                         <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
                         <Box display="flex" flexDirection="row" mt={4}>
-                            <StyledButtonPrimary onClick={ eliminarGasto }>Eliminar gasto</StyledButtonPrimary>
+                            <StyledButtonPrimary onClick={ deleteData }>Eliminar gasto</StyledButtonPrimary>
                             <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
                                 Cancelar
                             </Link>
@@ -513,12 +513,13 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                 }
 
                     { factura &&
-                    <Accordion className={classes.acordeon}>
+                    <Accordion className={classes.acordeon} onChange={() => console.log("Hola")}>
                         <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                         className={classes.resetStyle}
+                        
                         >
                         <Typography className={classes.heading}>Datos de facturación</Typography>
                         </AccordionSummary>
@@ -531,7 +532,7 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
                             <RightInputBox>
                                 <span className={classes.span}>Fecha de facturación</span>
-                                <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura"  variant="outlined"/>
+                                <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura" type="date" variant="outlined"/>
                             </RightInputBox>
 
                             <LeftInputBox>
@@ -564,14 +565,14 @@ export const ABMCGasto = ({edicion, creacion}) =>{
             <RightFormBox>
                 { creacion &&
                 <ButtonBox>
-                    <StyledButtonPrimary className={classes.botones} onClick={() => crearGasto() } >Crear gasto</StyledButtonPrimary>
+                    <StyledButtonPrimary className={classes.botones} onClick={() => createData() } >Crear gasto</StyledButtonPrimary>
                     <StyledButtonSecondary className={classes.botones} onClick={ backToGastos }>Cancelar</StyledButtonSecondary>
                 </ButtonBox>
                 }
                 { edicion && !creacion &&
                 <ButtonBox>
                     {campoEditado &&
-                        <StyledButtonPrimary className={classes.botones} onClick={ modificarGasto }>Guardar cambios</StyledButtonPrimary>
+                        <StyledButtonPrimary className={classes.botones} onClick={ updateData }>Guardar cambios</StyledButtonPrimary>
                     }   
                     {!campoEditado &&
                         <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>

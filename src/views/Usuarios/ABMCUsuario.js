@@ -123,12 +123,16 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     const [modalStyle] = useState(getModalStyle);
     const [departamentos, setDepartamentos] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-
+    const [errors, setErrors] = useState({
+        name: '',
+        lastName: '',
+        dni: ''
+    })
     let history = useHistory()
     const params = useParams()
 
 
-    const actualizarValor = (event) => {
+    const updateValue = (event) => {
         const newState = update(usuario, {
             [event.target.id]: { $set: event.target.value}
         })
@@ -148,7 +152,6 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
         const newState = update(usuario, {
             tipo: { $set: event.target.value}
         })
-        console.log(newState)
         setUsuario(newState)
         setCampoEditado(true)
       };
@@ -215,11 +218,54 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
     }
 
     const validarUsuario = () =>{
-        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && validarDni()
+        setErrors(null)
+
+        if(!usuario.nombre){
+            setErrors(prev => ({ ...prev, name: "Campo obligatorio"}))
+        }
+
+        if(!usuario.apellido){
+            setErrors(prev => ({ ...prev, lastName: "Campo obligatorio"}))
+        }
+
+        if(!usuario.dni){
+            setErrors(prev => ({ ...prev, dni: "Campo obligatorio"}))
+        }
+
+        if(usuario.dni && (usuario.dni.length !== 8)){
+            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 8 numeros sin puntos."}))
+        }
+
+        if(usuario.dni && isNaN(usuario.dni)){
+            setErrors(prev => ({ ...prev, dni: "El DNI solo puede contener numeros."}))
+        }
+
+        if(!usuario.correo){
+            setErrors(prev => ({ ...prev, correo: "Campo obligatorio"}))
+        }
+
+        if(usuario.correo && !validarCorreo()){
+            setErrors(prev => ({ ...prev, correo: "Introducir un correo electronico correcto."}))
+        }
+
+        if(!usuario.fecha && creacion){
+            setErrors(prev => ({ ...prev, fecha: "Campo obligatorio"}))
+        }
+
+        if(!usuario.tipo){
+            setErrors(prev => ({ ...prev, tipo: "Campo obligatorio"}))
+        }
+        
+        
+        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && validarDni() && validarCorreo()
     }
 
     const validarDni = () =>{
-        return usuario.dni.length === 8
+        return usuario.dni.length === 8 && !isNaN(usuario.dni)
+    }
+
+    const validarCorreo = () =>{
+        return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(usuario.correo)
     }
 
     const bodyModal = (
@@ -259,37 +305,96 @@ export const ABMCUsuario = ({edicion, creacion}) =>{
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
                         <span className={classes.span}>Nombre</span>
-                        <TextField className={classes.inputs} id="nombre" value={usuario.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="nombre" 
+                        value={usuario.nombre || ''} 
+                        onChange={(event) => updateValue(event)} 
+                        name="nombre" 
+                        variant="outlined" 
+                        error={Boolean(errors?.name)}
+                        helperText={errors?.name}
+                        inputProps={{ maxLength: 15 }}
+                        />
                     </LeftInputBox>
 
                     <RightInputBox>
                         <span className={classes.span} >Apellido</span>
-                        <TextField className={classes.inputs} id="apellido" value={usuario.apellido || ''} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="apellido" 
+                        value={usuario.apellido || ''} 
+                        onChange={(event) => updateValue(event)} 
+                        name="apellido" 
+                        variant="outlined"
+                        error={Boolean(errors?.lastName)}
+                        helperText={errors?.lastName}
+                        inputProps={{ maxLength: 25 }}
+                         />
                     </RightInputBox>
 
                     <LeftInputBox>
                         <span className={classes.span}>DNI</span>
-                        <TextField className={classes.inputs} id="dni" value={usuario.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" type="number"/>
+                        <TextField 
+                        className={classes.inputs} 
+                        id="dni" value={usuario.dni || ''} 
+                        onChange={(event) => updateValue(event)} 
+                        name="dni"  
+                        variant="outlined" 
+                        error={Boolean(errors?.dni)}
+                        helperText={errors?.dni}
+                        inputProps={{ maxLength: 8 }}
+                        />
                     </LeftInputBox>
 
                     <RightInputBox>
                         <span className={classes.span}>E-mail</span>
-                        <TextField className={classes.inputs} id="correo" value={usuario.correo || ''} onChange={(event) => actualizarValor(event)} name="correo"  variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="correo" value={usuario.correo || ''} 
+                        onChange={(event) => updateValue(event)} 
+                        name="correo"  
+                        variant="outlined" 
+                        type="email"
+                        error={Boolean(errors?.correo)}
+                        helperText={errors?.correo}
+                        inputProps={{ maxLength: 50 }}
+                        />
                     </RightInputBox>
 
                     <LeftInputBox>
                         <span className={classes.span}>Fecha de nacimiento</span>
-                        <TextField className={classes.inputs} id="fechaNacimiento" value={usuario.fechaNacimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="fechaNacimiento" 
+                        value={usuario.fechaNacimiento || ''} 
+                        onChange={(event) => updateValue(event)} 
+                        name="fechaNacimiento" 
+                        type="date" 
+                        variant="outlined" 
+                        error={Boolean(errors?.fecha)}
+                        helperText={errors?.fecha}
+                        />
                     </LeftInputBox>
 
                     <RightInputBox>
                         <span className={classes.span}>Tipo de usuario</span>
-                        <TextField className={classes.inputs} id="tipoUsuario" select onChange={ handleChangeType } value={usuario.tipo || ''} variant="outlined" >
-                                {tiposDeUsuario.map((option) => (
+                        <TextField 
+                        className={classes.inputs} 
+                        id="tipoUsuario" 
+                        select 
+                        onChange={ handleChangeType } 
+                        value={usuario.tipo || ''} 
+                        error={Boolean(errors?.tipo)}
+                        helperText={errors?.tipo}
+                        variant="outlined" >
+                                {
+                                tiposDeUsuario.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                                 </MenuItem>
-                            ))}
+                            ))
+                            }
                         </TextField>
                     </RightInputBox>
                     

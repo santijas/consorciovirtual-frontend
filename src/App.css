@@ -189,3 +189,10 @@ button.mercadopago-button {
 .tittle{
   text-align: left;
 }
+
+
+.MuiFormHelperText-root{
+  background-color: #f5f5f5;
+  margin: 0!important;
+  padding: 2px 14px;
+}

@@ -25,7 +25,7 @@ class GastoService{
         return listaJSON.data
     }
 
-    async create(gasto){
+    async create(gasto, factura){
         await axios.put((`${REST_SERVER_URL}/gastos/crear`), gasto.toJSON())
     }
 
