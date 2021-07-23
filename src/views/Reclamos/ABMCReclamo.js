@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { reclamoService } from "../../services/reclamoService";
@@ -141,7 +141,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const [openModal, setOpenModal] = useState(false)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
-    const {user, setUser} = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
 
     let history = useHistory()
     const params = useParams()
@@ -252,6 +252,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     return (
 
         <RootBoxABM>
+            <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
                 <Link className={classes.link} onClick={backToReclamos}>
                     <Chevron className={classes.chevron} />
@@ -319,7 +320,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 {(edicion && !creacion) &&
                     <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas}></Notas>
                 }
-                
+
             </FormBox>
 
             <RightFormBox>

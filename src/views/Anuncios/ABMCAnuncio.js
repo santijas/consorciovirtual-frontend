@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { anuncioService } from "../../services/anuncioService";
@@ -11,7 +11,7 @@ import { ModalComponent } from '../../components/Modal'
 import { Chevron } from '../../assets/icons';
 import { Anuncio } from '../../domain/anuncio';
 import update from 'immutability-helper';
-import { UserContext } from '../../hooks/UserContext'; 
+import { UserContext } from '../../hooks/UserContext';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, FullInputBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
@@ -99,7 +99,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [usuarios, setUsuarios] = useState('')
-    const {user, setUser} = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
 
     let history = useHistory()
     const params = useParams()
@@ -116,7 +116,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                 }
                 setAnuncio(unAnuncio)
             }
-            catch(error) {
+            catch (error) {
                 usarSnack(error.response.data, true)
             }
         }
@@ -143,7 +143,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
         try {
             if (validarAnuncio()) {
                 await anuncioService.create(anuncio)
-                history.push( "/anuncios", { openChildSnack: true, mensajeChild: "Anuncio creado correctamente." })
+                history.push("/anuncios", { openChildSnack: true, mensajeChild: "Anuncio creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -197,6 +197,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     return (
 
         <RootBoxABM>
+            <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
                 <Link className={classes.link} onClick={backToAnuncios}>
                     <Chevron className={classes.chevron} />
@@ -250,30 +251,30 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
             </FormBox>
 
             <RightFormBox>
-                    {creacion &&
-                        <ButtonBox>
-                            <StyledButtonPrimary className={classes.botones} onClick={() => crearAnuncio()} >Crear anuncio</StyledButtonPrimary>
-                            <StyledButtonSecondary className={classes.botones} onClick={backToAnuncios}>Cancelar</StyledButtonSecondary>
-                        </ButtonBox>
-                    }
-                    {edicion && !creacion &&
-                        <ButtonBox>
-                            {campoEditado &&
-                                <StyledButtonPrimary className={classes.botones} onClick={modificarAnuncio}>Guardar cambios</StyledButtonPrimary>
-                            }
-                            {!campoEditado &&
-                                <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
-                            }
-                            <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar anuncio</StyledButtonSecondary>
-                        </ButtonBox>
-                    }
-                    <Divider className={classes.divider} />
+                {creacion &&
+                    <ButtonBox>
+                        <StyledButtonPrimary className={classes.botones} onClick={() => crearAnuncio()} >Crear anuncio</StyledButtonPrimary>
+                        <StyledButtonSecondary className={classes.botones} onClick={backToAnuncios}>Cancelar</StyledButtonSecondary>
+                    </ButtonBox>
+                }
+                {edicion && !creacion &&
+                    <ButtonBox>
+                        {campoEditado &&
+                            <StyledButtonPrimary className={classes.botones} onClick={modificarAnuncio}>Guardar cambios</StyledButtonPrimary>
+                        }
+                        {!campoEditado &&
+                            <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
+                        }
+                        <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar anuncio</StyledButtonSecondary>
+                    </ButtonBox>
+                }
+                <Divider className={classes.divider} />
 
-                    {edicion && !creacion &&
-                        <Historial tipo="ANUNCIO" id={params.id} update={cambiosGuardados} />
-                    }
+                {edicion && !creacion &&
+                    <Historial tipo="ANUNCIO" id={params.id} update={cambiosGuardados} />
+                }
 
-                </RightFormBox>
+            </RightFormBox>
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 

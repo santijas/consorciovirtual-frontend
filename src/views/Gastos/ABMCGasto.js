@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { Historial } from '../../components/Historial'
 import { SnackbarComponent } from '../../components/Snackbar'
@@ -15,63 +15,63 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
-import {FileUploader} from '../../components/FileUploader'
+import { FileUploader } from '../../components/FileUploader'
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
 
-const useStyles = makeStyles ({
-    link:{
+const useStyles = makeStyles({
+    link: {
         color: "#159D74",
-        textAlign:"left",
+        textAlign: "left",
         marginBottom: 20,
         cursor: "pointer",
     },
-    linkModal:{
+    linkModal: {
         color: "#159D74",
-        textAlign:"left",
+        textAlign: "left",
         marginLeft: 50,
         marginTop: 10,
         cursor: "pointer",
         fontWeight: 600
     },
-    form:{
-        display:"flex",
+    form: {
+        display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-between",
         marginTop: 30,
     },
-    inputs:{
+    inputs: {
         backgroundColor: "white",
         textAlign: "left"
     },
-    span:{
-        textAlign:"left",
+    span: {
+        textAlign: "left",
         marginLeft: 10,
         marginBottom: 6
     },
-    botones:{
+    botones: {
         display: "flex",
         marginTop: 10,
     },
     divider: {
         marginTop: 40
-      },
-    inputsDisabled:{
+    },
+    inputsDisabled: {
         textAlign: "left",
         marginLeft: 10
     },
-    spanDisabled:{
-        textAlign:"left",
+    spanDisabled: {
+        textAlign: "left",
         marginLeft: 10,
         marginBottom: 6,
         color: "grey"
     },
-    botonesDisabled:{
+    botonesDisabled: {
         background: "rgba(0, 0, 0 ,10%)",
     },
-    chevron:{
+    chevron: {
         fontSize: "12px",
         marginRight: 8
     },
@@ -82,6 +82,7 @@ const useStyles = makeStyles ({
         boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.1)",
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
+<<<<<<< Updated upstream
       },
       inputsDate:{
           textTransform: "capitalize",
@@ -98,56 +99,73 @@ const useStyles = makeStyles ({
       acordeon:{
         display:"flex",
         flexDirection:"column",
+=======
+    },
+    inputsDate: {
+        textTransform: "capitalize"
+    },
+    delete: {
+        textAlign: "left",
+        color: "red",
+        fontWeight: 600,
+        fontSize: 14,
+        marginTop: 4,
+        cursor: "pointer"
+    },
+    acordeon: {
+        display: "flex",
+        flexDirection: "column",
+>>>>>>> Stashed changes
         justifyContent: "space-between",
         width: "100%",
         borderRadius: "6px",
         boxShadow: "0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)"
-      },
-      heading:{
-          fontWeight: 600,
+    },
+    heading: {
+        fontWeight: 600,
 
-      },
-      resetStyle:{
-        transition:"none"
-      },
-      bodyAcordeon:{
-        display:"flex",
+    },
+    resetStyle: {
+        transition: "none"
+    },
+    bodyAcordeon: {
+        display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-between",
-      }
-  });
-
-
-  function getModalStyle() {
-    const top = 50 
-    const left = 50
-  
-    return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`,
-    };
-  }
-
-  const tipoDeGasto = [
-    {
-      value: 'Común',
-      label: 'Común',
-    },
-    {
-      value: 'Extraordinaria',
-      label: 'Extraordinaria',
     }
-  ]
+});
 
-  const rubros = [
+
+function getModalStyle() {
+    const top = 50
+    const left = 50
+
+    return {
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-${top}%, -${left}%)`,
+    };
+}
+
+const tipoDeGasto = [
     {
-      value: 'SUELDOYCARGASSOCIALES',
-      label: 'Sueldo y cargas sociales',
+        value: 'Común',
+        label: 'Común',
     },
     {
-      value: 'MANTENIMIENTOPARTESCOMUNES',
-      label: 'Mantenimiento de partes comúnes',
+        value: 'Extraordinaria',
+        label: 'Extraordinaria',
+    }
+]
+
+const rubros = [
+    {
+        value: 'SUELDOYCARGASSOCIALES',
+        label: 'Sueldo y cargas sociales',
+    },
+    {
+        value: 'MANTENIMIENTOPARTESCOMUNES',
+        label: 'Mantenimiento de partes comúnes',
     },
     {
         value: 'SERVICIOSPUBICOS',
@@ -182,9 +200,9 @@ const useStyles = makeStyles ({
         label: 'Otros',
     }
 
-  ]
+]
 
-export const ABMCGasto = ({edicion, creacion}) =>{
+export const ABMCGasto = ({ edicion, creacion }) => {
     const classes = useStyles();
     const [gasto, setGasto] = useState('')
     const [factura, setFactura] = useState()
@@ -199,28 +217,28 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     let history = useHistory()
     const params = useParams()
 
-    const fetchData = async () =>{
-        try{
+    const fetchData = async () => {
+        try {
             let unGasto
             let unaFactura
-            if(creacion){
+            if (creacion) {
                 unGasto = new Gasto()
                 unaFactura = new Factura()
-            } else{
+            } else {
                 unGasto = await gastoService.getById(params.id)
                 unaFactura = new Factura()
             }
-            setGasto(unGasto) 
+            setGasto(unGasto)
             setFactura(unaFactura)
-            }
-        catch(error){
+        }
+        catch (error) {
             usarSnack(error.response.data, true)
         }
     }
 
     const actualizarValor = (event) => {
         const newState = update(gasto, {
-            [event.target.id]: { $set: event.target.value}
+            [event.target.id]: { $set: event.target.value }
         })
         setGasto(newState)
         setCampoEditado(true)
@@ -228,72 +246,72 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     const actualizarValorFactura = (event) => {
         const newState = update(factura, {
-            [event.target.id]: { $set: event.target.value}
+            [event.target.id]: { $set: event.target.value }
         })
         setFactura(newState)
         setCampoEditado(true)
     }
 
-    const backToGastos = () =>{
+    const backToGastos = () => {
         history.push("/gastos")
     }
 
-    const popupModal = () =>{
+    const popupModal = () => {
         setOpenModal(true)
     }
 
-    const formatName = () =>{
+    const formatName = () => {
         let extension = selectedFile.name.split('.').pop();
         return `Gasto_${gasto.titulo}_${gasto.periodo}_${gasto.rubro}.${extension}`
     }
 
 
-    const onFileUpload = async () => { 
-       try{
-           if(selectedFile){
-            gasto.url = formatName()
-            let formData = new FormData()
+    const onFileUpload = async () => {
+        try {
+            if (selectedFile) {
+                gasto.url = formatName()
+                let formData = new FormData()
 
-            formData.append('file', selectedFile, formatName());
+                formData.append('file', selectedFile, formatName());
 
-            await axios.post('http://localhost:8080/uploadFile',
-            formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
+                await axios.post('http://localhost:8080/uploadFile',
+                    formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+
             }
-            })
-
-           }
-       }catch(error){
+        } catch (error) {
             usarSnack(error.response.data, true)
-       }
-      }
+        }
+    }
 
-      const onDownload = async () => {
-        try{
+    const onDownload = async () => {
+        try {
             const response = await axios.get(`http://localhost:8080/downloadFile/${gasto.url}`)
             let a = document.createElement('a');
             a.href = response.config.url;
             a.download = 'gastos';
             a.click();
-        } catch(error){
+        } catch (error) {
             usarSnack(error.response.data, true)
-       }            
-      }
-    
-    
-    useEffect( ()  =>  {
+        }
+    }
+
+
+    useEffect(() => {
         fetchData()
-    },[])
+    }, [])
 
     const createData = async () => {
-        try{
+        try {
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
-            if(validarGasto()){
-                await onFileUpload()  
+            if (validarGasto()) {
+                await onFileUpload()
                 await gastoService.create(gasto, factura)
-                history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto creado correctamente."})  
-            }else{
+                history.push("/gastos", { openChildSnack: true, mensajeChild: "Gasto creado correctamente." })
+            } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
@@ -303,16 +321,16 @@ export const ABMCGasto = ({edicion, creacion}) =>{
 
     const updateData = async () => {
         try {
-            if (validarGasto()){
+            if (validarGasto()) {
                 await onFileUpload()
                 await gastoService.update(gasto)
                 setCambiosGuardados(true)
                 setCampoEditado(false)
                 usarSnack("Gasto modificado correctamente", false)
-            }else{
+            } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
-        }catch(error){
+        } catch (error) {
             usarSnack(error.response.data, true)
         }
         setCambiosGuardados(false)
@@ -321,124 +339,125 @@ export const ABMCGasto = ({edicion, creacion}) =>{
     const deleteData = async () => {
         try {
             await gastoService.delete(gasto.id)
-            history.push("/gastos", { openChildSnack : true , mensajeChild: "Gasto eliminado correctamente."})    
-        }catch(error){
+            history.push("/gastos", { openChildSnack: true, mensajeChild: "Gasto eliminado correctamente." })
+        } catch (error) {
             usarSnack(error.response.data, true)
         }
     }
 
-    const validarGasto = () =>{
+    const validarGasto = () => {
         return gasto.periodo && gasto.titulo && gasto.importe
     }
 
     const handleChangeType = (event) => {
         const newState = update(gasto, {
-            tipo: { $set: event.target.value}
+            tipo: { $set: event.target.value }
         })
         setGasto(newState)
         setCampoEditado(true)
-      };
+    };
 
-      const handleChangeRubro = (event) => {
+    const handleChangeRubro = (event) => {
         const newState = update(gasto, {
-            rubro: { $set: event.target.value}
+            rubro: { $set: event.target.value }
         })
         setGasto(newState)
         setCampoEditado(true)
-      };
+    };
 
-      const handleSelectFile = (file) => {
+    const handleSelectFile = (file) => {
         setSelectedFile(file)
         setCampoEditado(true)
-      };
+    };
 
-      const deleteFile = (event) => {
+    const deleteFile = (event) => {
         gasto.url = null
         setSelectedFile(null)
         setCampoEditado(true)
-      };
+    };
 
 
 
     const bodyModal = (
-      
-            <div style={modalStyle} className={classes.paper}>
-                        <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este gasto?</h2>
-                        <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
-                        <Box display="flex" flexDirection="row" mt={4}>
-                            <StyledButtonPrimary onClick={ deleteData }>Eliminar gasto</StyledButtonPrimary>
-                            <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
-                                Cancelar
-                            </Link>
-                        </Box>
-                    </div>
-        )
 
-        const renderInput = ( props ) => (
-            <TextField 
-            className={classes.inputsDate} 
-            id="tipo" 
-            onClick={props.onClick} 
-            onChange={props.onChange} 
-            value={props.value} 
+        <div style={modalStyle} className={classes.paper}>
+            <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este gasto?</h2>
+            <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
+            <Box display="flex" flexDirection="row" mt={4}>
+                <StyledButtonPrimary onClick={deleteData}>Eliminar gasto</StyledButtonPrimary>
+                <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
+                    Cancelar
+                </Link>
+            </Box>
+        </div>
+    )
+
+    const renderInput = (props) => (
+        <TextField
+            className={classes.inputsDate}
+            id="tipo"
+            onClick={props.onClick}
+            onChange={props.onChange}
+            value={props.value}
             variant="outlined"
-            inputProps={{className: classes.inputsDate}}
-            />
-            
-          );
+            inputProps={{ className: classes.inputsDate }}
+        />
+
+    );
 
     return (
-        
+
         <RootBoxABM>
+            <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
                 <Link className={classes.link} onClick={backToGastos}>
-                    <Chevron className={classes.chevron}/>
+                    <Chevron className={classes.chevron} />
                     Volver a gastos
                 </Link>
-                { creacion &&
+                {creacion &&
                     <Typography component="h2" variant="h5" className="tittle">
                         Nuevo gasto
-                     </Typography>
-                }
-                
-                { !creacion && edicion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                    Modificar gasto
                     </Typography>
                 }
-        
+
+                {!creacion && edicion &&
+                    <Typography component="h2" variant="h5" className="tittle">
+                        Modificar gasto
+                    </Typography>
+                }
+
                 <form className={classes.form} noValidate autoComplete="off">
-                    
-                    {   creacion &&
-                    <LeftInputBox>
-                        <span className={classes.span}>Período</span>
-                        <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
-                            <DatePicker
-                                views={["year", "month"]}
-                                value={ selectedDate }
-                                minDate={ new Date(Date.now()) }
-                                inputVariant="outlined"
-                                onChange={ handleDateChange }
-                                TextFieldComponent={renderInput}
-                            />
-                        </MuiPickersUtilsProvider>
-                    </LeftInputBox>
+
+                    {creacion &&
+                        <LeftInputBox>
+                            <span className={classes.span}>Período</span>
+                            <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
+                                <DatePicker
+                                    views={["year", "month"]}
+                                    value={selectedDate}
+                                    minDate={new Date(Date.now())}
+                                    inputVariant="outlined"
+                                    onChange={handleDateChange}
+                                    TextFieldComponent={renderInput}
+                                />
+                            </MuiPickersUtilsProvider>
+                        </LeftInputBox>
                     }
 
-                    {   !creacion && edicion &&
-                    <LeftInputBox>
-                        <span className={classes.span}>Período</span>
-                        <MuiPickersUtilsProvider utils={MomentUtils}  locale={moment().locale('es')}>
-                            <DatePicker
-                                className={classes.inputsDate}
-                                views={["year", "month"]}
-                                value={gasto.periodo}
-                                disabled
-                                inputVariant="outlined"
-                                onChange={(event) => actualizarValor(event)}
-                            />
-                        </MuiPickersUtilsProvider>
-                    </LeftInputBox>
+                    {!creacion && edicion &&
+                        <LeftInputBox>
+                            <span className={classes.span}>Período</span>
+                            <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')}>
+                                <DatePicker
+                                    className={classes.inputsDate}
+                                    views={["year", "month"]}
+                                    value={gasto.periodo}
+                                    disabled
+                                    inputVariant="outlined"
+                                    onChange={(event) => actualizarValor(event)}
+                                />
+                            </MuiPickersUtilsProvider>
+                        </LeftInputBox>
                     }
 
                     <RightInputBox>
@@ -446,154 +465,154 @@ export const ABMCGasto = ({edicion, creacion}) =>{
                         <TextField className={classes.inputs} id="titulo" value={gasto.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
                     </RightInputBox>
 
-                    { !creacion && edicion &&
+                    {!creacion && edicion &&
                         <LeftInputBox>
-                        <span className={classes.span}>Tipo</span>
-                        <TextField className={classes.inputs} id="tipo" value={gasto.tipo || ''} onChange={(event) => actualizarValor(event)} name="tipo"  variant="outlined" disabled/>
-                    </LeftInputBox>
+                            <span className={classes.span}>Tipo</span>
+                            <TextField className={classes.inputs} id="tipo" value={gasto.tipo || ''} onChange={(event) => actualizarValor(event)} name="tipo" variant="outlined" disabled />
+                        </LeftInputBox>
                     }
 
-                    { creacion && !edicion &&
-                    <LeftInputBox>
-                        <span className={classes.span}>Tipo</span>
-                        <TextField className={classes.inputs} id="tipo" select onChange={ handleChangeType } value={gasto.tipo || ''} variant="outlined" >
+                    {creacion && !edicion &&
+                        <LeftInputBox>
+                            <span className={classes.span}>Tipo</span>
+                            <TextField className={classes.inputs} id="tipo" select onChange={handleChangeType} value={gasto.tipo || ''} variant="outlined" >
                                 {tipoDeGasto.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </LeftInputBox>
+                                    <MenuItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </LeftInputBox>
                     }
 
                     <RightInputBox>
                         <span className={classes.span}>Monto</span>
-                        <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe"  variant="outlined" type="number"/>
+                        <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe" variant="outlined" type="number" />
                     </RightInputBox>
 
                     <LeftInputBox>
                         <span className={classes.span}>Rubro</span>
-                        <TextField className={classes.inputs} id="rubro" select onChange={ handleChangeRubro } value={gasto.rubro || ''} variant="outlined" >
-                                {rubros.map((option) => (
+                        <TextField className={classes.inputs} id="rubro" select onChange={handleChangeRubro} value={gasto.rubro || ''} variant="outlined" >
+                            {rubros.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
-                                {option.label}
+                                    {option.label}
                                 </MenuItem>
                             ))}
                         </TextField>
                     </LeftInputBox>
 
-                { creacion && !edicion &&
-                    <RightInputBox>
-                        <span className={classes.span}>Archivo</span>
-                        <FileUploader
-                        onFileSelectSuccess={(file) => setSelectedFile(file)}
-                        onFileSelectError={({ error }) => alert(error)}
-                        />
-                    </RightInputBox>
-                }
-
-                { !creacion && edicion &&
-                    
-                    <RightInputBox>
-                        <span className={classes.span}>Archivo</span>
-                        {
-                            gasto.url ?
-                            <Box display="flex" flexDirection="column">
-                                <StyledButtonPrimary className={classes.botones} onClick={ onDownload } >Descargar documento</StyledButtonPrimary>
-                                <span className={classes.delete} onClick={ deleteFile }>Eliminar archivo</span>
-                            </Box>
-                            :
+                    {creacion && !edicion &&
+                        <RightInputBox>
+                            <span className={classes.span}>Archivo</span>
                             <FileUploader
-                            onFileSelectSuccess={(file) => handleSelectFile(file) }
-                            onFileSelectError={({ error }) => alert(error)}
-                            /> 
-                        }
-                        
-                        
-                    </RightInputBox>
-                }
+                                onFileSelectSuccess={(file) => setSelectedFile(file)}
+                                onFileSelectError={({ error }) => alert(error)}
+                            />
+                        </RightInputBox>
+                    }
 
-                    { factura &&
-                    <Accordion className={classes.acordeon} onChange={() => console.log("Hola")}>
-                        <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                        className={classes.resetStyle}
-                        
-                        >
-                        <Typography className={classes.heading}>Datos de facturación</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails className={classes.bodyAcordeon}>
+                    {!creacion && edicion &&
 
-                            <LeftInputBox>
-                                <span className={classes.span}>Numero de factura</span>
-                                <TextField className={classes.inputs} id="numeroFactura" value={factura.numeroFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="numeroFactura" variant="outlined" />
-                            </LeftInputBox>
+                        <RightInputBox>
+                            <span className={classes.span}>Archivo</span>
+                            {
+                                gasto.url ?
+                                    <Box display="flex" flexDirection="column">
+                                        <StyledButtonPrimary className={classes.botones} onClick={onDownload} >Descargar documento</StyledButtonPrimary>
+                                        <span className={classes.delete} onClick={deleteFile}>Eliminar archivo</span>
+                                    </Box>
+                                    :
+                                    <FileUploader
+                                        onFileSelectSuccess={(file) => handleSelectFile(file)}
+                                        onFileSelectError={({ error }) => alert(error)}
+                                    />
+                            }
 
-                            <RightInputBox>
-                                <span className={classes.span}>Fecha de facturación</span>
-                                <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura" type="date" variant="outlined"/>
-                            </RightInputBox>
 
-                            <LeftInputBox>
-                                <span className={classes.span}>Cuit Proveedor</span>
-                                <TextField className={classes.inputs} id="cuitProveedor" value={factura.cuitProveedor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitProveedor" variant="outlined" />
-                            </LeftInputBox>
+                        </RightInputBox>
+                    }
 
-                            <RightInputBox>
-                                <span className={classes.span}>Cuit Receptor</span>
-                                <TextField className={classes.inputs} id="cuitReceptor" value={factura.cuitReceptor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitReceptor"  variant="outlined"/>
-                            </RightInputBox>
+                    {factura &&
+                        <Accordion className={classes.acordeon} onChange={() => console.log("Hola")}>
+                            <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                                className={classes.resetStyle}
 
-                            <LeftInputBox>
-                                <span className={classes.span}>CAE</span>
-                                <TextField className={classes.inputs} id="cae" value={factura.cae || ''} onChange={(event) => actualizarValorFactura(event)} name="cae" variant="outlined" />
-                            </LeftInputBox>
+                            >
+                                <Typography className={classes.heading}>Datos de facturación</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails className={classes.bodyAcordeon}>
 
-                            <RightInputBox>
-                                <span className={classes.span}>Importe</span>
-                                <TextField className={classes.inputs} id="importe" value={factura.importe || ''} onChange={(event) => actualizarValorFactura(event)} name="importe"  variant="outlined" type="number"/>
-                            </RightInputBox>
+                                <LeftInputBox>
+                                    <span className={classes.span}>Numero de factura</span>
+                                    <TextField className={classes.inputs} id="numeroFactura" value={factura.numeroFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="numeroFactura" variant="outlined" />
+                                </LeftInputBox>
 
-                        </AccordionDetails>
-                    </Accordion>
-                }
-                </form> 
-                      
+                                <RightInputBox>
+                                    <span className={classes.span}>Fecha de facturación</span>
+                                    <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura" type="date" variant="outlined" />
+                                </RightInputBox>
+
+                                <LeftInputBox>
+                                    <span className={classes.span}>Cuit Proveedor</span>
+                                    <TextField className={classes.inputs} id="cuitProveedor" value={factura.cuitProveedor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitProveedor" variant="outlined" />
+                                </LeftInputBox>
+
+                                <RightInputBox>
+                                    <span className={classes.span}>Cuit Receptor</span>
+                                    <TextField className={classes.inputs} id="cuitReceptor" value={factura.cuitReceptor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitReceptor" variant="outlined" />
+                                </RightInputBox>
+
+                                <LeftInputBox>
+                                    <span className={classes.span}>CAE</span>
+                                    <TextField className={classes.inputs} id="cae" value={factura.cae || ''} onChange={(event) => actualizarValorFactura(event)} name="cae" variant="outlined" />
+                                </LeftInputBox>
+
+                                <RightInputBox>
+                                    <span className={classes.span}>Importe</span>
+                                    <TextField className={classes.inputs} id="importe" value={factura.importe || ''} onChange={(event) => actualizarValorFactura(event)} name="importe" variant="outlined" type="number" />
+                                </RightInputBox>
+
+                            </AccordionDetails>
+                        </Accordion>
+                    }
+                </form>
+
             </FormBox>
 
             <RightFormBox>
-                { creacion &&
-                <ButtonBox>
-                    <StyledButtonPrimary className={classes.botones} onClick={() => createData() } >Crear gasto</StyledButtonPrimary>
-                    <StyledButtonSecondary className={classes.botones} onClick={ backToGastos }>Cancelar</StyledButtonSecondary>
-                </ButtonBox>
+                {creacion &&
+                    <ButtonBox>
+                        <StyledButtonPrimary className={classes.botones} onClick={() => createData()} >Crear gasto</StyledButtonPrimary>
+                        <StyledButtonSecondary className={classes.botones} onClick={backToGastos}>Cancelar</StyledButtonSecondary>
+                    </ButtonBox>
                 }
-                { edicion && !creacion &&
-                <ButtonBox>
-                    {campoEditado &&
-                        <StyledButtonPrimary className={classes.botones} onClick={ updateData }>Guardar cambios</StyledButtonPrimary>
-                    }   
-                    {!campoEditado &&
-                        <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
-                    }
-                    <StyledButtonSecondary className={classes.botones} onClick={ popupModal }>Eliminar gasto</StyledButtonSecondary>
-                </ButtonBox>
+                {edicion && !creacion &&
+                    <ButtonBox>
+                        {campoEditado &&
+                            <StyledButtonPrimary className={classes.botones} onClick={updateData}>Guardar cambios</StyledButtonPrimary>
+                        }
+                        {!campoEditado &&
+                            <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
+                        }
+                        <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar gasto</StyledButtonSecondary>
+                    </ButtonBox>
                 }
                 <Divider className={classes.divider} />
-                
-                { edicion && !creacion &&
-                    <Historial tipo='GASTO' id={params.id} update={cambiosGuardados}/>
+
+                {edicion && !creacion &&
+                    <Historial tipo='GASTO' id={params.id} update={cambiosGuardados} />
                 }
 
             </RightFormBox>
 
-            <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
-                
-            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={ () => setOpenModal(false) }/>
-            
-         </RootBoxABM>
+            <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
+
+            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
+
+        </RootBoxABM>
 
     )
 }

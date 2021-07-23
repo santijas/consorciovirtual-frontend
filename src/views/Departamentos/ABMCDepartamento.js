@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import { departamentoService } from "../../services/departamentoService";
 import { Historial } from '../../components/Historial'
@@ -98,19 +98,19 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const [departamento, setDepartamento] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
-    const [openModal, setOpenModal] = useState(false)
+    const [openModalDelete, setOpenModalDelete] = useState(false)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [usuarios, setUsuarios] = useState([])
     const [inquilinos, setInquilinos] = useState([])
     const [propietarioId, setPropietarioId] = useState(null)
-    const [inquilinoId ,setInquilinoId] = useState(null)
+    const [inquilinoId, setInquilinoId] = useState(null)
 
 
     let history = useHistory()
     const params = useParams()
 
-    useEffect( () => {
+    useEffect(() => {
         const fetchDepartamento = async () => {
             try {
                 let unDepartamento
@@ -119,18 +119,18 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                 } else {
                     unDepartamento = await departamentoService.getById(params.id)
                     setPropietarioId(unDepartamento.propietario.id)
-                    if(unDepartamento.inquilino){
+                    if (unDepartamento.inquilino) {
                         setInquilinoId(unDepartamento.inquilino.id)
                     }
                 }
                 setDepartamento(unDepartamento)
 
             }
-            catch(error) {
+            catch (error) {
                 usarSnack(error.response.data, true)
             }
         }
-        
+
         fetchDepartamento()
         fetchAllUsers('')
         fetchAllInquilinos()
@@ -160,17 +160,16 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         history.push("/departamentos")
     }
 
-    const popupModal = () => {
-        setOpenModal(true)
+    const popupModalDelete = () => {
+        setOpenModalDelete(true)
     }
-
 
     const crearDepartamento = async () => {
         try {
 
-            if (validarDepartamento()) {        
+            if (validarDepartamento()) {
                 await departamentoService.create(departamento, propietarioId)
-                history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento creado correctamente."})
+                history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -181,7 +180,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
     const modificarDepartamento = async () => {
         try {
-            if (validarDepartamento()){
+            if (validarDepartamento()) {
                 await departamentoService.update(departamento, propietarioId, inquilinoId)
                 setCambiosGuardados(true)
                 setCampoEditado(false)
@@ -198,7 +197,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const eliminarDepartamento = async () => {
         try {
             await departamentoService.delete(departamento.id)
-            history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento eliminado correctamente."})
+            history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento eliminado correctamente." })
         } catch (error) {
             usarSnack(error.response.data, true)
         }
@@ -210,7 +209,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
     const changePropietario = (event) => {
         setPropietarioId(event.target.value)
-        setCampoEditado(true)     
+        setCampoEditado(true)
     }
 
     const changeInquilino = (event) => {
@@ -218,15 +217,14 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         setCampoEditado(true)
     }
 
-
-    const bodyModal = (
+    const bodyModalDelete = (
 
         <div style={modalStyle} className={classes.paper}>
             <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este departamento?</h2>
             <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
             <Box display="flex" flexDirection="row" mt={4}>
                 <StyledButtonPrimary onClick={eliminarDepartamento}>Eliminar departamento</StyledButtonPrimary>
-                <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
+                <Link className={classes.linkModal} onClick={() => setOpenModalDelete(false)}>
                     Cancelar
                 </Link>
             </Box>
@@ -234,116 +232,116 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     )
 
     return (
-
         <RootBoxABM>
-            <FormBox>
-                <Link className={classes.link} onClick={backToUsers}>
-                    <Chevron className={classes.chevron} />
-                    Volver a departamentos
-                </Link>
-                {creacion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                        Nuevo departamento
-                    </Typography>
-                }
-
-                {!creacion && edicion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                        Modificar departamento
-                    </Typography>
-                }
-
-                <form className={classes.form} noValidate autoComplete="off">
-
-                    <LeftInputBox>
-                        <span className={classes.span}>Piso</span>
-                        <TextField className={classes.inputs} id="piso" value={departamento.piso || ''} onChange={(event) => actualizarValor(event)} name="piso" variant="outlined" />
-                    </LeftInputBox>
-                    
-                    
-                    <RightInputBox>
-                        <span className={classes.span}>Departamento</span>
-                        <TextField className={classes.inputs} id="nroDepartamento" value={departamento.nroDepartamento || ''} onChange={(event) => actualizarValor(event)} name="nroDepartamento" variant="outlined" />
-                    </RightInputBox>
-
-                    <LeftInputBox>
-                        <span className={classes.span} >Torre</span>
-                        <TextField className={classes.inputs} id="torre" value={departamento.torre || ''} onChange={(event) => actualizarValor(event)} name="torre" variant="outlined" />
-                    </LeftInputBox>
-
-                    <RightInputBox>
-                        <span className={classes.span}>Superficie (m2)</span>
-                        <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" type="number"/>
-                    </RightInputBox>
-
-                    {usuarios && departamento &&
-                        <LeftInputBox>
-                            <span className={classes.span}>Propietario</span>
-                            {departamento &&
-                                <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={ changePropietario } name="propietario" variant="outlined" >
-                                    {usuarios.map((option) => (
-                                        <MenuItem key={option.id} value={option.id}>
-                                            {option.id}.  {option.nombre} {option.apellido}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>}
-                        </LeftInputBox>
+            <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
+                <FormBox>
+                    <Link className={classes.link} onClick={backToUsers}>
+                        <Chevron className={classes.chevron} />
+                        Volver a departamentos
+                    </Link>
+                    {creacion &&
+                        <Typography component="h2" variant="h5" className="tittle">
+                            Nuevo departamento
+                        </Typography>
                     }
 
-                    <RightInputBox>
-                        <span className={classes.span}>Porcentaje de expensas (%)</span>
-                        <TextField className={classes.inputs} id="porcentajeExpensa" onChange={(event) => actualizarValor(event)} value={departamento.porcentajeExpensa || ''} name="porcentajeExpensa" variant="outlined" type="number" />
-                    </RightInputBox>
+                    {!creacion && edicion &&
+                        <Typography component="h2" variant="h5" className="tittle">
+                            Modificar departamento
+                        </Typography>
+                    }
 
-                     
-                    { inquilinos && departamento && edicion && !creacion &&
-                    <LeftInputBox>
-                        <span className={classes.span}>Inquilino</span>
-                        {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={ changeInquilino } name="inquilino" variant="outlined" >
+                    <form className={classes.form} noValidate autoComplete="off">
+
+                        <LeftInputBox>
+                            <span className={classes.span}>Piso</span>
+                            <TextField className={classes.inputs} id="piso" value={departamento.piso || ''} onChange={(event) => actualizarValor(event)} name="piso" variant="outlined" />
+                        </LeftInputBox>
+
+
+                        <RightInputBox>
+                            <span className={classes.span}>Departamento</span>
+                            <TextField className={classes.inputs} id="nroDepartamento" value={departamento.nroDepartamento || ''} onChange={(event) => actualizarValor(event)} name="nroDepartamento" variant="outlined" />
+                        </RightInputBox>
+
+                        <LeftInputBox>
+                            <span className={classes.span} >Torre</span>
+                            <TextField className={classes.inputs} id="torre" value={departamento.torre || ''} onChange={(event) => actualizarValor(event)} name="torre" variant="outlined" />
+                        </LeftInputBox>
+
+                        <RightInputBox>
+                            <span className={classes.span}>Superficie (m2)</span>
+                            <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" type="number" />
+                        </RightInputBox>
+
+                        {usuarios && departamento &&
+                            <LeftInputBox>
+                                <span className={classes.span}>Propietario</span>
+                                {departamento &&
+                                    <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={changePropietario} name="propietario" variant="outlined" >
+                                        {usuarios.map((option) => (
+                                            <MenuItem key={option.id} value={option.id}>
+                                                {option.id}.  {option.nombre} {option.apellido}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>}
+                            </LeftInputBox>
+                        }
+
+                        <RightInputBox>
+                            <span className={classes.span}>Porcentaje de expensas (%)</span>
+                            <TextField className={classes.inputs} id="porcentajeExpensa" onChange={(event) => actualizarValor(event)} value={departamento.porcentajeExpensa || ''} name="porcentajeExpensa" variant="outlined" type="number" />
+                        </RightInputBox>
+
+
+                        {inquilinos && departamento && edicion && !creacion &&
+                            <LeftInputBox>
+                                <span className={classes.span}>Inquilino</span>
+                                {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={changeInquilino} name="inquilino" variant="outlined" >
                                     <MenuItem key={0} value={null}>
                                         Sin Inquilino
                                     </MenuItem>
-                            {inquilinos && inquilinos.map((option) => (
-                                    <MenuItem key={option.id} value={option.id}>
-                                        {option.id}. {option.nombre} {option.apellido}
-                                    </MenuItem>
-                                ))}
-                        </TextField> }
-                    </LeftInputBox> } 
+                                    {inquilinos && inquilinos.map((option) => (
+                                        <MenuItem key={option.id} value={option.id}>
+                                            {option.id}. {option.nombre} {option.apellido}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>}
+                            </LeftInputBox>}
 
-                </form>
+                    </form>
 
-            </FormBox>
+                </FormBox>
 
-            <RightFormBox>
-                {creacion &&
-                    <ButtonBox>
-                        <StyledButtonPrimary className={classes.botones} onClick={() => crearDepartamento()} >Crear departamento</StyledButtonPrimary>
-                        <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
-                    </ButtonBox>
-                }
-                {edicion && !creacion && propietarioId &&
-                    <ButtonBox>
-                        {campoEditado &&
-                            <StyledButtonPrimary className={classes.botones} onClick={modificarDepartamento}>Guardar cambios</StyledButtonPrimary>
-                        }
-                        {!campoEditado &&
-                            <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
-                        }
-                        <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar Departamento</StyledButtonSecondary>
-                    </ButtonBox>
-                }
-                <Divider className={classes.divider} />
-                
-                { edicion && !creacion &&
-                    <Historial tipo="DEPARTAMENTO" id={params.id} update={cambiosGuardados}/>
-                }
+                <RightFormBox>
+                    {creacion &&
+                        <ButtonBox>
+                            <StyledButtonPrimary className={classes.botones} onClick={() => crearDepartamento()} >Crear departamento</StyledButtonPrimary>
+                            <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
+                        </ButtonBox>
+                    }
+                    {edicion && !creacion && propietarioId &&
+                        <ButtonBox>
+                            {campoEditado &&
+                                <StyledButtonPrimary className={classes.botones} onClick={modificarDepartamento}>Guardar cambios</StyledButtonPrimary>
+                            }
+                            {!campoEditado &&
+                                <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
+                            }
+                            <StyledButtonSecondary className={classes.botones} onClick={popupModalDelete}>Eliminar Departamento</StyledButtonSecondary>
+                        </ButtonBox>
+                    }
+                    <Divider className={classes.divider} />
 
-            </RightFormBox>
+                    {edicion && !creacion &&
+                        <Historial tipo="DEPARTAMENTO" id={params.id} update={cambiosGuardados} />
+                    }
 
-            <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
+                </RightFormBox>
 
-            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
+                <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
+
+                <ModalComponent openModal={openModalDelete} bodyModal={bodyModalDelete} handleCloseModal={() => setOpenModalDelete(false)} />
 
         </RootBoxABM>
 

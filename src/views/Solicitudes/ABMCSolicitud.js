@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import { solicitudService } from "../../services/solicitudService";
@@ -283,6 +283,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     return (
 
         <RootBoxABM>
+            <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
                 <Link className={classes.link} onClick={backToSolicitudes}>
                     <Chevron className={classes.chevron} />
