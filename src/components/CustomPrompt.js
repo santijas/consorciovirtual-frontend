@@ -1,50 +1,8 @@
 import React, { useState } from "react";
-import { makeStyles, Typography } from '@material-ui/core';
-import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from './Buttons'
 
-import Dialog from "@material-ui/core/Dialog";
-import Button from "@material-ui/core/Button";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-
-export const CustomPrompt = ({ message, cleanUp }) => {
-    const [modalStyle] = useState(getModalStyle);
-    const classes = useStyles();
-    const cancel = () => cleanUp(false)
-    const ok = () => cleanUp(true)
-
-    return (
-        <Dialog open onClose={cancel}>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    {message}
-                </DialogContentText>
-
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={cancel} color="primary">
-                    Cancelar
-                </Button>
-                <Button onClick={ok} color="primary" autoFocus>
-                    Continuar
-                </Button>
-            </DialogActions>
-        </Dialog>
-
-        // ***CON NUESTROS ESTILOS (HABRÍA QUE RETOCAR)***
-        //     <div style={modalStyle} className={classes.paper}>
-        //     <h>{message}</h>
-        //     <Box display="flex" flexDirection="row" mt={4}>
-        //         <StyledButtonPrimary onClick={cancel}>Cancelar</StyledButtonPrimary>
-        //         <Link className={classes.linkModal} onClick={ok}>
-        //             Continuar
-        //         </Link>
-        //     </Box>
-        // </div>
-    )
-}
 
 function getModalStyle() {
     const top = 50
@@ -68,10 +26,48 @@ const useStyles = makeStyles({
     },
     paper: {
         position: 'absolute',
-        width: 400,
+        width: 422,
         backgroundColor: "white",
         boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.1)",
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
+    },
+    modal:{
+        zIndex: "1500",
+        position: "fixed",
+        inset: "0px",
+        background: "rgba(0, 0, 0, 0.5)",
+    },
+    botonTransparencia: {
+        background: "rgba(21,157, 116, 50%)",
+    },
+    botonRojo:{
+        background:"rgba(187, 14 ,14 ,100%)",
+        color: "white"
     }
 })
+
+
+export const CustomPrompt = ({ message, cleanUp }) => {
+    const [modalStyle] = useState(getModalStyle);
+    const classes = useStyles();
+    const cancel = () => cleanUp(false)
+    const ok = () => cleanUp(true)
+
+
+    return (
+        <Box className={classes.modal} aria-hidden="true">
+            <Box style={modalStyle} className={classes.paper}>
+                <h2 id="simple-modal-title">{message}</h2>
+                <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
+            
+                <Box display="flex" flexDirection="row" mt={4} justifyContent="space-between">
+                    <StyledButtonSecondary className={classes.botonRojo} onClick={ok}>Salir de todas formas</StyledButtonSecondary>
+                    <StyledButtonPrimary  onClick={ cancel }>Cancelar</StyledButtonPrimary>
+                </Box>
+
+            </Box>
+        </Box>
+    )
+}
+

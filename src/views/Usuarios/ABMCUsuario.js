@@ -123,11 +123,7 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
     const [modalStyle] = useState(getModalStyle);
     const [departamentos, setDepartamentos] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const [errors, setErrors] = useState({
-        name: '',
-        lastName: '',
-        dni: ''
-    })
+    const [errors, setErrors] = useState({})
     let history = useHistory()
     const params = useParams()
 
@@ -219,7 +215,6 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
 
     const validarUsuario = () => {
         setErrors(null)
-
         if (!usuario.nombre) {
             setErrors(prev => ({ ...prev, name: "Campo obligatorio" }))
         }
@@ -248,7 +243,7 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
             setErrors(prev => ({ ...prev, correo: "Introducir un correo electronico correcto." }))
         }
 
-        if (!usuario.fecha && creacion) {
+        if (!usuario.fechaNacimiento) {
             setErrors(prev => ({ ...prev, fecha: "Campo obligatorio" }))
         }
 
@@ -257,7 +252,7 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
         }
 
 
-        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && validarDni() && validarCorreo()
+        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && usuario.fechaNacimiento && usuario.tipo && validarDni() && validarCorreo() 
     }
 
     const validarDni = () => {
