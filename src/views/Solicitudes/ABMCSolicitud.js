@@ -107,26 +107,27 @@ const useStyles = makeStyles({
     }
 });
 
-const estadosDeSolicitud = [
-    {
-        value: 'Pendiente',
-        label: 'Pendiente',
-    },
-    {
-        value: 'Pendiente de aprobación',
-        label: 'Pendiente de aprobación',
-    },
+const estados = [
     {
         value: 'Resuelto',
         label: 'Resuelto',
     },
     {
+        value: 'En proceso',
+        label: 'En proceso',
+    },
+    {
+        value: 'Pendiente de resolución',
+        label: 'Pendiente de resolución',
+    },
+    {
         value: 'Rechazado',
         label: 'Rechazado',
     },
+    ,
     {
-        value: 'En proceso',
-        label: 'En proceso',
+        value: 'Pendiente de aprobación',
+        label: 'Pendiente de aprobación',
     }
 ]
 
@@ -157,6 +158,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const [solicitud, setSolicitud] = useState(new SolicitudTecnica())
     const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
+    const [estadoOriginal, setEstadoOriginal] = useState('')
     const [tipo, setTipo] = useState('')
     const [titulo, setTitulo] = useState('')
     const [detalle, setDetalle] = useState('')
@@ -180,6 +182,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             } else {
                 unaSolicitud = await solicitudService.getById(params.id)
                 setEstado(unaSolicitud.estado.nombreEstado)
+                setEstadoOriginal(unaSolicitud.estado.nombreEstado)
                 setTitulo(unaSolicitud.titulo)
                 setNotas(unaSolicitud.notas)
                 setDetalle(unaSolicitud.detalle)
@@ -225,7 +228,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             if (validarSolicitud()) {
                 let nuevaSolicitud = solicitud
                 nuevaSolicitud.autor = { id: user.id }
-                nuevaSolicitud.estado = { id: 1 }
+                nuevaSolicitud.estado = { nombreEstado: user.esInquilino() ? 'Pendiente de aprobación' : 'Pendiente de resolución'}
                 nuevaSolicitud.tipo = tipo
                 await solicitudService.create(nuevaSolicitud)
                 history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica creada correctamente." })
@@ -241,11 +244,12 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
         try {
             let nuevaSolicitud = solicitud
             nuevaSolicitud.estado.nombreEstado = estado
-            nuevaSolicitud.estado.id = (estado === 'Pendiente') ? 1 : 2
+            nuevaSolicitud.estado.id = (estado === 'Pendiente de resolución') ? 1 : 2
             nuevaSolicitud.notas = notas
             await solicitudService.update(solicitud)
             setCambiosGuardados(true)
             setCampoEditado(false)
+            setEstadoOriginal(estado)
             usarSnack("Solicitud técnica modificada correctamente", false)
         } catch (error) {
             usarSnack(error.response.data, true)
@@ -264,6 +268,32 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
     const validarSolicitud = () => {
         return solicitud.titulo && solicitud.detalle && tipo
+    }
+
+    const mostrarPosiblesEstados = () => {
+        if (user.esPropietario()) {
+            return estados.filter(nombreEstado =>  estadoOriginal === nombreEstado.value || nombreEstado.value === 'Pendiente de resolución' || nombreEstado.value === 'Rechazado' )
+        } else if (user.esAdmin()) {
+            return estados.filter(nombreEstado => {
+                if (estadoOriginal === 'En proceso') {
+                    return estadoOriginal === nombreEstado.value || nombreEstado.value === 'Resuelto'
+                } else {
+                    return estadoOriginal === nombreEstado.value || nombreEstado.value === 'En proceso'
+                }
+            })
+        } else {
+            return estados.filter(nombreEstado => estadoOriginal === nombreEstado.value)
+        }
+    }
+
+    const cambioDeEstadoDesactivado = () => {
+        const usuarioEsPropietarioYFueAprobada = user.esPropietario() && (estadoOriginal === 'Pendiente de resolución' || estadoOriginal === 'En proceso')
+        
+        return creacion
+            || estadoOriginal === 'Resuelto'
+            || estadoOriginal === 'Rechazado'
+            || user.esInquilino()
+            || usuarioEsPropietarioYFueAprobada
     }
 
     const bodyModal = (
@@ -309,8 +339,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span} >Estado</span>
-                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoSolicitud" select disabled={creacion || user.tipo === 'Inquilino'} onChange={handleChangeType} value={estado || ''} label={creacion ? (creacion && user.tipo === 'Inquilino' ? 'Pendiente de aprobación' : 'Pendiente') : ''} variant={creacion ? 'filled' : 'outlined'} >
-                            {estadosDeSolicitud.map((option) => (
+                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoSolicitud" select disabled={cambioDeEstadoDesactivado()} onChange={handleChangeType} value={estado || ''} label={creacion ? (creacion && user.esInquilino() ? 'Pendiente de aprobación' : 'Pendiente de resolución') : ''} variant={creacion ? 'filled' : 'outlined'} >
+                            {mostrarPosiblesEstados().map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>

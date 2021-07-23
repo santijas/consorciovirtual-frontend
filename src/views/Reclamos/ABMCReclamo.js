@@ -107,14 +107,18 @@ const useStyles = makeStyles({
     }
 });
 
-const estadosDeReclamo = [
+const estados = [
     {
-        value: 'Pendiente',
-        label: 'Pendiente',
+        value: 'Resuelto',
+        label: 'Resuelto',
     },
     {
-        value: 'Aprobado',
-        label: 'Aprobado',
+        value: 'En proceso',
+        label: 'En proceso',
+    },
+    {
+        value: 'Pendiente de resolución',
+        label: 'Pendiente de resolución',
     }
 ]
 
@@ -134,6 +138,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const [reclamo, setReclamo] = useState(new Reclamo())
     const [notas, setNotas] = useState([])
     const [estado, setEstado] = useState('')
+    const [estadoOriginal, setEstadoOriginal] = useState('')
     const [asunto, setAsunto] = useState('')
     const [mensaje, setMensaje] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
@@ -156,6 +161,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             unReclamo = await reclamoService.getById(params.id)
             setNotas(unReclamo.notas)
             setEstado(unReclamo.estado)
+            setEstadoOriginal(unReclamo.estado)
             setAsunto(unReclamo.asunto)
             setMensaje(unReclamo.mensaje)
         }
@@ -192,7 +198,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             if (validarReclamo()) {
                 let nuevoReclamo = reclamo
                 nuevoReclamo.autor = { id: user.id }
-                nuevoReclamo.estado = { id: 1 }
+                nuevoReclamo.estado = { nombreEstado: 'Pendiente de resolución'}
                 await reclamoService.create(nuevoReclamo)
                 history.push("/reclamos", { openChildSnack: true, mensajeChild: "Reclamo creado correctamente." })
             } else {
@@ -207,12 +213,12 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         try {
             let nuevoReclamo = reclamo
             nuevoReclamo.estado = {}
-            nuevoReclamo.estado.nombreEstado = estado
-            nuevoReclamo.estado.id = (estado === 'Pendiente') ? 1 : 2
+            nuevoReclamo.estado = { nombreEstado: estado }
             nuevoReclamo.autor = { id: nuevoReclamo.idAutor }
             nuevoReclamo.notas = notas
             await reclamoService.update(nuevoReclamo)
             setCambiosGuardados(true)
+            setEstadoOriginal(estado)
             setCampoEditado(false)
             usarSnack("Reclamo modificado correctamente", false)
         } catch (error) {
@@ -232,6 +238,27 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
     const validarReclamo = () => {
         return reclamo.asunto && reclamo.mensaje
+    }
+
+    const mostrarPosiblesEstados = () => {
+        if (user.esAdmin()) {
+            return estados.filter(nombreEstado => {
+                if (estadoOriginal === 'En proceso') {
+                    return estadoOriginal === nombreEstado.value || nombreEstado.value === 'Resuelto'
+                } else {
+                    return estadoOriginal === nombreEstado.value || nombreEstado.value === 'En proceso'
+                }
+            })
+        } else {
+            return estados.filter(nombreEstado => estadoOriginal === nombreEstado.value)
+        }
+    }
+
+    const cambioDeEstadoDesactivado = () => {        
+        return creacion
+            || estadoOriginal === 'Resuelto'
+            || user.esInquilino()
+            || user.esPropietario()
     }
 
 
@@ -278,8 +305,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span} >Estado</span>
-                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={creacion || user.tipo === 'Inquilino'} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Pendiente' : ''} variant={creacion ? 'filled' : 'outlined'} >
-                            {estadosDeReclamo.map((option) => (
+                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={cambioDeEstadoDesactivado()} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Pendiente de resolución' : ''} variant={creacion ? 'filled' : 'outlined'} >
+                            {mostrarPosiblesEstados().map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>

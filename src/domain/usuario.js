@@ -19,6 +19,10 @@ export class Usuario {
       return this.tipo === "Propietario"
     }
 
+    esInquilino(){
+      return this.tipo === "Inquilino"
+    }
+
     nombreYApellido(){
       return this.nombre + " " + this.apellido
     }
