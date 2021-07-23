@@ -35,7 +35,7 @@ export const CustomPrompt = ({ message, cleanUp }) => {
 
         // ***CON NUESTROS ESTILOS (HABRÍA QUE RETOCAR)***
         //     <div style={modalStyle} className={classes.paper}>
-        //     <h2>{message}</h2>
+        //     <h>{message}</h>
         //     <Box display="flex" flexDirection="row" mt={4}>
         //         <StyledButtonPrimary onClick={cancel}>Cancelar</StyledButtonPrimary>
         //         <Link className={classes.linkModal} onClick={ok}>
@@ -58,6 +58,14 @@ function getModalStyle() {
 }
 
 const useStyles = makeStyles({
+    linkModal: {
+        color: "#159D74",
+        textAlign: "left",
+        marginLeft: 50,
+        marginTop: 10,
+        cursor: "pointer",
+        fontWeight: 600
+    },
     paper: {
         position: 'absolute',
         width: 400,

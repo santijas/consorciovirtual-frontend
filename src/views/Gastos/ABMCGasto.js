@@ -82,7 +82,6 @@ const useStyles = makeStyles({
         boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.1)",
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
-<<<<<<< Updated upstream
       },
       inputsDate:{
           textTransform: "capitalize",
@@ -99,23 +98,6 @@ const useStyles = makeStyles({
       acordeon:{
         display:"flex",
         flexDirection:"column",
-=======
-    },
-    inputsDate: {
-        textTransform: "capitalize"
-    },
-    delete: {
-        textAlign: "left",
-        color: "red",
-        fontWeight: 600,
-        fontSize: 14,
-        marginTop: 4,
-        cursor: "pointer"
-    },
-    acordeon: {
-        display: "flex",
-        flexDirection: "column",
->>>>>>> Stashed changes
         justifyContent: "space-between",
         width: "100%",
         borderRadius: "6px",
