@@ -10,15 +10,6 @@ class ChatService {
     webSocket
     stompClient = null;
     connect(getMensajes) {
-         
-        // var socket = new SockJS('http://localhost:8080/ws-chat');
-        // let stompClient = Stomp.over(socket);
-        // stompClient.connect({}, function (frame) {
-        //     console.log('CONECTADO: ' + frame);
-        //     stompClient.subscribe('/topic/mensajes', function (string) {
-        //        console.log(JSON.parse(string.body) );
-        //     });
-        // });
 
         this.webSocket = new WebSocket('ws://localhost:8080/chat')
         this.webSocket.onopen = (event) => {
@@ -32,6 +23,23 @@ class ChatService {
       
         this.webSocket.onclose = (event) => {
             console.log('Close: ', event);
+        };  
+    }
+
+    connectUsuarioWS() {
+
+        this.webSocket = new WebSocket('ws://localhost:8080/cantidad-mensajes')
+        this.webSocket.onopen = (event) => {
+            console.log("CONECTADO A CANTIDAD_MENSAJES_ENDPOINT")
+        }
+
+        this.webSocket.onmessage = async  (event) => {
+            const mensaje = JSON.parse(event.data);
+            console.log("mensaje: ",mensaje)
+        };
+      
+        this.webSocket.onclose = (event) => {
+            console.log('Close CANTIDAD_MENSAJES_ENDPOINT: ', event);
         };  
     }
 
@@ -52,6 +60,11 @@ class ChatService {
         const mensajeAEnviar = new MensajeRequest(usuarioId,mensaje)
         await axios.post(`${REST_SERVER_URL}/mensajes/send`, mensajeAEnviar  )
         console.log("MENSAJE ENVIADO")
+    }
+
+    async getCantidadDeMensajes(usuarioId){
+        let cantidadMensajes = await axios.post(`${REST_SERVER_URL}/mensajes/cantidad/${usuarioId}`  )
+        console.log("cantidadMensajes: ",cantidadMensajes.data)
     }
 }
 

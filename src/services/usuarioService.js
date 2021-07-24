@@ -20,12 +20,6 @@ class UsuarioService {
         return listaJSON.data
     }
 
-    async getInquilinos() {
-        const tipo = "Inquilino"
-        const listaJSON = await axios.get(`${REST_SERVER_URL}/buscar/usuario`, {params:{ tipo }})
-        return listaJSON.data
-    }
-
     async create(user){
         await axios.put((`${REST_SERVER_URL}/usuario/crear`), user.toJSON())
         axios.post((`${REST_SERVER_URL}/enviarCorreo/usuarioNuevo`), user.toJSON())
@@ -41,6 +35,18 @@ class UsuarioService {
         await axios.delete(`${REST_SERVER_URL}/usuario/eliminar/${id}`,  {params:  {idLogueado} })
     }
 
+    //ENDPOINTS INQUILINOS
+    async getInquilinos(palabraBuscada) {
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/inquilinos`, { params:{ palabraBuscada } } )
+        console.log("listaJSON.data: ",listaJSON.data)
+        return listaJSON.data
+    }
+
+    async getInquilinosDeUsuario(palabraBuscada, idPropietario) {
+        const listaJSON = await axios.get(`${REST_SERVER_URL}/inquilinos/${idPropietario}`, { params:{ palabraBuscada } } )
+        console.log("listaJSON.data: ",listaJSON.data)
+        return listaJSON.data
+    }
 }
 
 export const usuarioService = new UsuarioService()

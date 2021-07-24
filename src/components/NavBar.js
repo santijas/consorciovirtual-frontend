@@ -1,10 +1,11 @@
 import { Drawer, List, ListItem, ListItemIcon, makeStyles } from '@material-ui/core';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { ActiveApartment, ActiveUser, NonActiveUser, NonActiveApartment, ActiveAnnouncement, NonActiveAnnouncement, ActiveClaims, NonActiveClaims, ActiveRequest, NonActiveRequest, ActiveInquiline, NonActiveInquiline, ActiveGastos, NonActiveGastos, ActiveExpenses, NonActiveExpenses, ActiveDocuments, NonActiveDocuments, ActiveChat, NonActiveChat, ActiveTelefonosUtiles, NonActiveTelefonosUtiles } from '../assets/icons';
 import { UserContext } from '../hooks/UserContext';
 import { usuarioService } from '../services/usuarioService.js'
+import { chatService } from '../services/chatService';
 
 const drawerWidth = 240;
 
@@ -44,6 +45,15 @@ export const NavBar = () => {
     setSelected(menu)
     history.push(`/${menu}`)
   }
+
+  useEffect(() => {
+    chatService.connectUsuarioWS()
+
+    return () => {
+      chatService.closeWebSocket()
+      console.log("CANTIDAD_MENSAJES_ENDPOINT DESCONECTADO")
+    }
+  }, [])
 
   return (
     <Drawer
@@ -87,7 +97,7 @@ export const NavBar = () => {
             <span className={`${(selected === "solicitudes") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
           </ListItem>
 
-        { user.esPropietario() &&
+        { !user.esInquilino() &&
           <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("inquilinos")}>
             <ListItemIcon>{selected === "inquilinos" ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
             <span className={`${(selected === "inquilinos") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
