@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
@@ -14,6 +14,8 @@ import update from 'immutability-helper';
 import useSnack from '../../hooks/UseSnack';
 import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { UserContext } from '../../hooks/UserContext'; 
+
 
 const useStyles = makeStyles ({
     link:{
@@ -83,25 +85,6 @@ const useStyles = makeStyles ({
       }
   });
 
-const tiposDeUsuario = [
-    {
-      value: 'Propietario',
-      label: 'Propietario',
-    },
-    {
-      value: 'Inquilino',
-      label: 'Inquilino',
-    },
-    {
-      value: 'Administrador_consorcio',
-      label: 'Administrador de Consorcio',
-    },
-    {
-    value: 'Administrador',
-    label: 'Administrador',
-    }
-  ]
-
   function getModalStyle() {
     const top = 50 
     const left = 50
@@ -123,15 +106,18 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     const [modalStyle] = useState(getModalStyle);
     const [departamentos, setDepartamentos] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const { user } = useContext(UserContext)
+    const [deptoSeleccionado, setDeptoSeleccionado] = useState('')
 
     let history = useHistory()
     const params = useParams()
 
 
     const actualizarValor = (event) => {
-        const newState = update(inquilino, {
+        var newState = update(inquilino, {
             [event.target.id]: { $set: event.target.value}
         })
+        newState.tipo = 'Inquilino'
         setInquilino(newState)
         setCampoEditado(true)
     }
@@ -144,42 +130,18 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
         setOpenModal(true)
     }
 
-    const handleChangeType = (event) => {
-        const newState = update(inquilino, {
-            tipo: { $set: event.target.value}
-        })
-        console.log(newState)
-        setInquilino(newState)
+    const seleccionarDepto = (event) => {
+        console.log(event.target.value)
+        setDeptoSeleccionado(event.target.value)
         setCampoEditado(true)
       };
-    
-    useEffect( ()  =>  {
-        const fetchInquilino = async () =>{
-            try{
-                let unInquilino
-                if(creacion){
-                    unInquilino = new Usuario()
-                } else{
-                    let listaDepartamentos
-                    unInquilino = await usuarioService.getById(params.id)
-                    listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
-                    setDepartamentos(listaDepartamentos)
-                }
-                setInquilino(unInquilino) 
-                }
-            catch(error){
-                usarSnack(error.response.data, true)
-            }
-        }
-
-        fetchInquilino()
-    },[params.id, creacion])
 
     const crearInquilino = async () => {
         try{
             if(validarInquilino()){
                 setIsLoading(true)
-                await usuarioService.create(inquilino)
+                await usuarioService.createInquilino(inquilino, deptoSeleccionado)
+                
                 history.push("/inquilinos", { openChildSnack : true, mensajeChild: "Inquilino creado correctamente."})    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -215,7 +177,7 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     }
 
     const validarInquilino = () =>{
-        return inquilino.nombre && inquilino.apellido && inquilino.dni && inquilino.correo && validarDni()
+        return inquilino.nombre && inquilino.apellido && inquilino.dni && inquilino.correo && validarDni() && deptoSeleccionado
     }
 
     const validarDni = () =>{
@@ -224,17 +186,49 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
 
     const bodyModal = (
       
-            <div style={modalStyle} className={classes.paper}>
-                        <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este inquilino?</h2>
-                        <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
-                        <Box display="flex" flexDirection="row" mt={4}>
-                            <StyledButtonPrimary onClick={ eliminarInquilino }>Eliminar inquilino</StyledButtonPrimary>
-                            <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
-                                Cancelar
-                            </Link>
-                        </Box>
-                    </div>
-        )
+        <div style={modalStyle} className={classes.paper}>
+                    <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este inquilino?</h2>
+                    <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
+                    <Box display="flex" flexDirection="row" mt={4}>
+                        <StyledButtonPrimary onClick={ eliminarInquilino }>Eliminar inquilino</StyledButtonPrimary>
+                        <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
+                            Cancelar
+                        </Link>
+                    </Box>
+                </div>
+    )
+
+    useEffect( ()  =>  {
+        const fetchInquilino = async () =>{
+            try{
+                let unInquilino
+                if(creacion){
+                    unInquilino = new Usuario()
+                } else{
+                    let listaDepartamentos
+                    unInquilino = await usuarioService.getById(params.id)
+                    listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
+                    setDepartamentos(listaDepartamentos)
+                }
+                setInquilino(unInquilino) 
+                }
+            catch(error){
+                usarSnack(error.response.data, true)
+            }
+        }
+
+        fetchInquilino()
+    },[params.id, creacion])
+
+    useEffect(  () => {
+        const getDeptosDeshabitados = async () => {
+            let deptosDeshabitados = await departamentoService.getByPropietarioIdDeshabitado(user.id)
+            console.log("deptosDeshabitados",deptosDeshabitados)
+            setDepartamentos(deptosDeshabitados)
+        }
+    
+        getDeptosDeshabitados()
+        },[])
 
     return (
         
@@ -283,11 +277,11 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={classes.span}>Tipo de usuario</span>
-                        <TextField className={classes.inputs} id="tipoUsuario" select onChange={ handleChangeType } value={inquilino.tipo || ''} variant="outlined" >
-                                {tiposDeUsuario.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                {option.label}
+                        <span className={classes.span}>Departamento</span>
+                        <TextField className={classes.inputs} id="departamento" select onChange={ seleccionarDepto } value={deptoSeleccionado || ''} variant="outlined" >
+                                {departamentos.map((option) => (
+                                <MenuItem key={option.id} value={option.id}>
+                                {option.piso} º {option.nroDepartamento} Torre {option.torre}
                                 </MenuItem>
                             ))}
                         </TextField>

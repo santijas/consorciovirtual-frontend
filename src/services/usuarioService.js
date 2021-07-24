@@ -21,7 +21,8 @@ class UsuarioService {
     }
 
     async create(user){
-        await axios.put((`${REST_SERVER_URL}/usuario/crear`), user.toJSON())
+        let respuesta = await axios.put((`${REST_SERVER_URL}/usuario/crear`), user.toJSON())
+        console.log(respuesta)
         axios.post((`${REST_SERVER_URL}/enviarCorreo/usuarioNuevo`), user.toJSON())
     }
 
@@ -46,6 +47,13 @@ class UsuarioService {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/inquilinos/${idPropietario}`, { params:{ palabraBuscada } } )
         console.log("listaJSON.data: ",listaJSON.data)
         return listaJSON.data
+    }
+
+    async createInquilino(inquilino, deptoId){
+        const response = await axios.put((`${REST_SERVER_URL}/inquilino/crear/${deptoId}`), inquilino.toJSON())
+        console.log(response)
+        axios.post((`${REST_SERVER_URL}/enviarCorreo/usuarioNuevo`), inquilino.toJSON())
+        
     }
 }
 

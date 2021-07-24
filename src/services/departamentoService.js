@@ -41,6 +41,11 @@ class DepartamentoService {
         console.log(departamentoJson.data)
         return departamentoJson.data
     }
+
+    async getByPropietarioIdDeshabitado(propietarioId){
+        let departamentos = await axios.get(`${REST_SERVER_URL}/departamento/user/sin-inquilino/${propietarioId}`)
+        return departamentos.data
+    }
 }
 
 export const departamentoService = new DepartamentoService()

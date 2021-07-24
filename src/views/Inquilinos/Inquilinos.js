@@ -82,6 +82,8 @@ export const Inquilinos = () =>{
       fetchSnack()
     },[location.state])
 
+    
+
     const newUser = () =>{
       history.push("/newinquilino")
     }
