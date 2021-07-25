@@ -156,10 +156,10 @@ export const ABExpensa = () =>{
     }
 
     
-    const generarExpensa = () => {
+    const generarExpensa = async () => {
         try{
             if(gastos.length > 0){
-                expensaService.create(obtenerPeriodoDeMoment(selectedDate))
+                await expensaService.create(obtenerPeriodoDeMoment(selectedDate))
                 
                 history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
             }else{

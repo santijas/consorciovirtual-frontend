@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
-import { StyledButtonSecondary } from '../../components/Buttons'
+import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, withRouter } from 'react-router-dom';
 import { Link, Divider, Box, Input, TextField } from '@material-ui/core';
 import { Chevron } from '../../assets/icons';
@@ -15,6 +15,7 @@ import { expensaService } from '../../services/expensaService';
 import { SnackbarComponent } from '../../components/Snackbar';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { ModalComponent } from '../../components/Modal'
 
 const useStyles = makeStyles ({
     link:{
@@ -94,6 +95,17 @@ const useStyles = makeStyles ({
       }
   });
 
+function getModalStyle() {
+    const top = 50
+    const left = 50
+
+    return {
+        top: `${top}%`,
+        left: `${left}%`,
+        transform: `translate(-${top}%, -${left}%)`,
+    };
+}
+
   const ColumnasCustom = (dato) => {
 
     let history= useHistory()
@@ -119,6 +131,11 @@ export const AnularExpensa = () =>{
     const [expensaGeneral, setExpensaGeneral] = useState() 
     const [cantidadDeptos, setCantidadDeptos] = useState('')
     const { openSnackbar, setOpenSnackbar, mensajeSnack,  usarSnack, snackColor } = useSnack();
+    //Modal
+    const [modalStyle] = useState(getModalStyle);
+    const [openModal, setOpenModal] = useState(false)
+
+
     
 
     let history = useHistory()
@@ -144,15 +161,17 @@ export const AnularExpensa = () =>{
     }
 
     
-    const anularExpensa = () => {
+    const anularExpensa = async ()  => {
         try{
             if(expensas.length > 0){
-                expensaService.anularExpensas(obtenerPeriodoDeMoment(selectedDate))
+                await expensaService.anularExpensas(obtenerPeriodoDeMoment(selectedDate))
                 history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas anuladas correctamente.", render: false})
             }else{
+                setOpenModal(false)
                 usarSnack("No existen expensas generadas en dicho periodo.", true)
             }  
         }catch(error){
+            setOpenModal(false)
             usarSnack(error.response.data, true)
         }
     }
@@ -168,18 +187,32 @@ export const AnularExpensa = () =>{
         return `"${date.getFullYear()}-${date.getMonth()}"`
     }
 
-        const renderInput = ( props ) => (
-            <TextField 
-            className={classes.inputsDate} 
-            id="tipo" 
-            onClick={props.onClick} 
-            onChange={props.onChange} 
-            value={props.value} 
-            variant="outlined"
-            inputProps={{className: classes.inputsDate}}
-            />
-            
-          );
+    const renderInput = ( props ) => (
+        <TextField 
+        className={classes.inputsDate} 
+        id="tipo" 
+        onClick={props.onClick} 
+        onChange={props.onChange} 
+        value={props.value} 
+        variant="outlined"
+        inputProps={{className: classes.inputsDate}}
+        />
+        
+        );
+
+        const bodyModal = (
+
+        <div style={modalStyle} className={classes.paper}>
+            <h2 id="simple-modal-title">¿Estás seguro que desea anular las expensas para el período seleccionado?</h2>
+            <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
+            <Box display="flex" flexDirection="row" mt={4}>
+                <StyledButtonPrimary onClick={anularExpensa}>Anular</StyledButtonPrimary>
+                <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
+                    Cancelar
+                </Link>
+            </Box>
+        </div>
+    )
 
     return (
         
@@ -245,12 +278,14 @@ export const AnularExpensa = () =>{
             <RightFormBox>
 
                 <ButtonBox>
-                    <StyledButtonSecondary className={classes.botones} onClick={ anularExpensa } >Anular expensas</StyledButtonSecondary>
+                    <StyledButtonSecondary className={classes.botones} onClick={ () => setOpenModal(true) } >Anular expensas</StyledButtonSecondary>
                 </ButtonBox>
 
                 <Divider className={classes.divider} />
                 <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
             </RightFormBox>
+
+            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
             
          </RootBoxABM>
 
