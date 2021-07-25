@@ -97,8 +97,7 @@ export const Inquilinos = () =>{
               <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={setTextoBusqueda} />
               <div>
                <span className={classes.cantidadObject} > 
-               {inquilinos.length}
-                inquilinos </span>
+               {inquilinos.length} inquilinos </span>
               <StyledButtonPrimary onClick={newUser} >Agregar inquilino</StyledButtonPrimary>
               </div>
            </SearchBox>

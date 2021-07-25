@@ -43,7 +43,7 @@ class DepartamentoService {
     }
 
     async getByPropietarioIdDeshabitado(propietarioId){
-        let departamentos = await axios.get(`${REST_SERVER_URL}/departamento/user/sin-inquilino/${propietarioId}`)
+        let departamentos = await axios.get(`${REST_SERVER_URL}/departamentos/user/sin-inquilino/${propietarioId}`)
         return departamentos.data
     }
 }

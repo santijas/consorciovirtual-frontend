@@ -170,7 +170,7 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     const eliminarInquilino = async () => {
         try {
             await usuarioService.delete(inquilino.id)
-            history.push("/usuarios", { openChildSnack : true, mensajeChild: "Usuario eliminado correctamente."}) 
+            history.push("/inquilinos", { openChildSnack : true, mensajeChild: "Inquilino eliminado correctamente."}) 
         }catch(error){
             usarSnack(error.response.data, true)
         }
