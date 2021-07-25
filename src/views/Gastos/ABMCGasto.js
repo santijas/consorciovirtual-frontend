@@ -10,6 +10,7 @@ import { Chevron } from '../../assets/icons';
 import update from 'immutability-helper';
 import { Gasto } from '../../domain/gasto';
 import { Factura } from '../../domain/factura';
+import { Documento } from '../../domain/documento';
 import { gastoService } from '../../services/gastoService';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
@@ -305,9 +306,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
     const tieneFactura = async () =>{
         if(checkFactura === true){
-            await gastoService.createInvoice(gasto, factura)
+            factura.enlaceDeDescarga = gasto.url
+            factura.puntoDeVenta = "0000"
+            await gastoService.create(gasto, factura)
         }else{
-            await gastoService.create(gasto)
+            let documento = new Documento() 
+            documento.enlaceDeDescarga = gasto.url
+            documento.type = "documento"
+            await gastoService.create(gasto, documento)
         }
     }
 

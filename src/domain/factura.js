@@ -1,18 +1,20 @@
 export class Factura {
 
-    constructor(fechaFactura, numeroFactura, puntoDeVenta, cuotProveedor, cuitReceptor, cae, importe){ 
+    constructor(fechaFactura, numeroFactura, puntoDeVenta, cuitProveedor, cuitReceptor, cae, importe){ 
       this.fechaFactura = fechaFactura
       this.numeroFactura = numeroFactura
       this.puntoDeVenta = puntoDeVenta
-      this.cuotProveedor = cuotProveedor
+      this.cuitProveedor = cuitProveedor
       this.cuitReceptor = cuitReceptor
       this.cae = cae
       this.importe = importe
+      this.enlaceDeDescarga = ""
+      this.type = "factura"
     }
 
-    static fromJson(expensaJSON) {
+    static fromJson(facturaJSON) {
       return Object.assign(new Factura(),
-      expensaJSON,
+      facturaJSON,
         { }
       )
     }

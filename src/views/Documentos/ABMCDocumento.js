@@ -242,8 +242,10 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
 
     const onDownload = async () => {
         try {
+            const response = await axios.get(`http://localhost:8080/downloadFile/${documento.enlaceDeDescarga}`)
             let a = document.createElement('a');
-            a.href = `${REST_SERVER_URL}/documentos/descargar/${documento.id}`;
+            a.href = response.config.url;
+            a.download = 'gastos';
             a.click();
         } catch (error) {
             usarSnack(error.response.data, true)

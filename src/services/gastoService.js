@@ -25,12 +25,11 @@ class GastoService{
         return listaJSON.data
     }
 
-    async create(gasto){
+    async create(gasto, comprobante){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        console.log(comprobante.toJSON())
         await axios.put((`${REST_SERVER_URL}/gastos/crear`), gasto.toJSON())
-    }
-
-    async createInvoice(gasto, factura){
-        await axios.put((`${REST_SERVER_URL}/gastos/crear`), gasto.toJSON())
+        await axios.post((`${REST_SERVER_URL}/documentos/createDeGasto/${idLogueado}`), comprobante.toJSON())
     }
 
     async update(gasto){

@@ -26,13 +26,11 @@ class DocumentoService{
     async create(nuevoDocumento){
         const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         nuevoDocumento.type = "documento"
-        nuevoDocumento.enlaceDeDescarga = this.darFormatoDeEnlaceDeDescarga(nuevoDocumento.enlaceDeDescarga)
         await axios.post((`${REST_SERVER_URL}/documentos/create/${idLogueado}`), nuevoDocumento.toJSON())
     }
 
     async update(nuevoDocumento){
         const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
-        nuevoDocumento.enlaceDeDescarga = this.darFormatoDeEnlaceDeDescarga(nuevoDocumento.enlaceDeDescarga)
         await axios.put((`${REST_SERVER_URL}/documentos/modificar/${idLogueado}`), nuevoDocumento.toJSON())
     }
 
@@ -41,7 +39,7 @@ class DocumentoService{
         await axios.delete(`${REST_SERVER_URL}/documentos/eliminar/${idDocumento}/${idLogueado}`)
     }
 
-    darFormatoDeEnlaceDeDescarga(enlace){
+    /*darFormatoDeEnlaceDeDescarga(enlace){
         let enlaceFormateado
         if(enlace.includes("/")){
             enlaceFormateado = enlace;
@@ -49,7 +47,7 @@ class DocumentoService{
             enlaceFormateado = `archivos/documentosyfacturas/${enlace}`
         }
         return enlaceFormateado;
-    }
+    }*/
 
 }
 
