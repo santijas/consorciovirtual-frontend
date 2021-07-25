@@ -31,6 +31,20 @@ class UsuarioService {
         await axios.put(`${REST_SERVER_URL}/usuario/modificar`, user.toJSON(), {params:  {idLogueado} })
     }
 
+    async updatePassword(correo, password, newPassword){
+        const parameters = {
+            params: {
+                correo,
+                password,
+                newPassword
+            }
+        }
+        console.log(parameters)
+        console.log("ANTES DEL ENDPOINT")
+        await axios.put(`${REST_SERVER_URL}/usuario/modificarContrasenia`, null, parameters)
+        console.log("DESPUÉS DEL ENDPOINT")
+    }
+
     async delete(id){
         const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.delete(`${REST_SERVER_URL}/usuario/eliminar/${id}`,  {params:  {idLogueado} })
@@ -55,6 +69,7 @@ class UsuarioService {
         axios.post((`${REST_SERVER_URL}/enviarCorreo/usuarioNuevo`), inquilino.toJSON())
         
     }
+
 }
 
 export const usuarioService = new UsuarioService()

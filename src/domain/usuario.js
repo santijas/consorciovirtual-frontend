@@ -9,6 +9,7 @@ export class Usuario {
       this.correo = correo
       this.tipo = tipo
       this.ultimaModificacion = ultimaModificacion
+      this.nuevaContrasenia = null
     }
 
     esAdmin(){

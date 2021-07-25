@@ -7,44 +7,45 @@ import { REST_SERVER_URL } from '../services/configuration';
 
 
 export default function useAuth() {
-   const { setUser } = useContext(UserContext);
-   const [error, setError] = useState(null);
+    const { setUser } = useContext(UserContext);
+    const [error, setError] = useState(null);
 
     const usuarioAJson = (usuarioJSON) => {
         return Usuario.fromJson(usuarioJSON)
     }
 
     const loginUser = async (correo, password) => {
-        
-    const parameters = { 
-        params:{
+
+        const parameters = {
+            params: {
                 correo,
                 password
-    } }
+            }
+        }
 
-        const login = await axios.post(`${REST_SERVER_URL}/login`, null,  parameters)
-        .then( (usuarioJson) => {
-            
-            const usuario = usuarioAJson(usuarioJson.data)
-            setUser(usuario)
-            saveLoguedStorage(correo, password, usuario.id)
-            return usuario
+        const login = await axios.post(`${REST_SERVER_URL}/login`, null, parameters)
+            .then((usuarioJson) => {
 
-        }).catch((err) => {
-            setError(err.response.data);
-        }    
-        )
-    return login
-}
+                const usuario = usuarioAJson(usuarioJson.data)
+                setUser(usuario)
+                saveLoguedStorage(correo, password, usuario.id)
+                return usuario
 
-    const saveLoguedStorage = (correo, password, id) =>{
-        const user = {  correo, password, id }
+            }).catch((err) => {
+                setError(err.response.data);
+            }
+            )
+        return login
+    }
+
+    const saveLoguedStorage = (correo, password, id) => {
+        const user = { correo, password, id }
         window.localStorage.setItem('loggedUser', JSON.stringify(user))
-      }
+    }
 
 
-return {
-   loginUser,   
-   error
-}
+    return {
+        loginUser,
+        error
+    }
 }

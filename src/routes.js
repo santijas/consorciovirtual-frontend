@@ -62,8 +62,9 @@ export const Routes = () => {
                         <Route><Header/></Route> 
                         <Route><NavBar/></Route> 
                         <PrivateRoute path="/usuarios" exact={true} component={Usuarios}></PrivateRoute>
-                        <Route path="/newuser"><ABMCUsuario creacion={true} edicion={false}/></Route>
-                        <Route path="/usuario/:id"><ABMCUsuario creacion={false} edicion={true} /></Route>
+                        <Route path="/newuser"><ABMCUsuario creacion={true} edicion={false} perfil={false}/></Route>
+                        <Route path="/usuario/:id"><ABMCUsuario creacion={false} edicion={true} perfil={false}/></Route>
+                        <Route path="/perfil"><ABMCUsuario creacion={false} edicion={false} perfil={true} /></Route>
                         <Route path="/departamentos" component={Departamentos}></Route>
                         <Route path="/newdepartamento"><ABMCDepartamento creacion={true} edicion={false}/></Route>
                         <Route path="/departamento/:id"><ABMCDepartamento creacion={false} edicion={true} /></Route>

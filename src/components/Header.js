@@ -11,65 +11,65 @@ import { UserContext } from '../hooks/UserContext';
 
 const useStyles = makeStyles({
     root: {
-      background: "white",
-      width: "100%",
-      position: "fixed",
-      top:0,
-      zIndex: 1300,
-      height: 70,
-      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-      display: "flex",
-      justifyContent: "space-between",
+        background: "white",
+        width: "100%",
+        position: "fixed",
+        top: 0,
+        zIndex: 1300,
+        height: 70,
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        justifyContent: "space-between",
     },
-    tittle:{
-        alignSelf:"center",
+    tittle: {
+        alignSelf: "center",
         padding: 20,
         display: "flex",
-        justifyContent:"left",
+        justifyContent: "left",
     },
-    loguedUser:{
-        display:"flex",
-        alignSelf:"center",
-        alignItems:"center",
+    loguedUser: {
+        display: "flex",
+        alignSelf: "center",
+        alignItems: "center",
         marginRight: 100,
     },
-    avatar:{
-        display:"flex",
-        background:"red",
+    avatar: {
+        display: "flex",
+        background: "red",
         marginRight: 5
     },
-    menuUser:{
+    menuUser: {
         marginTop: 55,
         marginLeft: 50
     },
     boton: {
         textTransform: "none"
     },
-    contenedorBoton:{
+    contenedorBoton: {
         display: "flex",
-        justifyContent:"center",
-        alignContent:"center",
-        alignItems:"center"
+        justifyContent: "center",
+        alignContent: "center",
+        alignItems: "center"
     },
-    nombreTipo:{
-        display:"flex",
-        flexDirection:"column",
-        textAlign:"left"
+    nombreTipo: {
+        display: "flex",
+        flexDirection: "column",
+        textAlign: "left"
     },
-    span:{
-        textAlign:"left",
+    span: {
+        textAlign: "left",
         fontSize: 12,
         fontWeight: 300
     },
-    desplegable:{
-        marginLeft:10
+    desplegable: {
+        marginLeft: 10
     },
-    logo:{
+    logo: {
         marginLeft: 25,
     }
-  });
+});
 
-export const Header = () =>{
+export const Header = () => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [nombre, setNombre] = useState()
@@ -87,51 +87,58 @@ export const Header = () =>{
 
     const filterFirstLetters = (nombre) => {
         return nombre.match(/\b(\w)/g).join('')
-    }   
+    }
 
-    const logout = () =>{
+    const logout = () => {
         window.localStorage.removeItem('loggedUser')
         setUser(null)
+        setAnchorEl(null)
         history.push("/")
     }
 
-    useEffect( () =>{
-        
-    },[user])
+    const perfil = () => {
+        setAnchorEl(null)
+        history.push("/perfil")
+    }
 
-        return (
-            <header className={classes.root}>
-                <div className={classes.tittle}>
-                    <img src={Logo} className={classes.logo}/>
-                </div>
-                { user &&
+    useEffect(() => {
+
+    }, [user])
+
+    return (
+        <header className={classes.root}>
+            <div className={classes.tittle}>
+                <img src={Logo} className={classes.logo} />
+            </div>
+            {user &&
                 <div className={classes.loguedUser} >
-                        <Avatar style={{backgroundColor: avatarColours(user.nombre)}} className={classes.avatar} >{filterFirstLetters(user.nombreYApellido())}</Avatar>
-                        <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                          <div className={classes.contenedorBoton}> 
-                                <div className={classes.nombreTipo}>
-                                    {user.nombre + " " + user.apellido} 
-                                    <span className={classes.span}>{splitTipo(user.tipo)}</span>
-                                </div> 
-                                <Desplegable className={classes.desplegable}/>
+                    <Avatar style={{ backgroundColor: avatarColours(user.nombre) }} className={classes.avatar} >{filterFirstLetters(user.nombreYApellido())}</Avatar>
+                    <Button className={classes.boton} aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+                        <div className={classes.contenedorBoton}>
+                            <div className={classes.nombreTipo}>
+                                {user.nombre + " " + user.apellido}
+                                <span className={classes.span}>{splitTipo(user.tipo)}</span>
+                            </div>
+                            <Desplegable className={classes.desplegable} />
                         </div>
-                        </Button>
-                        
-                        <Menu
-                            id="simple-menu"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(anchorEl)}
-                            onClose={handleClose}
-                            className={classes.menuUser}
-                        >
-                            <MenuItem onClick={ logout } >Logout</MenuItem>
-                        </Menu>
-                        
+                    </Button>
+
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                        className={classes.menuUser}
+                    >
+                        <MenuItem onClick={perfil}> Perfil </MenuItem>
+                        <MenuItem onClick={logout}> Cerrar sesión </MenuItem>
+                    </Menu>
+
                 </div>
-            }   
-            </header>
-        )
+            }
+        </header>
+    )
 }
 
 export default withRouter(Header)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
@@ -13,7 +13,9 @@ import { Usuario } from '../../domain/usuario';
 import update from 'immutability-helper';
 import useSnack from '../../hooks/UseSnack';
 import ReactLoading from 'react-loading';
-import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, CompleteInputBox } from '../../components/Contenedores';
+import { StyledButtonNewPassoword } from './../../components/Buttons';
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles({
     link: {
@@ -113,9 +115,10 @@ function getModalStyle() {
     };
 }
 
-export const ABMCUsuario = ({ edicion, creacion }) => {
+export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     const classes = useStyles();
     const [usuario, setUsuario] = useState('')
+    const { user } = useContext(UserContext)
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -126,6 +129,10 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
     let history = useHistory()
     const params = useParams()
 
+    const [currentPassword, setCurrentPassword] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const [newPasswordValidator, setNewPasswordValidator] = useState('')
+
 
     const updateValue = (event) => {
         const newState = update(usuario, {
@@ -135,8 +142,8 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
         setCampoEditado(true)
     }
 
-    const backToUsers = () => {
-        history.push("/usuarios")
+    const goBack = () => {
+        history.goBack()
     }
 
     const popupModal = () => {
@@ -152,17 +159,14 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
     };
 
     useEffect(() => {
-        const fetchUsuario = async () => {
+        const fetchUsuario = () => {
             try {
-                let unUsuario
+                let unUsuario = ''
+
                 if (creacion) {
                     unUsuario = new Usuario()
-                } else {
-                    let listaDepartamentos
-                    unUsuario = await usuarioService.getById(params.id)
-                    listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
-                    setDepartamentos(listaDepartamentos)
                 }
+
                 setUsuario(unUsuario)
             }
             catch (error) {
@@ -171,7 +175,52 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
         }
 
         fetchUsuario()
-    }, [params.id, creacion])
+    }, [creacion])
+
+
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                let unUsuario = ''
+
+                if (edicion) {
+                    let listaDepartamentos
+                    unUsuario = await usuarioService.getById(params.id)
+                    listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
+                    setDepartamentos(listaDepartamentos)
+                }
+
+                setUsuario(unUsuario)
+            }
+            catch (error) {
+                usarSnack(error.response.data, true)
+            }
+        }
+
+        fetchUsuario()
+    }, [params.id])
+
+
+    useEffect(() => {
+        const fetchUsuario = () => {
+            try {
+                let unUsuario = ''
+
+                if (perfil) {
+                    unUsuario = user
+                }
+
+                setUsuario(unUsuario)
+            }
+            catch (error) {
+                usarSnack(error.response.data, true)
+            }
+        }
+
+        fetchUsuario()
+    }, [perfil])
+
+
 
     const crearUsuario = async () => {
         try {
@@ -208,6 +257,21 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
             await usuarioService.delete(usuario.id)
             history.push("/usuarios", { openChildSnack: true, mensajeChild: "Usuario eliminado correctamente." })
         } catch (error) {
+            usarSnack(error.response.data, true)
+        }
+    }
+
+    const modificarContrasenia = async () => {
+        try {
+            if (validarNuevaContrasenia()) {
+                await usuarioService.updatePassword(usuario.correo, currentPassword, newPassword)
+                cleanAndCloseModal()
+                usarSnack("Contraseña actualizada correctamente", false)
+            } else {
+                usarSnack("Verificar los datos ingresados", true)
+            }
+        } catch (error) {
+            console.log(error)
             usarSnack(error.response.data, true)
         }
     }
@@ -251,7 +315,7 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
         }
 
 
-        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && usuario.fechaNacimiento && usuario.tipo && validarDni() && validarCorreo() 
+        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && usuario.fechaNacimiento && usuario.tipo && validarDni() && validarCorreo()
     }
 
     const validarDni = () => {
@@ -262,18 +326,125 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
         return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(usuario.correo)
     }
 
-    const bodyModal = (
+    const validarNuevaContrasenia = () => {
+        setErrors(null)
 
-        <div style={modalStyle} className={classes.paper}>
-            <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este usuario?</h2>
-            <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
-            <Box display="flex" flexDirection="row" mt={4}>
-                <StyledButtonPrimary onClick={eliminarUsuario}>Eliminar usuario</StyledButtonPrimary>
-                <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
-                    Cancelar
-                </Link>
-            </Box>
-        </div>
+        if (!currentPassword) {
+            setErrors(prev => ({ ...prev, currentPassword: "Campo obligatorio" }))
+        }
+
+        if (!newPassword) {
+            setErrors(prev => ({ ...prev, newPassword: "Campo obligatorio" }))
+        }
+
+        if (!newPasswordValidator) {
+            setErrors(prev => ({ ...prev, newPasswordValidator: "Campo obligatorio" }))
+        }
+
+        if (newPassword && newPasswordValidator && !(newPassword === newPasswordValidator)) {
+            setErrors(prev => ({ ...prev, newPassword: "Deben coincidir" }))
+            setErrors(prev => ({ ...prev, newPasswordValidator: "Deben coincidir" }))
+        }
+
+        return currentPassword && newPassword && newPasswordValidator && (newPassword === newPasswordValidator)
+    }
+
+    
+    const cleanAndCloseModal = () => {
+        setOpenModal(false)
+        setNewPassword('')
+        setNewPasswordValidator('')
+        setCurrentPassword('')
+        setErrors(null)
+    }
+
+    const bodyModal = (
+        edicion ?
+
+            <div style={modalStyle} className={classes.paper}>
+                <h2 id="simple-modal-title">¿Estás seguro que querés eliminar este usuario?</h2>
+                <p id="simple-modal-description">Esta acción no se puede deshacer.</p>
+                <Box display="flex" flexDirection="row" mt={4}>
+                    <StyledButtonPrimary onClick={eliminarUsuario}>Eliminar usuario</StyledButtonPrimary>
+                    <Link className={classes.linkModal} onClick={() => setOpenModal(false)}>
+                        Cancelar
+                    </Link>
+                </Box>
+            </div>
+
+            :
+
+            <div style={modalStyle} className={classes.paper}>
+                <h2 id="simple-modal-title">CAMBIAR CONTRASEÑA</h2>
+                <p id="simple-modal-description">Ingrese su nueva contraseña</p>
+                <form className={classes.form} noValidate autoComplete="off">
+
+
+                    <CompleteInputBox>
+                        <span className={classes.span}>Contraseña actual</span>
+                        <TextField
+                            className={classes.inputs}
+                            id="contraseniaActual"
+                            type="password"
+                            value={currentPassword}
+                            onChange={(e) => setCurrentPassword(e.target.value)}
+                            name="contraseniaActual"
+                            variant="outlined"
+                            error={Boolean(errors?.currentPassword)}
+                            helperText={errors?.currentPassword}
+                            inputProps={{ maxLength: 25 }}
+                        />
+                    </CompleteInputBox>
+
+                    <CompleteInputBox>
+                        <span className={classes.span}>Nueva contraseña</span>
+                        <TextField
+                            className={classes.inputs}
+                            id="nuevaContrasenia"
+                            type="password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            name="nuevaContrasenia"
+                            variant="outlined"
+                            error={Boolean(errors?.newPassword)}
+                            helperText={errors?.newPassword}
+                            inputProps={{ maxLength: 25 }}
+                        />
+                    </CompleteInputBox>
+
+                    <CompleteInputBox>
+                        <span className={classes.span}>Repetir nueva contraseña</span>
+                        <TextField
+                            className={classes.inputs}
+                            id="repetirNuevaContraseña"
+                            type="password"
+                            value={newPasswordValidator}
+                            onChange={(e) => setNewPasswordValidator(e.target.value)}
+                            name="repetirNuevaContraseña"
+                            variant="outlined"
+                            error={Boolean(errors?.newPasswordValidator)}
+                            helperText={errors?.newPasswordValidator}
+                            inputProps={{ maxLength: 25 }}
+                        />
+                    </CompleteInputBox>
+
+                    <Box display="flex" flexDirection="row" mt={4}>
+                        <StyledButtonPrimary onClick={modificarContrasenia}>Cambiar contraseña</StyledButtonPrimary>
+                        <Link className={classes.linkModal} onClick={() => cleanAndCloseModal()}>
+                            Cancelar
+                        </Link>
+                    </Box>
+                </form>
+            </div>
+    )
+
+
+    const chevronText = (
+        (creacion || edicion) ? "Volver a usuarios" : "Volver atrás"
+    )
+
+    const tittleText = (
+        creacion ? "Nuevo usuario" : edicion ? "Modificar usuario" : "Perfil de usuario"
     )
 
     return (
@@ -281,21 +452,15 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
         <RootBoxABM>
             <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
-                <Link className={classes.link} onClick={backToUsers}>
-                    <Chevron className={classes.chevron} />
-                    Volver a usuarios
-                </Link>
-                {creacion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                        Nuevo usuario
-                    </Typography>
-                }
 
-                {!creacion && edicion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                        Modificar usuario
-                    </Typography>
-                }
+                <Link className={classes.link} onClick={goBack}>
+                    <Chevron className={classes.chevron} />
+                    {chevronText}
+                </Link>
+
+                <Typography component="h2" variant="h5" className="tittle">
+                    {tittleText}
+                </Typography>
 
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
@@ -414,20 +579,22 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
                             }
                         </RightInputBox>
                     }
+
+
                 </form>
 
             </FormBox>
 
             <RightFormBox>
-                {creacion && 
+                {creacion &&
                     <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearUsuario()} >Crear usuario</StyledButtonPrimary>
-                        <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
+                        <StyledButtonSecondary className={classes.botones} onClick={goBack}>Cancelar</StyledButtonSecondary>
                     </ButtonBox>
                 }
 
 
-                {edicion && !creacion &&
+                {!creacion &&
                     <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarUsuario}>Guardar cambios</StyledButtonPrimary>
@@ -435,9 +602,17 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
                         {!campoEditado &&
                             <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                         }
-                        <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar usuario</StyledButtonSecondary>
+                        {edicion &&
+                            <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar usuario</StyledButtonSecondary>
+                        }
+                        {perfil &&
+                            <StyledButtonNewPassoword className={classes.botones} onClick={popupModal}>Cambiar contraseña</StyledButtonNewPassoword>
+                        }
+                        {/* <StyledButtonSecondary className={classes.botones} onClick={goBack}>Cancelar</StyledButtonSecondary> */}
+
                     </ButtonBox>
                 }
+
                 <Divider className={classes.divider} />
 
                 {edicion && !creacion &&
@@ -448,7 +623,7 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
 
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
-            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />
+            <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => cleanAndCloseModal()} />
 
         </RootBoxABM>
 
