@@ -169,6 +169,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
             if (validarDepartamento()) {
                 await departamentoService.create(departamento, propietarioId)
+                setCampoEditado(false)
                 history.push("/departamentos", { openChildSnack: true, mensajeChild: "Departamento creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)

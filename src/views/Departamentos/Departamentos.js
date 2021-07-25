@@ -8,6 +8,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { SnackbarComponent } from '../../components/Snackbar';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 const useStyles = makeStyles ({
     cantidadObject:{
@@ -97,7 +98,14 @@ export const Departamentos = () =>{
                 <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
                 </div>
             </SearchBox>
+            {
+              departamentos.length > 1 &&
             <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
+            }
+            { departamentos.length === 0 &&
+                <SearchWithoutResults/>
+            }
+            
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         
          </RootBox>

@@ -10,6 +10,7 @@ import { numeroConPuntos, splitVisual } from '../../utils/formats';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext'; 
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 
 const useStyles = makeStyles ({
@@ -101,7 +102,12 @@ export const Inquilinos = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar inquilino</StyledButtonPrimary>
               </div>
            </SearchBox>
+           {inquilinos.length>1 &&
             <Tabla datos={inquilinos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+           }
+            { inquilinos.length === 0 &&
+                <SearchWithoutResults/>
+            }
 
               <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         

@@ -231,6 +231,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 nuevaSolicitud.estado = { nombreEstado: user.esInquilino() ? 'Pendiente de aprobación' : 'Pendiente de resolución'}
                 nuevaSolicitud.tipo = tipo
                 await solicitudService.create(nuevaSolicitud)
+                setCampoEditado(false)
                 history.push("/solicitudes", { openChildSnack: true, mensajeChild: "Solicitud técnica creada correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)

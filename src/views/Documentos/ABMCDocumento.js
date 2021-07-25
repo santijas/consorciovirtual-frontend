@@ -159,6 +159,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
             if (verificarCamposVacios()) {
                 await onFileUpload()
                 await documentoService.create(documento)
+                setCampoEditado(false)
                 history.push("/documentos", { openChildSnack: true, mensajeChild: "Nuevo documento creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)

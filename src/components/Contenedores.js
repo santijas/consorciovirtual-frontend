@@ -99,6 +99,6 @@ export const SearchBox = withStyles((theme) => ({
     root:{
         display: "flex",
         justifyContent: "space-between",
-        marginTop: 20
+        marginTop: 20,
     },
     }))(Box);

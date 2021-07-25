@@ -1,5 +1,6 @@
 import 'moment/locale/es'
 import moment from 'moment';
+import { isAfter } from 'date-fns';
 
 export const formatDate = (date) =>{
     const fecha = moment(date).format('MMMM YYYY').toUpperCase()
@@ -44,4 +45,8 @@ export const soloFecha = (fecha) => {
 
 export const horaYMinutos = (fecha) => {
   return moment(fecha).format('hh:mm')
+}
+
+export const fechaYaPaso = (fecha) =>{
+  return moment(Date.now()).isAfter(fecha)
 }

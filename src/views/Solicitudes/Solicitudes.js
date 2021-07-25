@@ -9,6 +9,7 @@ import { StyledButtonPrimary } from '../../components/Buttons'
 import { SnackbarComponent } from '../../components/Snackbar'
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 const useStyles = makeStyles({
   cantidadObject: {
@@ -92,8 +93,12 @@ export const Solicitudes = () => {
           <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>
         </div>
       </SearchBox>
+      {solicitudes.length > 0 &&
       <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"}/>
-    
+      }
+      { solicitudes.length === 0 &&
+        <SearchWithoutResults/>
+      }
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
     </RootBox>

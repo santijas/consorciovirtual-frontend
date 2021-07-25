@@ -8,6 +8,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { SnackbarComponent } from '../../components/Snackbar'
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 
 const useStyles = makeStyles ({
@@ -88,7 +89,12 @@ export const Documentos = () =>{
               <StyledButtonPrimary onClick={newDocument} >Agregar Documento</StyledButtonPrimary>
               </div>
            </SearchBox>
+           { documentos.length >1 &&
             <Tabla datos={documentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+           }
+            { documentos.length === 0 &&
+                <SearchWithoutResults/>
+            }
 
               <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         

@@ -122,7 +122,6 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [departamentos, setDepartamentos] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
     const [errors, setErrors] = useState({})
     let history = useHistory()
     const params = useParams()
@@ -177,8 +176,8 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
     const crearUsuario = async () => {
         try {
             if (validarUsuario()) {
-                setIsLoading(true)
                 await usuarioService.create(usuario)
+                setCampoEditado(false)
                 history.push("/usuarios", { openChildSnack: true, mensajeChild: "Usuario creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -420,19 +419,13 @@ export const ABMCUsuario = ({ edicion, creacion }) => {
             </FormBox>
 
             <RightFormBox>
-                {creacion && !isLoading &&
+                {creacion && 
                     <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearUsuario()} >Crear usuario</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
                     </ButtonBox>
                 }
 
-                {creacion && isLoading &&
-                    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                        <span className={classes.createSpan}> Creando usuario... </span>
-                        <ReactLoading type="spin" color="#159D74" height={50} width={50} className="spin" />
-                    </Box>
-                }
 
                 {edicion && !creacion &&
                     <ButtonBox>

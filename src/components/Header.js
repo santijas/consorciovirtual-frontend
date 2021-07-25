@@ -65,7 +65,7 @@ const useStyles = makeStyles({
         marginLeft:10
     },
     logo:{
-        marginLeft: 25
+        marginLeft: 25,
     }
   });
 

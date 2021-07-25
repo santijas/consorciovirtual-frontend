@@ -160,6 +160,7 @@ export const ABExpensa = () =>{
         try{
             if(gastos.length > 0){
                 expensaService.create(obtenerPeriodoDeMoment(selectedDate))
+                
                 history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
             }else{
                 usarSnack("No es posible generar expensas sin gastos registrados en el periodo.", true)

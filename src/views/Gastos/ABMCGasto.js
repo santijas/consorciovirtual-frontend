@@ -187,7 +187,7 @@ const rubros = [
 export const ABMCGasto = ({ edicion, creacion }) => {
     const classes = useStyles();
     const [gasto, setGasto] = useState('')
-    const [factura, setFactura] = useState()
+    const [factura, setFactura] = useState(new Factura())
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
@@ -195,6 +195,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     const [modalStyle] = useState(getModalStyle);
     const [selectedDate, handleDateChange] = useState(new Date());
     const [selectedFile, setSelectedFile] = useState(null);
+    const [checkFactura, setCheckFactura] = useState(false)
 
     let history = useHistory()
     const params = useParams()
@@ -291,13 +292,22 @@ export const ABMCGasto = ({ edicion, creacion }) => {
             gasto.periodo = moment(new Date(Date.now())).format('YYYY-MM')
             if (validarGasto()) {
                 await onFileUpload()
-                await gastoService.create(gasto, factura)
+                await tieneFactura()
+                setCampoEditado(false)
                 history.push("/gastos", { openChildSnack: true, mensajeChild: "Gasto creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
         } catch (error) {
             usarSnack(error.response.data, true)
+        }
+    }
+
+    const tieneFactura = async () =>{
+        if(checkFactura === true){
+            await gastoService.createInvoice(gasto, factura)
+        }else{
+            await gastoService.create(gasto)
         }
     }
 
@@ -357,6 +367,15 @@ export const ABMCGasto = ({ edicion, creacion }) => {
         setSelectedFile(null)
         setCampoEditado(true)
     };
+
+    const handleFactura = () =>{
+        if(checkFactura === true){
+            setCheckFactura(false)
+            setFactura(new Factura())
+        }else{
+            setCheckFactura(true)
+        }
+    }
 
 
 
@@ -515,7 +534,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                     }
 
                     {factura &&
-                        <Accordion className={classes.acordeon} onChange={() => console.log("Hola")}>
+                        <Accordion className={classes.acordeon} onChange={ handleFactura }>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
@@ -523,7 +542,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                 className={classes.resetStyle}
 
                             >
-                                <Typography className={classes.heading}>Datos de facturación</Typography>
+                                <Typography className={classes.heading}>{checkFactura === true? "Datos de facturación" : "Agregar datos de facturación"}</Typography>
                             </AccordionSummary>
                             <AccordionDetails className={classes.bodyAcordeon}>
 

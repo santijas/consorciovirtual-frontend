@@ -9,6 +9,8 @@ import { SnackbarComponent } from '../../components/Snackbar'
 import { useLocation } from 'react-router-dom';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import { soloFecha } from '../../utils/formats';
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 const useStyles = makeStyles({
   cantidadObject: {
@@ -37,7 +39,7 @@ const ColumnasCustom = (dato) => {
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
           <span className="tableBold">{dato.id}</span>
-          <span >{dato.fecha}</span>
+          <span >{soloFecha(dato.fecha)}</span>
         </div>
       </StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
@@ -90,7 +92,12 @@ export const Reclamos = () => {
           <StyledButtonPrimary onClick={newReclamo} >Agregar Reclamo</StyledButtonPrimary>
         </div>
       </SearchBox>
+      {reclamos.length>1 &&
       <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"} />
+      }
+       { reclamos.length === 0 &&
+                <SearchWithoutResults/>
+       }
 
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 

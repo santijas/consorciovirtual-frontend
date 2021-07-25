@@ -15,6 +15,7 @@ import { Reclamo } from '../../domain/reclamo';
 import { UserContext } from '../../hooks/UserContext';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { soloFecha } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -200,6 +201,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 nuevoReclamo.autor = { id: user.id }
                 nuevoReclamo.estado = { nombreEstado: 'Pendiente de resolución'}
                 await reclamoService.create(nuevoReclamo)
+                setCampoEditado(false)
                 history.push("/reclamos", { openChildSnack: true, mensajeChild: "Reclamo creado correctamente." })
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -323,7 +325,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                     <RightInputBox>
                         <span className={classes.spanDisabled}>Fecha</span>
                         <div className={classes.contenedorFecha}>
-                            <span className={classes.span}>{edicion ? reclamo.fecha : (new Date()).toLocaleDateString()}</span>
+                            <span className={classes.span}>{edicion ? soloFecha(reclamo.fecha) : (new Date()).toLocaleDateString()}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
                     </RightInputBox>

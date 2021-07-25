@@ -144,6 +144,7 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
             if (verificarCamposVacios()) {
                 if (verificarNumeroTelefonico()) {
                     await telefonoUtilService.create(telefonoUtil)
+                    setCampoEditado(false)
                     history.push("/telefonosUtiles", { openChildSnack: true, mensajeChild: "Nuevo teléfono útil creado correctamente." })
                 } else {
                     usarSnack("El teléfono solo puede contener números, espacios y/o guiones medios.", true)

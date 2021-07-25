@@ -9,6 +9,7 @@ import { SnackbarComponent } from '../../components/Snackbar';
 import { dosDecimales, formatDate, numeroConPuntos } from '../../utils/formats';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 
 const useStyles = makeStyles ({
@@ -90,7 +91,13 @@ export const Gastos = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>
               </div>
            </SearchBox>
+
+           {gastos.length>1 &&
             <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
+           }
+            { gastos.length === 0 &&
+                <SearchWithoutResults/>
+            }
 
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
         

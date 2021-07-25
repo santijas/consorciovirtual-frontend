@@ -141,7 +141,7 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
             if(validarInquilino()){
                 setIsLoading(true)
                 await usuarioService.createInquilino(inquilino, deptoSeleccionado)
-                
+                setCampoEditado(false)
                 history.push("/inquilinos", { openChildSnack : true, mensajeChild: "Inquilino creado correctamente."})    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)

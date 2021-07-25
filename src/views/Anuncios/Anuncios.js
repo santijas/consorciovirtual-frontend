@@ -9,11 +9,16 @@ import { StyledButtonPrimary } from '../../components/Buttons'
 import { SnackbarComponent } from '../../components/Snackbar'
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import { fechaYaPaso, soloFecha } from '../../utils/formats';
+import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 const useStyles = makeStyles({
     cantidadObject: {
         fontWeight: 300,
         marginRight: 10
+    },
+    past:{
+        background: "green"
     }
 });
 
@@ -26,25 +31,27 @@ const headers = [
 ]
 
 const ColumnasCustom = (dato) => {
-
     let history = useHistory()
 
     const getAnuncio = (id) => {
         history.push(`/anuncio/${id}`)
     }
 
+    const anuncioVencido = (fecha) =>{
+        return fechaYaPaso(fecha)
+    }
+
     return (
-        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer">
+        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer" style={anuncioVencido(dato.fechaVencimiento)? {background: "#F5F5F5", boxShadow: "0px 1px 2px rgb(0 0 0 / 10%)"} : {}}>
             <StyledTableCell component="th" scope="row">
                 <div className="contenedorColumna">
-                    <span className="tableBold">{dato.fecha}</span>
-                    <span>{dato.fechaCreacion}</span>
+                    <span>{soloFecha(dato.fechaCreacion)}</span>
                 </div>
             </StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-            <StyledTableCell className="tableBold" component="th" scope="row">{dato.fechaVencimiento}</StyledTableCell>
+            <StyledTableCell className="tableBold" component="th" scope="row">{soloFecha(dato.fechaVencimiento)}</StyledTableCell>
         </StyledTableRow>)
 }
 
@@ -91,8 +98,12 @@ export const Anuncios = () => {
                     <StyledButtonPrimary onClick={newAnuncio}>Agregar anuncio</StyledButtonPrimary>
                 </div>
             </SearchBox>
-            <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
-
+            {anuncios.length > 0 &&
+            <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
+            }
+            { anuncios.length === 0 &&
+                <SearchWithoutResults/>
+            }
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
         </RootBox>
