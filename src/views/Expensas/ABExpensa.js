@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
-import { Link, Divider, Box, TextField } from '@material-ui/core';
+import { Link, Divider, Box, TextField, MenuItem } from '@material-ui/core';
 import { Chevron } from '../../assets/icons';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
@@ -16,7 +16,7 @@ import update from 'immutability-helper';
 import { ExpensaGeneral } from '../../domain/expensaGeneral';
 import { expensaService } from '../../services/expensaService';
 import { SnackbarComponent } from '../../components/Snackbar';
-import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { ButtonBox, FormBox, CompleteInputBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles ({
     link:{
@@ -96,6 +96,18 @@ const useStyles = makeStyles ({
     }
   });
 
+  const tipoDeCalculo = [
+    {
+        value: 0,
+        label: 'Cálculo en base a los gatos del período',
+    },
+    {
+        value: 1,
+        label: 'Cálculo por importes prefijados',
+    }
+
+]
+
   const ColumnasCustom = (dato) => {
 
     let history= useHistory()
@@ -122,6 +134,13 @@ export const ABExpensa = () =>{
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
+
+    //variables para la forma de calcular
+    const [opcionDeCalculo, setOpcionDeCalculo] = useState()
+    const [opcionParaService, setOpcionParaService] = useState(-1)
+    const [valorComunes, setValorComunes] = useState()
+    const [valorExtraordinarias, setValorExtraordinarias] = useState()
+    
 
     let history = useHistory()
 
@@ -159,8 +178,13 @@ export const ABExpensa = () =>{
     const generarExpensa = async () => {
         try{
             if(gastos.length > 0){
-                await expensaService.create(obtenerPeriodoDeMoment(selectedDate))
-                
+                console.log(opcionParaService)
+                // eslint-disable-next-line default-case
+                switch(opcionParaService){
+                    case -1: usarSnack("Debe seleccionar el modo de calcular las expensas.", true); break; 
+                    case 0: await expensaService.create(obtenerPeriodoDeMoment(selectedDate)); break;
+                    case 1: await expensaService.createPrefijados(obtenerPeriodoDeMoment(selectedDate), valorComunes, valorExtraordinarias); break;
+                }
                 history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
             }else{
                 usarSnack("No es posible generar expensas sin gastos registrados en el periodo.", true)
@@ -190,6 +214,17 @@ export const ABExpensa = () =>{
         return `"${date.getFullYear()}-${date.getMonth()}"`
     }
 
+
+    const handleChangeOption = (event) => {
+        console.log(opcionParaService)
+        let opcion = event.target.value
+        console.log(opcion)    
+        setOpcionDeCalculo(tipoDeCalculo[event.target.value].label)
+        setOpcionParaService(opcion)
+        console.log(opcionParaService)
+    };
+
+
         const renderInput = ( props ) => (
             <TextField 
             className={classes.inputsDate} 
@@ -217,10 +252,21 @@ export const ABExpensa = () =>{
                      </Typography>
         
                 <form className={classes.form} noValidate autoComplete="off">
+
+                    <CompleteInputBox>
+                        <span className={classes.span}>Modo de cálculo</span>
+                        <TextField className={classes.inputs} id="tipo" select onChange={handleChangeOption} value={opcionDeCalculo} variant="outlined" >
+                            {tipoDeCalculo.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </CompleteInputBox>
                     
                    
                     <LeftInputBox>
-                        <span className={classes.spanDisabled}>Período</span>
+                        <span className={classes.span}>Período</span>
                         <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                             <DatePicker
                                 views={["year", "month"]}
@@ -240,16 +286,33 @@ export const ABExpensa = () =>{
                         <span className={classes.spanDisabled}>Cantidad de departamentos</span>
                         <span className={classes.inputsDisabled}>{cantidadDeptos}</span>
                     </RightInputBox>
-
+                    {opcionParaService  <= 0 &&
                     <LeftInputBox>
-                        <span className={classes.spanDisabled}>Valor total de expensa común</span>
+                        <span className={classes.spanDisabled}>Importe total de expensa común</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaComun || ' - '}</span>
                     </LeftInputBox>
-
+                    }
+                    {opcionParaService <= 0 &&
                     <RightInputBox>
-                        <span className={classes.spanDisabled}>Valor total de expensa extraordinaria</span>
+                        <span className={classes.spanDisabled}>Importe total de expensa extraordinaria</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
                     </RightInputBox>
+                    }
+
+                    {opcionParaService > 0 &&
+                    <LeftInputBox>
+                        <span className={classes.span}>Importe expensas comúnes</span>
+                        <TextField multiline className={classes.inputs} id="valorComunes" value={valorComunes || ''} onChange={(event) => setValorComunes(event.target.value)} name="valorComunes" variant="outlined" />
+                        <span className={classes.spanDisabled}>Gastos comunes del periodo <br></br> ${expensaGeneral.valorTotalExpensaComun}</span>
+                    </LeftInputBox>
+                    }
+                    {opcionParaService > 0 &&
+                    <RightInputBox>
+                        <span className={classes.span}>Importe expensas extraordinarias</span>
+                        <TextField multiline className={classes.inputs} id="valorExtraordinarias" value={valorExtraordinarias || ''} onChange={(event) => setValorExtraordinarias(event.target.value)} name="valorExtraordinarias" variant="outlined" />
+                        <span className={classes.spanDisabled}>Gastos extraordinarios del periodo <br></br> ${expensaGeneral.valorTotalExpensaExtraordinaria}</span>
+                    </RightInputBox>
+                    }
                 </form> 
                 {gastos.length !== 0 && 
                 <div>

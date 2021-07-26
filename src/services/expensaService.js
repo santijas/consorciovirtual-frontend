@@ -29,6 +29,10 @@ class ExpensaService {
         await axios.get(`${REST_SERVER_URL}/expensas/createPorImporteDeGastos/`, {params:{ periodo }})
     }
 
+    async createPrefijados(periodo, valorComunes, valorExtraordinarias){
+        await axios.get(`${REST_SERVER_URL}/expensas/createPorImportePredefinido`, {params:{ periodo, importeComunes:valorComunes, importeExtraordinarias:valorExtraordinarias }})
+    }
+
     async delete(periodo){
         await axios.put(`${REST_SERVER_URL}/expensas/anular/${periodo}`)
     }

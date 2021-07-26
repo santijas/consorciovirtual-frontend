@@ -305,15 +305,21 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     }
 
     const tieneFactura = async () =>{
-        if(checkFactura === true){
-            factura.enlaceDeDescarga = gasto.url
-            factura.puntoDeVenta = "0000"
-            await gastoService.create(gasto, factura)
-        }else{
-            let documento = new Documento() 
-            documento.enlaceDeDescarga = gasto.url
-            documento.type = "documento"
-            await gastoService.create(gasto, documento)
+        await gastoService.create(gasto)
+        try {
+            if(checkFactura === true){
+                factura.enlaceDeDescarga = gasto.url
+                await gastoService.createComprobante(factura)
+            }else{
+                let documento = new Documento() 
+                documento.enlaceDeDescarga = gasto.url
+                documento.type = "documento"
+                await gastoService.createComprobante(documento)
+            }
+        } catch (error) {
+            //Si falla la creación del documento se elimina el gasto para quedar consistente
+            usarSnack(error.response.data, true)
+            await gastoService.eliminarPosta(gasto.url)
         }
     }
 
@@ -552,14 +558,24 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                             </AccordionSummary>
                             <AccordionDetails className={classes.bodyAcordeon}>
 
-                                <LeftInputBox>
-                                    <span className={classes.span}>Numero de factura</span>
-                                    <TextField className={classes.inputs} id="numeroFactura" value={factura.numeroFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="numeroFactura" variant="outlined" />
+                            <LeftInputBox>
+                                    <span className={classes.span}>Tipo de Factura</span>
+                                    <TextField className={classes.inputs} id="tipoFactura" value={factura.tipoFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="tipofactura" variant="outlined" />
                                 </LeftInputBox>
 
                                 <RightInputBox>
                                     <span className={classes.span}>Fecha de facturación</span>
                                     <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura" type="date" variant="outlined" />
+                                </RightInputBox>
+
+                                <LeftInputBox>
+                                    <span className={classes.span}>Punto de venta</span>
+                                    <TextField className={classes.inputs} id="puntoDeVenta" value={factura.puntoDeVenta || ''} onChange={(event) => actualizarValorFactura(event)} name="puntoDeVenta" variant="outlined" />
+                                </LeftInputBox>
+
+                                <RightInputBox>
+                                    <span className={classes.span}>Numero de factura</span>
+                                    <TextField className={classes.inputs} id="numeroFactura" value={factura.numeroFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="numeroFactura" variant="outlined" />
                                 </RightInputBox>
 
                                 <LeftInputBox>

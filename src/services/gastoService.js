@@ -25,10 +25,12 @@ class GastoService{
         return listaJSON.data
     }
 
-    async create(gasto, comprobante){
-        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
-        console.log(comprobante.toJSON())
+    async create(gasto){
         await axios.put((`${REST_SERVER_URL}/gastos/crear`), gasto.toJSON())
+    }
+
+    async createComprobante(comprobante){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.post((`${REST_SERVER_URL}/documentos/createDeGasto/${idLogueado}`), comprobante.toJSON())
     }
 
@@ -39,6 +41,10 @@ class GastoService{
 
     async delete(id){
         await axios.put(`${REST_SERVER_URL}/gasto/eliminar/${id}`)
+    }
+
+    async eliminarPosta(urlDeGasto){
+        await axios.delete(`${REST_SERVER_URL}/gasto/eliminar`, {params:{ urlDeGasto }})
     }
 }
 

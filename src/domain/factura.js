@@ -1,9 +1,10 @@
 export class Factura {
 
-    constructor(fechaFactura, numeroFactura, puntoDeVenta, cuitProveedor, cuitReceptor, cae, importe){ 
+    constructor(fechaFactura, tipoFactura, puntoDeVenta, numeroFactura, cuitProveedor, cuitReceptor, cae, importe){ 
       this.fechaFactura = fechaFactura
-      this.numeroFactura = numeroFactura
+      this.tipoFactura = tipoFactura
       this.puntoDeVenta = puntoDeVenta
+      this.numeroFactura = numeroFactura
       this.cuitProveedor = cuitProveedor
       this.cuitReceptor = cuitReceptor
       this.cae = cae
