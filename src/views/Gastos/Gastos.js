@@ -50,6 +50,7 @@ export const Gastos = () =>{
     const [gastos, setGastos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
     let history = useHistory()
 
 
@@ -62,6 +63,7 @@ export const Gastos = () =>{
       const fetchAll = async (textoBusqueda) =>{
         const gastosEncontrados = await gastoService.getBySearch(textoBusqueda)
         setGastos(gastosEncontrados)
+        setIsLoading(false)
       }
 
       fetchAll(textoBusqueda)
@@ -95,7 +97,7 @@ export const Gastos = () =>{
            {gastos.length>1 &&
             <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
-            { gastos.length === 0 &&
+            { gastos.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
 

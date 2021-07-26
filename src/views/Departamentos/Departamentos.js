@@ -59,6 +59,8 @@ export const Departamentos = () =>{
     const [departamentos, setDepartamentos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
+
     let history = useHistory()  
 
     const newDepto = () =>{
@@ -69,6 +71,7 @@ export const Departamentos = () =>{
       const fetchAllDepartamentos = async (textoBusqueda) =>{
         const deptosEncontrados = await departamentoService.getBySearch(textoBusqueda)
         setDepartamentos(deptosEncontrados)
+        setIsLoading(false)
       }
 
       fetchAllDepartamentos(textoBusqueda)
@@ -102,7 +105,7 @@ export const Departamentos = () =>{
               departamentos.length > 1 &&
             <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
             }
-            { departamentos.length === 0 &&
+            { departamentos.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
             

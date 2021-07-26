@@ -54,6 +54,8 @@ export const Reclamos = () => {
   const [reclamos, setReclamos] = useState([])
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+
   let history = useHistory()
   let location = useLocation()
 
@@ -66,6 +68,7 @@ export const Reclamos = () => {
     const fetchAllReclamos = async (textoBusqueda) => {
       const reclamosEncontrados = await reclamoService.getAll(textoBusqueda)
       setReclamos(reclamosEncontrados)
+      setIsLoading(false)
     }
     fetchAllReclamos(textoBusqueda)
   }, [textoBusqueda])
@@ -95,7 +98,7 @@ export const Reclamos = () => {
       {reclamos.length>1 &&
       <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"} />
       }
-       { reclamos.length === 0 &&
+       { reclamos.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
        }
 

@@ -17,9 +17,6 @@ const useStyles = makeStyles({
         fontWeight: 300,
         marginRight: 10
     },
-    past:{
-        background: "green"
-    }
 });
 
 const headers = [
@@ -42,7 +39,7 @@ const ColumnasCustom = (dato) => {
     }
 
     return (
-        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer" style={anuncioVencido(dato.fechaVencimiento)? {background: "#F5F5F5", boxShadow: "0px 1px 2px rgb(0 0 0 / 10%)"} : {}}>
+        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
             <StyledTableCell component="th" scope="row">
                 <div className="contenedorColumna">
                     <span>{soloFecha(dato.fechaCreacion)}</span>
@@ -51,7 +48,7 @@ const ColumnasCustom = (dato) => {
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-            <StyledTableCell className="tableBold" component="th" scope="row">{soloFecha(dato.fechaVencimiento)}</StyledTableCell>
+            <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>{anuncioVencido(dato.fechaVencimiento)? "Vencido" : soloFecha(dato.fechaVencimiento)}</StyledTableCell>
         </StyledTableRow>)
 }
 
@@ -60,6 +57,7 @@ export const Anuncios = () => {
     const [anuncios, setAnuncios] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
     let history = useHistory()
     let location = useLocation()
 
@@ -71,6 +69,7 @@ export const Anuncios = () => {
         const fetchAllAnuncios = async (textoBusqueda) => {
             const anunciosEncontrados = await anuncioService.getAllAnuncios(textoBusqueda)
             setAnuncios(anunciosEncontrados)
+            setIsLoading(false)
         }
 
         fetchAllAnuncios(textoBusqueda)
@@ -101,7 +100,7 @@ export const Anuncios = () => {
             {anuncios.length > 0 &&
             <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
             }
-            { anuncios.length === 0 &&
+            { anuncios.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />

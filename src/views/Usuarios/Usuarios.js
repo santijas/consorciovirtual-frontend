@@ -57,11 +57,13 @@ export const Usuarios = () =>{
     const [usuarios, setUsuarios] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect( ()  =>  {
       const fetchAllUsers = async (textoBusqueda) => {
         const usuariosEncontrados = await usuarioService.getBySearch(textoBusqueda)
         setUsuarios(usuariosEncontrados)
+        setIsLoading(false)
       }
 
       fetchAllUsers(textoBusqueda)
@@ -97,7 +99,7 @@ export const Usuarios = () =>{
            {usuarios.length >1 &&
             <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
-            { usuarios.length === 0 &&
+            { usuarios.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
 

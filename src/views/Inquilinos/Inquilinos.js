@@ -56,6 +56,7 @@ export const Inquilinos = () =>{
     const [inquilinos, setInquilinos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
     const { user } = useContext(UserContext)
 
 
@@ -67,6 +68,7 @@ export const Inquilinos = () =>{
           :
           usuariosEncontrados = await usuarioService.getInquilinosDeUsuario(textoBusqueda, user.id)
         setInquilinos(usuariosEncontrados)
+        setIsLoading(false)
       }
 
       fetchAllUsers(textoBusqueda)
@@ -105,7 +107,7 @@ export const Inquilinos = () =>{
            {inquilinos.length>1 &&
             <Tabla datos={inquilinos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
-            { inquilinos.length === 0 &&
+            { inquilinos.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
 

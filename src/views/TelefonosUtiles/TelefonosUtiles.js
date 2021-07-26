@@ -59,11 +59,13 @@ export const TelefonosUtiles = () =>{
     const [telefonos, setTelefonos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect( ()  =>  {
       const fetchAll = async (textoBusqueda) => {
         const telefonos = await telefonoUtilService.getBySearch(textoBusqueda)
         setTelefonos(telefonos)
+        setIsLoading(false)
       }
 
       fetchAll(textoBusqueda)
@@ -99,7 +101,7 @@ export const TelefonosUtiles = () =>{
            {telefonos.length>1 &&
             <Tabla datos={telefonos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
-            { telefonos.length === 0 &&
+            { telefonos.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
 

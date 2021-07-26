@@ -57,6 +57,8 @@ export const Expensas = () =>{
     const [expensas, setExpensas] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
+
     let history = useHistory()
 
     const newExpensa = () =>{
@@ -71,6 +73,7 @@ export const Expensas = () =>{
       const fetchAll = async (textoBusqueda) =>{
         const expensasEncontradas = await expensaService.getBySearch(textoBusqueda)
         setExpensas(expensasEncontradas)
+        setIsLoading(false)
       }
 
         fetchAll(textoBusqueda)
@@ -102,7 +105,7 @@ export const Expensas = () =>{
            {expensas.length>1 &&
             <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
-          { expensas.length === 0 &&
+          { expensas.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
           }
 

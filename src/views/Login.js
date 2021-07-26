@@ -3,29 +3,41 @@ import { Avatar, TextField, FormControlLabel, Checkbox, Link, Paper, Grid, Box, 
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
-import { usuarioService } from '../services/usuarioService.js'
 import { useState } from 'react'
-import { Usuario } from '../domain/usuario.js'
 import Logo from '../assets/logo.png'
 import { StyledButtonPrimary } from '../components/Buttons'
 import Fondo from '../assets/background.jpg'
-import { NonActiveAnnouncement, NonActiveChat, NonActiveExpenses, NonActiveGastos, NonActiveInquiline, NonActiveRequest } from '../assets/icons.js';
 import { SnackbarComponent } from '../components/Snackbar.js';
 import useAuth from '../hooks/UseAuth.js';
+import Solicitudes from '../assets/images/Solicitudes.png'
+import Documentos from '../assets/images/Documentos.png'
+import Inquilinos from '../assets/images/Inquilinos.png'
+import Expensas from '../assets/images/Expensas.png'
+import Gastos from '../assets/images/Gastos.png'
+import Chat from '../assets/images/Chat.png'
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
-    width:"100%"
+    width:"100%",
   },
   image:{
+    display:"flex",
+    justifyContent:"flex-end",
     backgroundImage: `url(${Fondo})`,
     backgroundColor: "#F5F5F5",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     boxShadow: "1px -2px 5px 3px black",
+    flexGrow:"2"
+  },
+  footer:{
+    display:"flex",
+    justifyContent:"space-around",
+    height:"fit-content" ,
+    flexGrow:"0"
   },
   paper: {
     margin: theme.spacing(20, 4),
@@ -35,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "400px",
     maxHeigth: "100px!important",
     opacity: "none",
-    
   },
   avatar: {
     margin: theme.spacing(1),
@@ -53,15 +64,21 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "700px",
     boxShadow:"0px 0px 8px 1px rgba(0,0,0,0.50)",
     display:"flex",
-    alignItems:"center"
-  },
-  iconos:{
-    fontSize: 60,
-    color: "#159D74"
+    alignItems:"center",
+    margin:"20px 20px 20px 0px"
   },
   bold:{
-    fontWeigth: 600,
-    fontSize: 18
+    fontWeight: 500,
+    fontSize: 18,
+    color: "rgba(0, 0, 0, 0.60)",
+    textAlign:"center"
+  },
+  contenedorIcono:{
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "250px",
+    paddingTop: 15
   }
 }));
 
@@ -130,94 +147,89 @@ export const Login = () => {
 
   return (
   <Box className={classes.root}>
-    <Box className={classes.image} display="flex" justifyContent="flex-end" py={4} pr={20}>
+    <Box className={classes.image} >
         
         <Box className={classes.container} component={Paper}>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon  />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            <img src={Logo} className={classes.logo}/>
-          </Typography>
-          <form className={classes.form}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Correo electronico"
-              autoComplete="email"
-              autoFocus
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="Contraseña"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <FormControlLabel
-              control={<Checkbox value={remember} checked={remember}  onChange={handleChange} color="primary" />}
-              label="Recordarme"
-            />
-            <StyledButtonPrimary
-              type="submit"
-              fullWidth
-              variant="contained"
-              className={classes.submit}
-              onClick={handleLogin}
-            >
-              Ingresar
-            </StyledButtonPrimary>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Olvidó su clave?
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
-        </div>
+          <div className={classes.paper}>
+
+            <Avatar className={classes.avatar}>
+              <LockOutlinedIcon  />
+            </Avatar>
+
+            <img src={Logo} className={classes.logo} alt="Consorcio Virtual"/>
+
+            <form className={classes.form}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Correo electronico"
+                autoComplete="email"
+                autoFocus
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                label="Contraseña"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <FormControlLabel
+                control={<Checkbox value={remember} checked={remember}  onChange={handleChange} color="primary" />}
+                label="Recordarme"
+              />
+              <StyledButtonPrimary
+                type="submit"
+                fullWidth
+                variant="contained"
+                className={classes.submit}
+                onClick={handleLogin}
+              >
+                Ingresar
+              </StyledButtonPrimary>
+            </form>
+          </div>
       </Box>
     </Box>
-    <Box display="flex" justifyContent="space-around" width="100%" alignItems="center">
-      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
-       <NonActiveAnnouncement className={classes.iconos} />
-        <span className={classes.bold}>Consultá los anuncios y la documentacion.</span>
+    <Box className={classes.footer}>
+
+      <Box className={classes.contenedorIcono}>
+        <img src={Documentos} alt="Documentos"></img>
+        <span className={classes.bold}>Accedé a los anuncios y la documentacion.</span>
       </Box>
 
-      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
-       <NonActiveRequest className={classes.iconos} />
+      <Box className={classes.contenedorIcono}>
+        <img src={Solicitudes} alt="Solicitudes"></img>
         <span className={classes.bold}>Realizá reclamos y solicitudes tecnicas.</span>
       </Box>
 
-      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
-       <NonActiveExpenses className={classes.iconos} />
+      <Box className={classes.contenedorIcono}>
+        <img src={Gastos} alt="Gastos"></img>
         <span className={classes.bold}>Consultá los gastos del mes.</span>
       </Box>
 
-      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
-       <NonActiveGastos className={classes.iconos}/>
-        <span className={classes.bold}>Paga tus expensas.</span>
+      <Box className={classes.contenedorIcono}>
+        <img src={Expensas} alt="Expensas"></img>
+        <span className={classes.bold}>Pagá tus expensas.</span>
       </Box>
 
-      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
-       <NonActiveInquiline className={classes.iconos} />
+      <Box className={classes.contenedorIcono}>
+        <img src={Inquilinos} alt="Inquilinos"></img>
         <span className={classes.bold}>Gestioná tus inquilinos.</span>
       </Box>
 
-      <Box display="flex" flexDirection="column" mx={2} mt={2} alignItems="center" width="250px">
-       <NonActiveChat className={classes.iconos} />
-        <span className={classes.bold}>Chatea con tus vecinos.</span>
+      <Box className={classes.contenedorIcono}>
+        <img src={Chat} alt="Chat"></img>
+        <span className={classes.bold}>Chateá con tus vecinos.</span>
       </Box>
 
     </Box>

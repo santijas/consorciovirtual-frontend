@@ -10,6 +10,7 @@ import { SnackbarComponent } from '../../components/Snackbar'
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { soloFecha } from '../../utils/formats';
 
 const useStyles = makeStyles({
   cantidadObject: {
@@ -39,7 +40,7 @@ const ColumnasCustom = (dato) => {
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
           <span className="tableBold">{dato.id}</span>
-          <span >{dato.fecha}</span>
+          <span >{soloFecha(dato.fecha)}</span>
         </div>
       </StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
@@ -54,6 +55,8 @@ export const Solicitudes = () => {
   const [solicitudes, setSolicitudes] = useState([])
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+
   let history = useHistory()
   let location = useLocation()
 
@@ -67,6 +70,7 @@ export const Solicitudes = () => {
     const fetchAllSolicitudes = async (textoBusqueda) => {
       const solicitudesEncontradas = await solicitudService.getAllSolicitudes(textoBusqueda)
       setSolicitudes(solicitudesEncontradas)
+      setIsLoading(false)
     }
     fetchAllSolicitudes(textoBusqueda)
   }, [textoBusqueda])
@@ -96,7 +100,7 @@ export const Solicitudes = () => {
       {solicitudes.length > 0 &&
       <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"}/>
       }
-      { solicitudes.length === 0 &&
+      { solicitudes.length === 0 && !isLoading &&
         <SearchWithoutResults/>
       }
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />

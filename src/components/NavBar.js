@@ -30,15 +30,14 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: "#FDFDFD",
     padding: theme.spacing(3),
-  },
-
+  }
 }));
 
 export const NavBar = () => {
   const classes = useStyles();
   let history = useHistory();
   const [selected, setSelected] = useState('usuarios')
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
 
   const handleSelectMenu = (menu) => {
@@ -51,7 +50,6 @@ export const NavBar = () => {
 
     return () => {
       chatService.closeWebSocket()
-      console.log("CANTIDAD_MENSAJES_ENDPOINT DESCONECTADO")
     }
   }, [])
 

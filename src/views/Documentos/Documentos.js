@@ -9,6 +9,7 @@ import { SnackbarComponent } from '../../components/Snackbar'
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { soloFecha } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -36,7 +37,7 @@ const ColumnasCustom = (dato) => {
 
   return (
   <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer">
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.fechaCreacion}</StyledTableCell>
+    <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.modificado}</StyledTableCell>
@@ -52,11 +53,13 @@ export const Documentos = () =>{
     const [documentos, setDocumentos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect( ()  =>  {
       const fetchAll = async (textoBusqueda) => {
         const documentos = await documentoService.getBySearch(textoBusqueda)
         setDocumentos(documentos)
+        setIsLoading(false)
       }
 
       fetchAll(textoBusqueda)
@@ -92,7 +95,7 @@ export const Documentos = () =>{
            { documentos.length >1 &&
             <Tabla datos={documentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
-            { documentos.length === 0 &&
+            { documentos.length === 0 && !isLoading &&
                 <SearchWithoutResults/>
             }
 
