@@ -174,18 +174,31 @@ export const ABExpensa = () =>{
         history.push("/expensas")
     }
 
+    const importesCompletos = () =>{
+        return !isNaN(valorComunes) && valorComunes > 0 && !isNaN(valorExtraordinarias) && valorExtraordinarias > 0
+    }
+
     
     const generarExpensa = async () => {
         try{
             if(gastos.length > 0){
-                console.log(opcionParaService)
+                let esCorrecto = false
                 // eslint-disable-next-line default-case
                 switch(opcionParaService){
                     case -1: usarSnack("Debe seleccionar el modo de calcular las expensas.", true); break; 
-                    case 0: await expensaService.create(obtenerPeriodoDeMoment(selectedDate)); break;
-                    case 1: await expensaService.createPrefijados(obtenerPeriodoDeMoment(selectedDate), valorComunes, valorExtraordinarias); break;
+                    case 0: await expensaService.create(obtenerPeriodoDeMoment(selectedDate)); esCorrecto=true; break;
+                    case 1:
+                        if(importesCompletos()){
+                            await expensaService.createPrefijados(obtenerPeriodoDeMoment(selectedDate), valorComunes, valorExtraordinarias); 
+                            esCorrecto = true
+                        }else{
+                            usarSnack("Debe completar los valores para este modo de calcular.", true)
+                        }
+                        break;
                 }
-                history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
+                if(esCorrecto){
+                    history.push("/expensas", { openChildSnack : true , mensajeChild: "Expensas generadas correctamente.", render: true})
+                }
             }else{
                 usarSnack("No es posible generar expensas sin gastos registrados en el periodo.", true)
             }  
@@ -216,12 +229,9 @@ export const ABExpensa = () =>{
 
 
     const handleChangeOption = (event) => {
-        console.log(opcionParaService)
         let opcion = event.target.value
-        console.log(opcion)    
         setOpcionDeCalculo(tipoDeCalculo[event.target.value].label)
         setOpcionParaService(opcion)
-        console.log(opcionParaService)
     };
 
 

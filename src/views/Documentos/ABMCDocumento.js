@@ -162,7 +162,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                 setCampoEditado(false)
                 history.push("/documentos", { openChildSnack: true, mensajeChild: "Nuevo documento creado correctamente." })
             } else {
-                usarSnack("Campos obligatorios faltantes.", true)
+                usarSnack("Campos obligatorios incompletos o archivo adjunto no seleccionado.", true)
             }
         } catch (error) {
             usarSnack(error.response.data, true)
@@ -196,7 +196,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
     }
 
     const verificarCamposVacios = () => {
-        return documento.titulo && documento.descripcion
+        return documento.titulo && documento.descripcion && selectedFile != null
     }
 
     const bodyModal = (

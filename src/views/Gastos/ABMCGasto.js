@@ -209,8 +209,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                 unGasto = new Gasto()
                 unaFactura = new Factura()
             } else {
-                unGasto = await gastoService.getById(params.id)
-                unaFactura = new Factura()
+                let respuesta = await gastoService.getById(params.id)
+                unGasto = respuesta[0]
+                console.log(respuesta[1])
+                if(respuesta[1] != -1){
+
+                }else{
+                    unaFactura = new Factura()
+                }
             }
             setGasto(unGasto)
             setFactura(unaFactura)

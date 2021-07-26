@@ -17,7 +17,8 @@ class GastoService{
 
     async getById(id){
         const JSON = await axios.get(`${REST_SERVER_URL}/gasto/${id}`)
-        return this.gastoAJson(JSON.data)
+        console.log(JSON.data)
+        return [this.gastoAJson(JSON.data), JSON.data.idComprobante]
     }
 
     async getByPeriod(periodo) {
