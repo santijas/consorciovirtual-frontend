@@ -12,6 +12,7 @@ import { Gasto } from '../../domain/gasto';
 import { Factura } from '../../domain/factura';
 import { Documento } from '../../domain/documento';
 import { gastoService } from '../../services/gastoService';
+import { documentoService } from '../../services/gastoService';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
@@ -200,6 +201,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
     let history = useHistory()
     const params = useParams()
+        //Se usa para modificaciones solamente
+    let idComprobanteAmodificar;
+    let tipoComprobanteAmodificar;
 
     const fetchData = async () => {
         try {
@@ -211,9 +215,10 @@ export const ABMCGasto = ({ edicion, creacion }) => {
             } else {
                 let respuesta = await gastoService.getById(params.id)
                 unGasto = respuesta[0]
-                console.log(respuesta[1])
-                if(respuesta[1] != -1){
-
+                idComprobanteAmodificar = respuesta[1]
+                tipoComprobanteAmodificar = respuesta[2]
+                if(tipoComprobanteAmodificar === "factura"){
+                    unaFactura = await gastoService.getFacturaById(idComprobanteAmodificar)
                 }else{
                     unaFactura = new Factura()
                 }
@@ -252,7 +257,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
     const formatName = () => {
         let extension = selectedFile.name.split('.').pop();
-        return `Gasto_${gasto.titulo}_${gasto.periodo}_${gasto.rubro}.${extension}`
+        return `Gasto_${gasto.titulo}_${gasto.periodo}_${gasto.rubro}_${Date.now()}.${extension}`
     }
 
 
@@ -389,7 +394,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     const handleFactura = () =>{
         if(checkFactura === true){
             setCheckFactura(false)
-            setFactura(new Factura())
+            if(creacion){
+                setFactura(new Factura())
+            }
         }else{
             setCheckFactura(true)
         }
@@ -552,7 +559,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                     }
 
                     {factura &&
-                        <Accordion className={classes.acordeon} onChange={ handleFactura }>
+                        <Accordion id="acordeon" className={classes.acordeon} onChange={ handleFactura }>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
