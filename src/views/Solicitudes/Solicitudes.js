@@ -101,7 +101,7 @@ export const Solicitudes = () => {
       <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"}/>
       }
       { solicitudes.length === 0 && !isLoading &&
-        <SearchWithoutResults/>
+        <SearchWithoutResults resultado="solicitudes"/>
       }
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 

@@ -95,11 +95,11 @@ export const Reclamos = () => {
           <StyledButtonPrimary onClick={newReclamo} >Agregar Reclamo</StyledButtonPrimary>
         </div>
       </SearchBox>
-      {reclamos.length>1 &&
+      {reclamos.length > 0 &&
       <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"} />
       }
        { reclamos.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="reclamos"/>
        }
 
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />

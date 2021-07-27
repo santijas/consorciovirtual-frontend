@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
@@ -13,6 +13,7 @@ import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { handleOnInput, handleOnlyNumbers } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -79,7 +80,13 @@ const useStyles = makeStyles({
     inputInquilino: {
         backgroundColor: "white",
         textAlign: "left"
-    }
+    },
+     select: {
+        "&:focus": {
+          backgroundColor: "white"
+        }
+      }
+
 });
 
 function getModalStyle() {
@@ -105,7 +112,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const [inquilinos, setInquilinos] = useState([])
     const [propietarioId, setPropietarioId] = useState(null)
     const [inquilinoId, setInquilinoId] = useState(null)
-
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
@@ -205,7 +212,29 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     }
 
     const validarDepartamento = () => {
-        return departamento.nroDepartamento && departamento.torre && departamento.piso && departamento.metrosCuadrados
+        setErrors(null)
+        if (!departamento.nroDepartamento) {
+            setErrors(prev => ({ ...prev, nroDepartamento: "Campo obligatorio" }))
+        }
+
+        if (!departamento.piso) {
+            setErrors(prev => ({ ...prev, piso: "Campo obligatorio" }))
+        }
+
+        if (!departamento.metrosCuadrados) {
+            setErrors(prev => ({ ...prev, metrosCuadrados: "Campo obligatorio" }))
+        }
+
+        if (!propietarioId) {
+            setErrors(prev => ({ ...prev, propietario: "Campo obligatorio" }))
+        }
+
+        if (!departamento.porcentajeExpensa) {
+            setErrors(prev => ({ ...prev, porcentajeExpensa: "Campo obligatorio" }))
+        }
+
+
+        return departamento.nroDepartamento && departamento.piso && departamento.metrosCuadrados && propietarioId && departamento.porcentajeExpensa
     }
 
     const changePropietario = (event) => {
@@ -256,49 +285,127 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
                         <LeftInputBox>
                             <span className={classes.span}>Piso</span>
-                            <TextField className={classes.inputs} id="piso" value={departamento.piso || ''} onChange={(event) => actualizarValor(event)} name="piso" variant="outlined" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="piso" 
+                            type="text"
+                            value={departamento.piso || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="piso" 
+                            variant="outlined" 
+                            error={Boolean(errors?.piso)}
+                            helperText={errors?.piso}
+                            inputProps={{ maxLength: 2 }}
+                            onInput={ handleOnlyNumbers }
+                            />
                         </LeftInputBox>
 
 
                         <RightInputBox>
-                            <span className={classes.span}>Departamento</span>
-                            <TextField className={classes.inputs} id="nroDepartamento" value={departamento.nroDepartamento || ''} onChange={(event) => actualizarValor(event)} name="nroDepartamento" variant="outlined" />
+                            <span className={classes.span}>Numero - Letra Departamento</span>
+                            <TextField 
+                            className={classes.inputs} 
+                            id="nroDepartamento" 
+                            value={departamento.nroDepartamento || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="nroDepartamento" 
+                            variant="outlined" 
+                            error={Boolean(errors?.nroDepartamento)}
+                            helperText={errors?.nroDepartamento}
+                            inputProps={{ maxLength: 3 }}
+                            />
                         </RightInputBox>
 
                         <LeftInputBox>
                             <span className={classes.span} >Torre</span>
-                            <TextField className={classes.inputs} id="torre" value={departamento.torre || ''} onChange={(event) => actualizarValor(event)} name="torre" variant="outlined" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="torre" 
+                            value={departamento.torre || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="torre" 
+                            variant="outlined" 
+                            inputProps={{ maxLength: 3 }}
+                            />
                         </LeftInputBox>
 
                         <RightInputBox>
                             <span className={classes.span}>Superficie (m2)</span>
-                            <TextField className={classes.inputs} id="metrosCuadrados" value={departamento.metrosCuadrados || ''} onChange={(event) => actualizarValor(event)} name="metrosCuadrados" variant="outlined" type="number" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="metrosCuadrados" 
+                            value={departamento.metrosCuadrados || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="metrosCuadrados" 
+                            variant="outlined" 
+                            type="text" 
+                            error={Boolean(errors?.metrosCuadrados)}
+                            helperText={errors?.metrosCuadrados}
+                            inputProps={{ maxLength: 4 }}
+                            onInput={ handleOnlyNumbers }
+                            />
                         </RightInputBox>
 
                         {usuarios && departamento &&
                             <LeftInputBox>
                                 <span className={classes.span}>Propietario</span>
                                 {departamento &&
-                                    <TextField className={classes.inputs} id="propietario" select value={propietarioId || ''} onChange={changePropietario} name="propietario" variant="outlined" >
+                                    <Select 
+                                    className={classes.inputs} 
+                                    id="propietario"
+                                    select 
+                                    value={propietarioId || ''} 
+                                    onChange={changePropietario} 
+                                    name="propietario" 
+                                    variant="outlined" 
+                                    error={Boolean(errors?.propietario)}
+                                    helperText={errors?.propietario}
+                                    inputProps={{classes: { select: classes.select }}}
+                                    >
                                         {usuarios.map((option) => (
                                             <MenuItem key={option.id} value={option.id}>
                                                 {option.id}.  {option.nombre} {option.apellido}
                                             </MenuItem>
                                         ))}
-                                    </TextField>}
+                                    </Select>}
                             </LeftInputBox>
                         }
 
                         <RightInputBox>
                             <span className={classes.span}>Porcentaje de expensas (%)</span>
-                            <TextField className={classes.inputs} id="porcentajeExpensa" onChange={(event) => actualizarValor(event)} value={departamento.porcentajeExpensa || ''} name="porcentajeExpensa" variant="outlined" type="number" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="porcentajeExpensa" 
+                            onChange={(event) => actualizarValor(event)} 
+                            value={departamento.porcentajeExpensa || ''} 
+                            name="porcentajeExpensa" 
+                            variant="outlined" 
+                            type="text" 
+                            error={Boolean(errors?.porcentajeExpensa)}
+                            helperText={errors?.porcentajeExpensa}
+                            inputProps={{ maxLength: 3 }}
+                            onInput={ handleOnlyNumbers }
+                            
+                            />
                         </RightInputBox>
 
 
                         {inquilinos && departamento && edicion && !creacion &&
                             <LeftInputBox>
                                 <span className={classes.span}>Inquilino</span>
-                                {departamento && <TextField className={classes.inputInquilino} id="inquilino" select value={inquilinoId || ''} onChange={changeInquilino} name="inquilino" variant="outlined" >
+                                {departamento && 
+                                <Select 
+                                className={classes.inputInquilino} 
+                                id="inquilino" 
+                                select 
+                                value={inquilinoId || ''} 
+                                onChange={changeInquilino} 
+                                name="inquilino" 
+                                variant="outlined" 
+                                error={Boolean(errors?.inquilinoId)}
+                                helperText={errors?.inquilinoId}
+                                inputProps={{classes: { select: classes.select }}}
+                                >
                                     <MenuItem key={0} value={null}>
                                         Sin Inquilino
                                     </MenuItem>
@@ -307,7 +414,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                             {option.id}. {option.nombre} {option.apellido}
                                         </MenuItem>
                                     ))}
-                                </TextField>}
+                                </Select>}
                             </LeftInputBox>}
 
                     </form>

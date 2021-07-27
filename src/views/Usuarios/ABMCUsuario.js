@@ -16,6 +16,7 @@ import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, CompleteInputBox } from '../../components/Contenedores';
 import { StyledButtonNewPassoword } from './../../components/Buttons';
 import { UserContext } from '../../hooks/UserContext';
+import { handleOnlyNumbers } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -159,38 +160,27 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     };
 
     useEffect(() => {
-        const fetchUsuario = () => {
+        const fetchUsuario = async () => {
             try {
-                let unUsuario = ''
+                let unUsuario
 
                 if (creacion) {
                     unUsuario = new Usuario()
-                }
-
-                setUsuario(unUsuario)
-            }
-            catch (error) {
-                usarSnack(error.response.data, true)
-            }
-        }
-
-        fetchUsuario()
-    }, [creacion])
-
-
-    useEffect(() => {
-        const fetchUsuario = async () => {
-            try {
-                let unUsuario = ''
+                    setUsuario(unUsuario)
+                }  
 
                 if (edicion) {
                     let listaDepartamentos
                     unUsuario = await usuarioService.getById(params.id)
+                    setUsuario(unUsuario)
                     listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
                     setDepartamentos(listaDepartamentos)
                 }
 
-                setUsuario(unUsuario)
+                if (perfil) {
+                    setUsuario(user)
+                }
+
             }
             catch (error) {
                 usarSnack(error.response.data, true)
@@ -199,27 +189,6 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
 
         fetchUsuario()
     }, [params.id])
-
-
-    useEffect(() => {
-        const fetchUsuario = () => {
-            try {
-                let unUsuario = ''
-
-                if (perfil) {
-                    unUsuario = user
-                }
-
-                setUsuario(unUsuario)
-            }
-            catch (error) {
-                usarSnack(error.response.data, true)
-            }
-        }
-
-        fetchUsuario()
-    }, [perfil])
-
 
 
     const crearUsuario = async () => {
@@ -291,11 +260,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         }
 
         if (usuario.dni && (usuario.dni.length !== 8)) {
-            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 8 numeros sin puntos." }))
-        }
-
-        if (usuario.dni && isNaN(usuario.dni)) {
-            setErrors(prev => ({ ...prev, dni: "El DNI solo puede contener numeros." }))
+            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 8 numeros." }))
         }
 
         if (!usuario.correo) {
@@ -319,7 +284,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     }
 
     const validarDni = () => {
-        return usuario.dni.length === 8 && !isNaN(usuario.dni)
+        return usuario.dni.length === 8
     }
 
     const validarCorreo = () => {
@@ -504,6 +469,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             error={Boolean(errors?.dni)}
                             helperText={errors?.dni}
                             inputProps={{ maxLength: 8 }}
+                            onInput={ handleOnlyNumbers }
                         />
                     </LeftInputBox>
 

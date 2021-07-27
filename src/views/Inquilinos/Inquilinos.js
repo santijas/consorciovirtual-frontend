@@ -104,11 +104,11 @@ export const Inquilinos = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar inquilino</StyledButtonPrimary>
               </div>
            </SearchBox>
-           {inquilinos.length>1 &&
+           {inquilinos.length > 0 &&
             <Tabla datos={inquilinos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { inquilinos.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="inquilinos"/>
             }
 
               <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>

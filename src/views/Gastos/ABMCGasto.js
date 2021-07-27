@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, makeStyles, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
@@ -115,7 +115,13 @@ const useStyles = makeStyles({
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-between",
-    }
+    },
+    select: {
+        "&:focus": {
+          backgroundColor: "white"
+        }
+      }
+
 });
 
 
@@ -494,13 +500,21 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                     {creacion && !edicion &&
                         <LeftInputBox>
                             <span className={classes.span}>Tipo</span>
-                            <TextField className={classes.inputs} id="tipo" select onChange={handleChangeType} value={gasto.tipo || ''} variant="outlined" >
+                            <Select 
+                            className={classes.inputs} 
+                            id="tipo" 
+                            select 
+                            onChange={handleChangeType} 
+                            value={gasto.tipo || ''} 
+                            variant="outlined" 
+                            inputProps={{classes: { select: classes.select }}}
+                            >
                                 {tipoDeGasto.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         {option.label}
                                     </MenuItem>
                                 ))}
-                            </TextField>
+                            </Select>
                         </LeftInputBox>
                     }
 
@@ -511,13 +525,21 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
                     <LeftInputBox>
                         <span className={classes.span}>Rubro</span>
-                        <TextField className={classes.inputs} id="rubro" select onChange={handleChangeRubro} value={gasto.rubro || ''} variant="outlined" >
+                        <Select 
+                        className={classes.inputs} 
+                        id="rubro" 
+                        select 
+                        onChange={handleChangeRubro} 
+                        value={gasto.rubro || ''} 
+                        variant="outlined" 
+                        inputProps={{classes: { select: classes.select }}}
+                        >
                             {rubros.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>
                             ))}
-                        </TextField>
+                        </Select>
                     </LeftInputBox>
 
                     {creacion && !edicion &&

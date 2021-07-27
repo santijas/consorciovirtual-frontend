@@ -102,11 +102,11 @@ export const Expensas = () =>{
               <StyledButtonSecondary className={classes.botonAnular} onClick={anularExpensa}>Anular expensas</StyledButtonSecondary>
               </div>
            </SearchBox>
-           {expensas.length>1 &&
+           {expensas.length > 0 &&
             <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
           { expensas.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="expensas"/>
           }
 
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>

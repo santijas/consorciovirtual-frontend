@@ -94,11 +94,11 @@ export const Gastos = () =>{
               </div>
            </SearchBox>
 
-           {gastos.length>1 &&
+           {gastos.length > 0 &&
             <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
             { gastos.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="gastos"/>
             }
 
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>

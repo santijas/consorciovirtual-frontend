@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
@@ -86,7 +86,12 @@ const useStyles = makeStyles ({
       pisoDepto: {
           fontWeight: "bold",
         padding: "15px 0 0 12px",
-        color: "#159D74"
+        color: "#159D74",
+      },
+      select: {
+        "&:focus": {
+          backgroundColor: "white"
+        }
       }
   });
 
@@ -294,13 +299,22 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
 
                     <RightInputBox>
                         <span className={classes.span}>Departamento</span>
-                       { (!edicion && creacion && inquilino)?  <TextField className={classes.inputs} id="departamento" select onChange={ seleccionarDepto } value={deptoSeleccionado || ''} variant="outlined" >
+                       { (!edicion && creacion && inquilino)?  
+                       <Select 
+                       className={classes.inputs} 
+                       id="departamento" 
+                       select 
+                       onChange={ seleccionarDepto } 
+                       value={deptoSeleccionado || ''} 
+                       variant="outlined" 
+                       inputProps={{classes: { select: classes.select }}}
+                       >
                                 {departamentos.map((option) => (
                                 <MenuItem key={option.id} value={option.id}>
                                 {option.piso} º {option.nroDepartamento} {option.torre? <span>Torre {option.torre } </span>: ""}
                                 </MenuItem>
                             ))}
-                        </TextField>
+                        </Select>
                         :
                         <div class={classes.pisoDepto}>
                             {inquilino.piso} º {inquilino.nroDepartamento}  { inquilino.torre? <span>Torre {inquilino.torre } </span>: "" }

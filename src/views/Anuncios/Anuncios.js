@@ -101,7 +101,7 @@ export const Anuncios = () => {
             <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
             }
             { anuncios.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="anuncios"/>
             }
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 

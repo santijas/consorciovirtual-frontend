@@ -41,16 +41,9 @@ const useStyles = makeStyles ({
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-        { estadoDeCuenta(dato.estadoCuenta) }
+        <StyledTableCell className="tableBold" component="th" scope="row">{dato.estadoDeCuenta}</StyledTableCell> 
       </StyledTableRow>
     )
-  }
-
-  const estadoDeCuenta = (estado) => {
-    return estado?
-    <StyledTableCell className="tableBold" component="th" scope="row">Pagado</StyledTableCell> 
-    :
-    <StyledTableCell className="tableBold"  component="th" scope="row">Pendiente</StyledTableCell>
   }
 
 export const Departamentos = () =>{
@@ -102,11 +95,11 @@ export const Departamentos = () =>{
                 </div>
             </SearchBox>
             {
-              departamentos.length > 1 &&
+              departamentos.length > 0 &&
             <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
             }
             { departamentos.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="departamentos"/>
             }
             
             <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>

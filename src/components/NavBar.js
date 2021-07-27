@@ -1,6 +1,6 @@
 import { Drawer, List, ListItem, ListItemIcon, makeStyles } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useLocation, withRouter } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { ActiveApartment, ActiveUser, NonActiveUser, NonActiveApartment, ActiveAnnouncement, NonActiveAnnouncement, ActiveClaims, NonActiveClaims, ActiveRequest, NonActiveRequest, ActiveInquiline, NonActiveInquiline, ActiveGastos, NonActiveGastos, ActiveExpenses, NonActiveExpenses, ActiveDocuments, NonActiveDocuments, ActiveChat, NonActiveChat, ActiveTelefonosUtiles, NonActiveTelefonosUtiles } from '../assets/icons';
 import { UserContext } from '../hooks/UserContext';
@@ -36,22 +36,24 @@ const useStyles = makeStyles((theme) => ({
 export const NavBar = () => {
   const classes = useStyles();
   let history = useHistory();
+  let location = useLocation()
   const [selected, setSelected] = useState('usuarios')
   const { user } = useContext(UserContext);
 
 
   const handleSelectMenu = (menu) => {
-    setSelected(menu)
-    history.push(`/${menu}`)
+    history.push(`${menu}`)
+    setSelected(location.pathname)
   }
 
   useEffect(() => {
+    setSelected(location.pathname)
     chatService.connectUsuarioWS()
 
     return () => {
       chatService.closeWebSocket()
     }
-  }, [])
+  }, [location])
 
   return (
     <Drawer
@@ -67,66 +69,66 @@ export const NavBar = () => {
       <List>
 
         { user.esAdmin() &&
-          <ListItem button key="Usuarios" onClick={() => handleSelectMenu("usuarios")}>
-            <ListItemIcon>{selected === "usuarios" ? <ActiveUser className="navicon activecolor" /> : <NonActiveUser className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "usuarios") ? "activecolor activesize" : "font"}`}>Usuarios</span>
+          <ListItem button key="Usuarios" onClick={() => handleSelectMenu("/usuarios")}>
+            <ListItemIcon>{selected.includes("usuario") ? <ActiveUser className="navicon activecolor" /> : <NonActiveUser className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("usuario") ? "activecolor activesize" : "font"}`}>Usuarios</span>
           </ListItem>
         }
 
 
-          <ListItem button key="Departamentos" onClick={() => handleSelectMenu("departamentos")}>
-            <ListItemIcon>{selected === "departamentos" ? <ActiveApartment className="navicon" /> : <NonActiveApartment className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "departamentos") ? "activecolor activesize" : "font"}`}>Departamentos</span>
+          <ListItem button key="Departamentos" onClick={() => handleSelectMenu("/departamentos")}>
+            <ListItemIcon>{selected.includes("departamento") ? <ActiveApartment className="navicon" /> : <NonActiveApartment className="navicon" />}</ListItemIcon>
+            <span className={`${(selected.includes("departamento")) ? "activecolor activesize" : "font"}`}>Departamentos</span>
           </ListItem>
         
 
-          <ListItem button key="Anuncios" onClick={() => handleSelectMenu("anuncios")}>
-            <ListItemIcon>{selected === "anuncios" ? <ActiveAnnouncement className="navicon" /> : <NonActiveAnnouncement className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "anuncios") ? "activecolor activesize" : "font"}`}>Anuncios</span>
+          <ListItem button key="Anuncios" onClick={() => handleSelectMenu("/anuncios")}>
+            <ListItemIcon>{selected.includes("anuncio") ? <ActiveAnnouncement className="navicon" /> : <NonActiveAnnouncement className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("anuncio") ? "activecolor activesize" : "font"}`}>Anuncios</span>
           </ListItem>
 
-          <ListItem button key="Reclamos" onClick={() => handleSelectMenu("reclamos")}>
-            <ListItemIcon>{selected === "reclamos" ? <ActiveClaims className="navicon" /> : <NonActiveClaims className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "reclamos") ? "activecolor activesize" : "font"}`}>Reclamos</span>
+          <ListItem button key="Reclamos" onClick={() => handleSelectMenu("/reclamos")}>
+            <ListItemIcon>{selected.includes("reclamo") ? <ActiveClaims className="navicon" /> : <NonActiveClaims className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("reclamo") ? "activecolor activesize" : "font"}`}>Reclamos</span>
           </ListItem>
 
-          <ListItem button key="Solicitudes técnicas" onClick={() => handleSelectMenu("solicitudes")}>
-            <ListItemIcon>{selected === "solicitudes" ? <ActiveRequest className="navicon" /> : <NonActiveRequest className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "solicitudes") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
+          <ListItem button key="Solicitudes técnicas" onClick={() => handleSelectMenu("/solicitudes")}>
+            <ListItemIcon>{selected.includes("solicitud") ? <ActiveRequest className="navicon" /> : <NonActiveRequest className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("solicitud") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
           </ListItem>
 
         { !user.esInquilino() &&
-          <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("inquilinos")}>
-            <ListItemIcon>{selected === "inquilinos" ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "inquilinos") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
+          <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("/inquilinos")}>
+            <ListItemIcon>{selected.includes("inquilino") ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("inquilino") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
           </ListItem>
         }
 
         { user.esAdmin() &&
-          <ListItem button key="Gastos" onClick={() => handleSelectMenu("gastos")}>
-            <ListItemIcon>{selected === "gastos" ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "gastos") ? "activecolor activesize" : "font"}`}>Gastos</span>
+          <ListItem button key="Gastos" onClick={() => handleSelectMenu("/gastos")}>
+            <ListItemIcon>{selected.includes("gasto") ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("gasto") ? "activecolor activesize" : "font"}`}>Gastos</span>
           </ListItem>
         }
 
-          <ListItem button key="Expensas" onClick={() => handleSelectMenu("expensas")}>
-            <ListItemIcon>{selected === "expensas" ? <ActiveExpenses className="navicon" /> : <NonActiveExpenses className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "expensas") ? "activecolor activesize" : "font"}`}>Expensas</span>
+          <ListItem button key="Expensas" onClick={() => handleSelectMenu("/expensas")}>
+            <ListItemIcon>{selected === "/expensas" ? <ActiveExpenses className="navicon" /> : <NonActiveExpenses className="navicon" />}</ListItemIcon>
+            <span className={`${(selected === "/expensas") ? "activecolor activesize" : "font"}`}>Expensas</span>
           </ListItem>
 
-          <ListItem button key="Documentos" onClick={() => handleSelectMenu("documentos")}>
-            <ListItemIcon>{selected === "documentos" ? <ActiveDocuments className="navicon" /> : <NonActiveDocuments className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "documentos") ? "activecolor activesize" : "font"}`}>Documentos</span>
+          <ListItem button key="Documentos" onClick={() => handleSelectMenu("/documentos")}>
+            <ListItemIcon>{selected.includes("documento") ? <ActiveDocuments className="navicon" /> : <NonActiveDocuments className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("documento") ? "activecolor activesize" : "font"}`}>Documentos</span>
           </ListItem>
 
-          <ListItem button key="Chat" onClick={() => handleSelectMenu("chat")}>
-            <ListItemIcon>{selected === "chat" ? <ActiveChat className="navicon" /> : <NonActiveChat className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "chat") ? "activecolor activesize" : "font"}`}>Chat</span>
+          <ListItem button key="Chat" onClick={() => handleSelectMenu("/chat")}>
+            <ListItemIcon>{selected.includes("chat") ? <ActiveChat className="navicon" /> : <NonActiveChat className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>
           </ListItem>
 
-          <ListItem button key="TelefonosUtiles" onClick={() => handleSelectMenu("telefonosUtiles")}>
-            <ListItemIcon>{selected === "telefonosUtiles" ? <ActiveTelefonosUtiles className="navicon" /> : <NonActiveTelefonosUtiles className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "telefonosUtiles") ? "activecolor activesize" : "font"}`}>Teléfonos Útiles</span>
+          <ListItem button key="TelefonosUtiles" onClick={() => handleSelectMenu("/telefonosUtiles")}>
+            <ListItemIcon>{selected.includes("telefono") ? <ActiveTelefonosUtiles className="navicon" /> : <NonActiveTelefonosUtiles className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("telefono") ? "activecolor activesize" : "font"}`}>Teléfonos Útiles</span>
           </ListItem>
 
       </List>
