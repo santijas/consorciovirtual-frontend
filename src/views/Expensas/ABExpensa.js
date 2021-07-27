@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, Divider, Box, TextField, MenuItem } from '@material-ui/core';
@@ -93,13 +93,18 @@ const useStyles = makeStyles ({
     inputsDate:{
         textTransform: "capitalize",
         cursor: "pointer"
-    }
+    },
+    select: {
+        "&:focus": {
+          backgroundColor: "white"
+        }
+      }
   });
 
   const tipoDeCalculo = [
     {
         value: 0,
-        label: 'Cálculo en base a los gatos del período',
+        label: 'Cálculo en base a los gastos del período',
     },
     {
         value: 1,
@@ -136,8 +141,7 @@ export const ABExpensa = () =>{
     const [snackColor, setSnackColor] = useState()
 
     //variables para la forma de calcular
-    const [opcionDeCalculo, setOpcionDeCalculo] = useState()
-    const [opcionParaService, setOpcionParaService] = useState(-1)
+    const [opcionExpensa, setOpcionExpensa] = useState(0)
     const [valorComunes, setValorComunes] = useState()
     const [valorExtraordinarias, setValorExtraordinarias] = useState()
     
@@ -184,8 +188,7 @@ export const ABExpensa = () =>{
             if(gastos.length > 0){
                 let esCorrecto = false
                 // eslint-disable-next-line default-case
-                switch(opcionParaService){
-                    case -1: usarSnack("Debe seleccionar el modo de calcular las expensas.", true); break; 
+                switch(opcionExpensa){
                     case 0: await expensaService.create(obtenerPeriodoDeMoment(selectedDate)); esCorrecto=true; break;
                     case 1:
                         if(importesCompletos()){
@@ -229,9 +232,7 @@ export const ABExpensa = () =>{
 
 
     const handleChangeOption = (event) => {
-        let opcion = event.target.value
-        setOpcionDeCalculo(tipoDeCalculo[event.target.value].label)
-        setOpcionParaService(opcion)
+        setOpcionExpensa(event.target.value)
     };
 
 
@@ -265,13 +266,21 @@ export const ABExpensa = () =>{
 
                     <CompleteInputBox>
                         <span className={classes.span}>Modo de cálculo</span>
-                        <TextField className={classes.inputs} id="tipo" select onChange={handleChangeOption} value={opcionDeCalculo} variant="outlined" >
+                        <Select 
+                        className={classes.inputs} 
+                        id="tipo" 
+                        select 
+                        onChange={handleChangeOption} 
+                        value={ opcionExpensa } 
+                        variant="outlined" 
+                        inputProps={{classes: { select: classes.select }}}
+                        >
                             {tipoDeCalculo.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>
                             ))}
-                        </TextField>
+                        </Select>
                     </CompleteInputBox>
                     
                    
@@ -296,31 +305,31 @@ export const ABExpensa = () =>{
                         <span className={classes.spanDisabled}>Cantidad de departamentos</span>
                         <span className={classes.inputsDisabled}>{cantidadDeptos}</span>
                     </RightInputBox>
-                    {opcionParaService  <= 0 &&
+                    {opcionExpensa  <= 0 &&
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Importe total de expensa común</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaComun || ' - '}</span>
                     </LeftInputBox>
                     }
-                    {opcionParaService <= 0 &&
+                    {opcionExpensa <= 0 &&
                     <RightInputBox>
                         <span className={classes.spanDisabled}>Importe total de expensa extraordinaria</span>
                         <span className={classes.inputsDisabled}>$ {expensaGeneral.valorTotalExpensaExtraordinaria || ' - ' }</span>
                     </RightInputBox>
                     }
 
-                    {opcionParaService > 0 &&
+                    {opcionExpensa > 0 &&
                     <LeftInputBox>
                         <span className={classes.span}>Importe expensas comúnes</span>
                         <TextField multiline className={classes.inputs} id="valorComunes" value={valorComunes || ''} onChange={(event) => setValorComunes(event.target.value)} name="valorComunes" variant="outlined" />
-                        <span className={classes.spanDisabled}>Gastos comunes del periodo <br></br> ${expensaGeneral.valorTotalExpensaComun}</span>
+                        
                     </LeftInputBox>
                     }
-                    {opcionParaService > 0 &&
+                    {opcionExpensa > 0 &&
                     <RightInputBox>
                         <span className={classes.span}>Importe expensas extraordinarias</span>
                         <TextField multiline className={classes.inputs} id="valorExtraordinarias" value={valorExtraordinarias || ''} onChange={(event) => setValorExtraordinarias(event.target.value)} name="valorExtraordinarias" variant="outlined" />
-                        <span className={classes.spanDisabled}>Gastos extraordinarios del periodo <br></br> ${expensaGeneral.valorTotalExpensaExtraordinaria}</span>
+                        
                     </RightInputBox>
                     }
                 </form> 

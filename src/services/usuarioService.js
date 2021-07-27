@@ -70,6 +70,10 @@ class UsuarioService {
         
     }
 
+    async getInquilino(inquilinoId){
+        const response = await axios.get(`${REST_SERVER_URL}/inquilino/${inquilinoId}` )
+        return response.data
+    }
 }
 
 export const usuarioService = new UsuarioService()

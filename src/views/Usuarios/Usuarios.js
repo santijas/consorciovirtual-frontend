@@ -75,6 +75,7 @@ export const Usuarios = () =>{
       const fetchSnack = () => {
         if(location.state !== undefined){
           usarSnack(location.state.mensajeChild, false)
+          history.replace() 
         }
       }
       fetchSnack()
@@ -96,11 +97,11 @@ export const Usuarios = () =>{
               <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
               </div>
            </SearchBox>
-           {usuarios.length >1 &&
+           {usuarios.length > 0 &&
             <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { usuarios.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="usuarios"/>
             }
 
               <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>

@@ -92,11 +92,11 @@ export const Documentos = () =>{
               <StyledButtonPrimary onClick={newDocument} >Agregar Documento</StyledButtonPrimary>
               </div>
            </SearchBox>
-           { documentos.length >1 &&
+           { documentos.length > 0 &&
             <Tabla datos={documentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { documentos.length === 0 && !isLoading &&
-                <SearchWithoutResults/>
+                <SearchWithoutResults resultado="documentos"/>
             }
 
               <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>

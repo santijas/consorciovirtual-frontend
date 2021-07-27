@@ -50,3 +50,11 @@ export const horaYMinutos = (fecha) => {
 export const fechaYaPaso = (fecha) =>{
   return moment(Date.now()).isAfter(fecha)
 }
+
+export const handleOnlyNumbers = (e) => {
+  let esValido = new RegExp('^\\d+$')
+
+  if (!esValido.test(e.target.value)) {
+      e.target.value = e.target.value.slice(0, -1);
+  }
+};

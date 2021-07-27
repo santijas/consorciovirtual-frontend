@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
@@ -105,7 +105,14 @@ const useStyles = makeStyles({
     contenedorDescripcion: {
         width: "100%",
         display: "block"
-    }
+    },
+    select: {
+        "&:focus": {
+          backgroundColor: "white",
+          border:"none"
+        }
+      }
+
 });
 
 const estados = [
@@ -307,13 +314,22 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span} >Estado</span>
-                        <TextField className={edicion ? classes.inputs : classes.inputsDisabled} id="estadoReclamo" select disabled={cambioDeEstadoDesactivado()} onChange={handleChangeType} value={estado || ''} label={creacion ? 'Pendiente de resolución' : ''} variant={creacion ? 'filled' : 'outlined'} >
+                        <Select 
+                        className={edicion ? classes.inputs : classes.inputsDisabled} 
+                        id="estadoReclamo" 
+                        select 
+                        disabled={cambioDeEstadoDesactivado()} 
+                        onChange={handleChangeType} value={estado || ''} 
+                        label={creacion ? 'Pendiente de resolución' : ''} 
+                        variant={creacion ? 'filled' : 'outlined'} 
+                        inputProps={{classes: { select: classes.select }}}
+                        >
                             {mostrarPosiblesEstados().map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
                                     {option.label}
                                 </MenuItem>
                             ))}
-                        </TextField>
+                        </Select>
                     </RightInputBox>
 
                     <LeftInputBox>
