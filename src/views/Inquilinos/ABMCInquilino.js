@@ -82,6 +82,11 @@ const useStyles = makeStyles ({
       createSpan:{
           marginBottom: 10,
           fontWeight: 600
+      },
+      pisoDepto: {
+          fontWeight: "bold",
+        padding: "15px 0 0 12px",
+        color: "#159D74"
       }
   });
 
@@ -141,7 +146,7 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
             if(validarInquilino()){
                 setIsLoading(true)
                 await usuarioService.createInquilino(inquilino, deptoSeleccionado)
-                setCampoEditado(false)
+                
                 history.push("/inquilinos", { openChildSnack : true, mensajeChild: "Inquilino creado correctamente."})    
             }else{
                 usarSnack("Campos obligatorios faltantes.", true)
@@ -154,7 +159,16 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     const modificarInquilino = async () => {
         try {
             if (validarInquilino()){
-                await usuarioService.update(inquilino)
+                await usuarioService.update(
+                    new Usuario(inquilino.id,
+                        inquilino.nombre,
+                        inquilino.apellido,
+                        inquilino.fechaNacimiento,
+                        inquilino.dni,
+                        inquilino.correo,
+                        'Inquilino',
+                        'Sin modificaciones') 
+                    )
                 setCambiosGuardados(true)
                 setCampoEditado(false)
                 usarSnack("Inquilino modificado correctamente", false)
@@ -177,7 +191,12 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     }
 
     const validarInquilino = () =>{
-        return inquilino.nombre && inquilino.apellido && inquilino.dni && inquilino.correo && validarDni() && deptoSeleccionado
+        return creacion? validarModificacionInquilino() && deptoSeleccionado
+        : validarModificacionInquilino()
+    }
+
+    const validarModificacionInquilino = () => {
+        return inquilino.nombre && inquilino.apellido && inquilino.dni && inquilino.correo && validarDni()
     }
 
     const validarDni = () =>{
@@ -202,14 +221,11 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
         const fetchInquilino = async () =>{
             try{
                 let unInquilino
-                if(creacion){
+                creacion?
                     unInquilino = new Usuario()
-                } else{
-                    let listaDepartamentos
-                    unInquilino = await usuarioService.getById(params.id)
-                    listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
-                    setDepartamentos(listaDepartamentos)
-                }
+                    :
+                    unInquilino = await usuarioService.getInquilino(params.id)
+                    console.log(unInquilino)
                 setInquilino(unInquilino) 
                 }
             catch(error){
@@ -278,36 +294,20 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
 
                     <RightInputBox>
                         <span className={classes.span}>Departamento</span>
-                        <TextField className={classes.inputs} id="departamento" select onChange={ seleccionarDepto } value={deptoSeleccionado || ''} variant="outlined" >
+                       { (!edicion && creacion && inquilino)?  <TextField className={classes.inputs} id="departamento" select onChange={ seleccionarDepto } value={deptoSeleccionado || ''} variant="outlined" >
                                 {departamentos.map((option) => (
                                 <MenuItem key={option.id} value={option.id}>
-                                {option.piso} º {option.nroDepartamento} Torre {option.torre}
+                                {option.piso} º {option.nroDepartamento} {option.torre? <span>Torre {option.torre } </span>: ""}
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </RightInputBox>
-                    
-                    { edicion && !creacion && departamentos.length > 0 &&
-                    <LeftInputBox>
-                        <span className={classes.spanDisabled}>Piso</span>
-                        {
-                            departamentos.map((departamento)=>(
-                                <span style={{ marginBottom : 6}} key={departamento.id} className={classes.inputsDisabled}>{departamento.piso || ''}</span>
-                            ))
-                        }
-                    </LeftInputBox>
-                    }
-                    
-                    { edicion && !creacion && departamentos.length > 0 &&
-                    <RightInputBox>
-                        <span className={classes.spanDisabled}>Departamento</span>
-                               {
-                            departamentos.map((departamento)=>(
-                                <span style={{ marginBottom : 6}} key={departamento.id} className={classes.inputsDisabled}>{departamento.nroDepartamento || ''}</span>
-                            ))
+                        :
+                        <div class={classes.pisoDepto}>
+                            {inquilino.piso} º {inquilino.nroDepartamento}  { inquilino.torre? <span>Torre {inquilino.torre } </span>: "" }
+                        </div>     
                         }
                     </RightInputBox>
-                    }
+                    
                 </form> 
                       
             </FormBox>
