@@ -46,8 +46,12 @@ class GastoService{
 
     async update(gasto){
         const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
-        console.log(gasto.url)
         await axios.put((`${REST_SERVER_URL}/gasto/modificar`), gasto.toJSON(), {params:{ idLogueado}})
+    }
+
+    async updateFactura(comprobante, idComprobante){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        await axios.put((`${REST_SERVER_URL}/documentos/modificarDeGasto/${idComprobante}/${idLogueado}`), comprobante.toJSON())
     }
 
     async delete(id){

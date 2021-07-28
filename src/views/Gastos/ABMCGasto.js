@@ -12,7 +12,6 @@ import { Gasto } from '../../domain/gasto';
 import { Factura } from '../../domain/factura';
 import { Documento } from '../../domain/documento';
 import { gastoService } from '../../services/gastoService';
-import { documentoService } from '../../services/gastoService';
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
@@ -353,6 +352,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
             if (validarGasto()) {
                 await onFileUpload()
                 await gastoService.update(gasto)
+                if(gasto.tipoComprobante === "factura"){
+                    await gastoService.updateFactura(factura, gasto.idComprobante)
+                }
                 setCambiosGuardados(true)
                 setCampoEditado(false)
                 usarSnack("Gasto modificado correctamente", false)
