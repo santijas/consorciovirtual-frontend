@@ -30,7 +30,8 @@ class ReclamoService {
     }
 
     async delete(id){
-        await axios.delete(`${REST_SERVER_URL}/reclamo/eliminar/${id}`)
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        await axios.delete(`${REST_SERVER_URL}/reclamo/eliminar/${id}`, {params:  {idLogueado} })
     }
 
 }

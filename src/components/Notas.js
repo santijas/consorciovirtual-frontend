@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const Notas = ({ notas, setCampoEditado, update }) => {
+export const Notas = ({ notas, setCampoEditado, update, puedeAgregarNotas }) => {
     const classes = useStyles();
     const [textoNota, setTextoNota] = useState('')
     const [textoInvalido, setTextoInvalido] = useState(false)
@@ -124,7 +124,7 @@ export const Notas = ({ notas, setCampoEditado, update }) => {
                         </div>
                     </ListItem>
                 })}
-                {user.tipo === "Administrador_consorcio" &&
+                {puedeAgregarNotas &&
                     <ListItem button divider>
                         <TextField error={textoInvalido} className={classes.inputNota} size="small" id="nota" name="nota" label="Escriba una nota" value={textoNota} variant="outlined" onChange={escribirNota}></TextField>
                         <Button size="small" variant="outlined" onClick={agregarNota}>Agregar</Button>

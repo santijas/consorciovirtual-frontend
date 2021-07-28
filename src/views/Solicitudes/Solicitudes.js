@@ -20,11 +20,11 @@ const useStyles = makeStyles({
 });
 
 const headers = [
-  {id: "id", label:"Solicitud"},
-  {id: "nombreAutor", label:"Autor"},
-  {id: "titulo", label:"Título"},
-  {id: "actividad", label:"Actividad"},
-  {id: "nombreEstado", label:"Estado"}
+  { id: "id", label: "Solicitud" },
+  { id: "nombreAutor", label: "Autor" },
+  { id: "titulo", label: "Título" },
+  { id: "actividad", label: "Actividad" },
+  { id: "nombreEstado", label: "Estado" }
 ]
 
 const ColumnasCustom = (dato) => {
@@ -35,8 +35,16 @@ const ColumnasCustom = (dato) => {
     history.push(`/solicitud/${id}`)
   }
 
+  const colorEstado = (nombre) => {
+    if (nombre === 'Resuelto') {
+      return { color: "#159D74" }
+    } else if (nombre === 'Rechazado') {
+      return { color: "rgba(255, 0 , 0 , 75%)" }
+    }
+  }
+
   return (
-    <StyledTableRow key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer">
+    <StyledTableRow key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
           <span className="tableBold">{dato.id}</span>
@@ -46,7 +54,7 @@ const ColumnasCustom = (dato) => {
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-      <StyledTableCell className="tableBold" component="th" scope="row">{dato.nombreEstado}</StyledTableCell>
+      <StyledTableCell className="tableBold" component="th" scope="row" style={colorEstado(dato.nombreEstado)}>{dato.nombreEstado}</StyledTableCell>
     </StyledTableRow>)
 }
 
@@ -75,15 +83,15 @@ export const Solicitudes = () => {
     fetchAllSolicitudes(textoBusqueda)
   }, [textoBusqueda])
 
-  useEffect( () =>{
+  useEffect(() => {
 
     const fetchSnack = () => {
-      if(location.state !== undefined){
+      if (location.state !== undefined) {
         usarSnack(location.state.mensajeChild, false)
       }
     }
     fetchSnack()
-  },[location.state])
+  }, [location.state])
 
   return (
     <RootBox >
@@ -91,17 +99,17 @@ export const Solicitudes = () => {
         Solicitudes técnicas
       </Typography>
       <SearchBox>
-        <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={ setTextoBusqueda } />
+        <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={setTextoBusqueda} />
         <div>
           <span className={classes.cantidadObject} > {solicitudes.length} solicitudes técnicas </span>
           <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>
         </div>
       </SearchBox>
       {solicitudes.length > 0 &&
-      <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"}/>
+        <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
       }
-      { solicitudes.length === 0 && !isLoading &&
-        <SearchWithoutResults resultado="solicitudes"/>
+      {solicitudes.length === 0 && !isLoading &&
+        <SearchWithoutResults resultado="solicitudes" />
       }
       <SnackbarComponent snackColor={"#00A650"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 

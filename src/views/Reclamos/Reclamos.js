@@ -35,7 +35,7 @@ const ColumnasCustom = (dato) => {
   }
 
   return (
-    <StyledTableRow key={dato.id} onClick={() => getReclamo(dato.id)} className="pointer">
+    <StyledTableRow key={dato.id} onClick={() => getReclamo(dato.id)} className="pointer" style={dato.estado === 'Resuelto' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
           <span className="tableBold">{dato.id}</span>
@@ -45,7 +45,7 @@ const ColumnasCustom = (dato) => {
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.asunto}</StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-      <StyledTableCell className="tableBold" component="th" scope="row">{dato.estado}</StyledTableCell>
+      <StyledTableCell className="tableBold" component="th" scope="row" style={dato.estado === 'Resuelto' ? { color: "#159D74" } : {}}>{dato.estado}</StyledTableCell>
     </StyledTableRow>
   )
 }

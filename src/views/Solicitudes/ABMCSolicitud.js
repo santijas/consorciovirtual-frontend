@@ -407,7 +407,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarNotas={true}></Notas>
                 }
 
             </FormBox>

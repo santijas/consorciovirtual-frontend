@@ -263,7 +263,6 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             || user.esPropietario()
     }
 
-
     const bodyModal = (
 
         <div style={modalStyle} className={classes.paper}>
@@ -347,7 +346,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarNotas={reclamo.estado !== 'Resuelto' && (user.esAdmin() || user.id === reclamo.idAutor)}></Notas>
                 }
 
             </FormBox>
