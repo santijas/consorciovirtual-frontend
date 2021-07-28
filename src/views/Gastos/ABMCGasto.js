@@ -21,7 +21,7 @@ import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
-import { handleOnlyNumbers } from '../../utils/formats';
+import { fechaMaxNow, fechaMinGasto, fechaMinMenosTresAños, handleOnlyNumbers, handleOnlyNumbersDot } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -510,13 +510,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
         }
     }
 
-    const fechaMax = () =>{
-        return moment(Date.now()).format('YYYY-MM-DD');
-    }
 
-    const fechaMin = () =>{
-        return moment(Date.now()).subtract(3, 'years').format('YYYY-MM-DD');
-    }
 
     const bodyModal = (
 
@@ -664,8 +658,8 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                             type="text" 
                             error={Boolean(errors?.importe)}
                             helperText={errors?.importe}
-                            inputProps={{ maxLength: 8 }}
-                            onInput={ handleOnlyNumbers }
+                            inputProps={{ maxLength: 15 }}
+                            onInput={ handleOnlyNumbersDot }
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                             }}
@@ -765,7 +759,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     name="fechaFactura" 
                                     type="date" 
                                     variant="outlined" 
-                                    InputProps={{inputProps: { min: fechaMin() , max:  fechaMax() } }}
+                                    InputProps={{inputProps: { min: fechaMinGasto() , max:  fechaMaxNow() } }}
                                     error={Boolean(errors?.fechaFactura)}
                                     helperText={errors?.fechaFactura}
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
@@ -868,8 +862,8 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     type="text" 
                                     error={Boolean(errors?.importeFactura)}
                                     helperText={errors?.importeFactura}
-                                    inputProps={{ maxLength: 10 }}
-                                    onInput={ handleOnlyNumbers }
+                                    inputProps={{ maxLength: 15 }}
+                                    onInput={ handleOnlyNumbersDot }
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">$</InputAdornment>,

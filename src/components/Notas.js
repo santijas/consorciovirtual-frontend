@@ -3,6 +3,7 @@ import React, { useState, useContext } from 'react'
 import { TextField, List, ListItem, Button, IconButton } from '@material-ui/core';
 import { UserContext } from '../hooks/UserContext';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
+import { StyledButtonPrimary } from './Buttons';
 
 const useStyles = makeStyles((theme) => ({
     tittle: {
@@ -12,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     spanDisabled: {
         textAlign: "left",
         marginLeft: 10,
-        marginBottom: 6,
+        marginBottom: 10,
         color: "grey"
     },
     contenedorNotas: {
@@ -34,13 +35,15 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "14px",
         marginBottom: 15, 
         marginLeft: 10,
-        marginTop: 6
+        marginTop: 6,
+        borderRadius: 2
     },
     nota: {
         display: "flex",
         justifyContent: "space-between",
         width: "100%",
-        cursor: "default"
+        cursor: "default",
+        borderRadius: 2
     },
     inputNota: {
         width: "100%",
@@ -126,8 +129,22 @@ export const Notas = ({ notas, setCampoEditado, update, puedeAgregarNotas }) => 
                 })}
                 {puedeAgregarNotas &&
                     <ListItem button divider>
-                        <TextField error={textoInvalido} className={classes.inputNota} size="small" id="nota" name="nota" label="Escriba una nota" value={textoNota} variant="outlined" onChange={escribirNota}></TextField>
-                        <Button size="small" variant="outlined" onClick={agregarNota}>Agregar</Button>
+                        <TextField 
+                        error={textoInvalido} 
+                        className={classes.inputNota} 
+                        size="small" 
+                        id="nota" 
+                        name="nota" 
+                        label="Escriba una nota" 
+                        value={textoNota} 
+                        variant="outlined" 
+                        onChange={escribirNota}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                agregarNota()
+                            }}}
+                        ></TextField>
+                        <StyledButtonPrimary onClick={agregarNota}>Agregar</StyledButtonPrimary>
                     </ListItem>
                 }
             </List>

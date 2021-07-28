@@ -16,6 +16,8 @@ import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, CompleteInputBox } from '../../components/Contenedores';
 import { StyledButtonNewPassoword } from './../../components/Buttons';
 import { UserContext } from '../../hooks/UserContext';
+import { fechaMaxNacimiento, fechaMaxNow, fechaMinNacimiento, handleOnlyNumbers } from '../../utils/formats';
+import { Select } from '@material-ui/core';
 
 const useStyles = makeStyles({
     link: {
@@ -82,6 +84,22 @@ const useStyles = makeStyles({
     createSpan: {
         marginBottom: 10,
         fontWeight: 600
+    },
+    select: {
+        "&:focus": {
+          backgroundColor: "white",
+          border:"none",
+          cursor:"pointer"
+          
+        }
+      },
+      input:{
+          display:"none"
+      },
+    textFieldSelect:{
+        backgroundColor: "white",
+        textAlign: "left",
+        cursor: "pointer"
     }
 });
 
@@ -159,42 +177,27 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     };
 
     useEffect(() => {
-        const fetchUsuario = () => {
+        const fetchUsuario = async () => {
             try {
-                let unUsuario = ''
+                let unUsuario
 
                 if (creacion) {
                     unUsuario = new Usuario()
-                }
-
-                setUsuario(unUsuario)
-            }
-            catch (error) {
-                usarSnack(error.response.data, true)
-            }
-        }
-
-        if (perfil || user?.esAdmin()) {
-            fetchUsuario()
-        } else {
-            history.goBack()
-        }
-    }, [creacion])
-
-
-    useEffect(() => {
-        const fetchUsuario = async () => {
-            try {
-                let unUsuario = ''
+                    setUsuario(unUsuario)
+                }  
 
                 if (edicion) {
                     let listaDepartamentos
                     unUsuario = await usuarioService.getById(params.id)
+                    setUsuario(unUsuario)
                     listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
                     setDepartamentos(listaDepartamentos)
                 }
 
-                setUsuario(unUsuario)
+                if (perfil) {
+                    setUsuario(user)
+                }
+
             }
             catch (error) {
                 usarSnack(error.response.data, true)
@@ -206,29 +209,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         } else {
             history.goBack()
         }
-        
-    }, [params.id])
-
-
-    useEffect(() => {
-        const fetchUsuario = () => {
-            try {
-                let unUsuario = ''
-
-                if (perfil) {
-                    unUsuario = user
-                }
-
-                setUsuario(unUsuario)
-            }
-            catch (error) {
-                usarSnack(error.response.data, true)
-            }
-        }
-
-        fetchUsuario()
-    }, [perfil])
-
+    }, [params.id, creacion, edicion, perfil])
 
 
     const crearUsuario = async () => {
@@ -452,6 +433,12 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         creacion ? "Nuevo usuario" : edicion ? "Modificar usuario" : "Perfil de usuario"
     )
 
+    const enterKey = (e) =>{
+        if (e.key === "Enter") {
+            edicion? modificarUsuario() : crearUsuario()
+        }
+    }
+
     return (
         
         <RootBoxABM>
@@ -480,6 +467,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             error={Boolean(errors?.name)}
                             helperText={errors?.name}
                             inputProps={{ maxLength: 15 }}
+                            onKeyDown={(e) => { enterKey(e) }}
                         />
                     </LeftInputBox>
 
@@ -495,6 +483,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             error={Boolean(errors?.lastName)}
                             helperText={errors?.lastName}
                             inputProps={{ maxLength: 25 }}
+                            onKeyDown={(e) => { enterKey(e) }}
                         />
                     </RightInputBox>
 
@@ -509,6 +498,8 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             error={Boolean(errors?.dni)}
                             helperText={errors?.dni}
                             inputProps={{ maxLength: 8 }}
+                            onInput={ handleOnlyNumbers }
+                            onKeyDown={(e) => { enterKey(e) }}
                         />
                     </LeftInputBox>
 
@@ -524,6 +515,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             error={Boolean(errors?.correo)}
                             helperText={errors?.correo}
                             inputProps={{ maxLength: 50 }}
+                            onKeyDown={(e) => { enterKey(e) }}
                         />
                     </RightInputBox>
 
@@ -539,20 +531,25 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             variant="outlined"
                             error={Boolean(errors?.fecha)}
                             helperText={errors?.fecha}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            InputProps={{inputProps: { min: fechaMinNacimiento() , max:  fechaMaxNacimiento() } }}
                         />
                     </LeftInputBox>
 
                     <RightInputBox>
                         <span className={classes.span}>Tipo de usuario</span>
-                        <TextField
-                            className={classes.inputs}
+                        <Select
+                            className={classes.textFieldSelect}
                             id="tipoUsuario"
                             select
                             onChange={handleChangeType}
                             value={usuario.tipo || ''}
                             error={Boolean(errors?.tipo)}
                             helperText={errors?.tipo}
-                            variant="outlined" >
+                            variant="outlined" 
+                            onKeyDown={(e) => { enterKey(e) }}
+                            inputProps={{classes: { select: classes.select }}}
+                            > 
                             {
                                 tiposDeUsuario.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
@@ -560,7 +557,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                                     </MenuItem>
                                 ))
                             }
-                        </TextField>
+                        </Select>
                     </RightInputBox>
 
                     {edicion && !creacion && departamentos.length > 0 &&
@@ -611,7 +608,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar usuario</StyledButtonSecondary>
                         }
                         {perfil &&
-                            <StyledButtonNewPassoword className={classes.botones} onClick={popupModal}>Cambiar contraseña</StyledButtonNewPassoword>
+                            <StyledButtonPrimary className={classes.botones} onClick={popupModal}>Cambiar contraseña</StyledButtonPrimary>
                         }
                         {/* <StyledButtonSecondary className={classes.botones} onClick={goBack}>Cancelar</StyledButtonSecondary> */}
 

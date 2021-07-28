@@ -48,11 +48,35 @@ export const horaYMinutos = (fecha) => {
 }
 
 export const fechaYaPaso = (fecha) => {
-  return moment(Date.now()).isAfter(fecha)
+  return moment(fecha).isBefore(moment().format("YYYY-MM-DD"))
+}
+
+export const fechaMaxNow = () =>{
+  return moment(Date.now()).format('YYYY-MM-DD');
+}
+
+export const fechaMinGasto = () =>{
+  return moment(Date.now()).subtract(3, 'years').format('YYYY-MM-DD');
+}
+
+export const fechaMinNacimiento = () =>{
+  return moment(Date.now()).subtract(150, 'years').format('YYYY-MM-DD');
+}
+
+export const fechaMaxNacimiento = () =>{
+  return moment(Date.now()).subtract(18, 'years').format('YYYY-MM-DD');
 }
 
 export const handleOnlyNumbers = (e) => {
   let esValido = new RegExp('^\\d+$')
+
+  if (!esValido.test(e.target.value)) {
+    e.target.value = e.target.value.slice(0, -1);
+  }
+};
+
+export const handleOnlyNumbersDot = (e) => {
+  let esValido = new RegExp(/^[0-9]*\.?[0-9]*$/)
 
   if (!esValido.test(e.target.value)) {
     e.target.value = e.target.value.slice(0, -1);

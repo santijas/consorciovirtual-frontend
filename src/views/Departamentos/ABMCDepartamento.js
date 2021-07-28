@@ -13,7 +13,7 @@ import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
-import { handleOnlyNumbers } from '../../utils/formats';
+import { handleOnlyNumbers, handleOnlyNumbersDot } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -233,8 +233,16 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
             setErrors(prev => ({ ...prev, porcentajeExpensa: "Campo obligatorio" }))
         }
 
+        if (departamento.porcentajeExpensa && !validarPorcentaje()) {
+            setErrors(prev => ({ ...prev, porcentajeExpensa: "El porcentaje debe ser mayor a 0 y menor que 100%." }))
+        }
 
-        return departamento.nroDepartamento && departamento.piso && departamento.metrosCuadrados && propietarioId && departamento.porcentajeExpensa
+
+        return departamento.nroDepartamento && departamento.piso && departamento.metrosCuadrados && propietarioId && departamento.porcentajeExpensa && validarPorcentaje()
+    }
+
+    const validarPorcentaje = () =>{
+        return departamento.porcentajeExpensa < 100 && departamento.porcentajeExpensa > 0
     }
 
     const changePropietario = (event) => {
@@ -245,6 +253,12 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const changeInquilino = (event) => {
         setInquilinoId(event.target.value)
         setCampoEditado(true)
+    }
+
+    const enterKey = (e) =>{
+        if (e.key === "Enter") {
+            edicion? modificarDepartamento() : crearDepartamento()
+        }
     }
 
     const bodyModalDelete = (
@@ -297,6 +311,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             helperText={errors?.piso}
                             inputProps={{ maxLength: 2 }}
                             onInput={ handleOnlyNumbers }
+                            onKeyDown={(e) => { enterKey(e) }}
                             />
                         </LeftInputBox>
 
@@ -313,6 +328,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             error={Boolean(errors?.nroDepartamento)}
                             helperText={errors?.nroDepartamento}
                             inputProps={{ maxLength: 3 }}
+                            onKeyDown={(e) => { enterKey(e) }}
                             />
                         </RightInputBox>
 
@@ -326,6 +342,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             name="torre" 
                             variant="outlined" 
                             inputProps={{ maxLength: 3 }}
+                            onKeyDown={(e) => { enterKey(e) }}
                             />
                         </LeftInputBox>
 
@@ -342,7 +359,8 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             error={Boolean(errors?.metrosCuadrados)}
                             helperText={errors?.metrosCuadrados}
                             inputProps={{ maxLength: 4 }}
-                            onInput={ handleOnlyNumbers }
+                            onInput={ handleOnlyNumbersDot }
+                            onKeyDown={(e) => { enterKey(e) }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">m2</InputAdornment>,
                             }}
@@ -364,6 +382,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                     error={Boolean(errors?.propietario)}
                                     helperText={errors?.propietario}
                                     inputProps={{classes: { select: classes.select }}}
+                                    onKeyDown={(e) => { enterKey(e) }}
                                     >
                                         {usuarios.map((option) => (
                                             <MenuItem key={option.id} value={option.id}>
@@ -386,8 +405,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             type="text" 
                             error={Boolean(errors?.porcentajeExpensa)}
                             helperText={errors?.porcentajeExpensa}
-                            inputProps={{ maxLength: 3 }}
-                            onInput={ handleOnlyNumbers }
+                            inputProps={{ maxLength: 5 }}
+                            onInput={ handleOnlyNumbersDot }
+                            onKeyDown={(e) => { enterKey(e) }}
                             InputProps={{
                                 endAdornment: <InputAdornment position="end">%</InputAdornment>,
                             }}
@@ -410,6 +430,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                 error={Boolean(errors?.inquilinoId)}
                                 helperText={errors?.inquilinoId}
                                 inputProps={{classes: { select: classes.select }}}
+                                onKeyDown={(e) => { enterKey(e) }}
                                 >
                                     <MenuItem key={0} value={null}>
                                         Sin Inquilino

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Select, Typography } from '@material-ui/core';
+import { InputAdornment, makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useParams } from 'react-router-dom';
 import { Link, Divider, Box, TextField, MenuItem } from '@material-ui/core';
@@ -8,7 +8,7 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import MomentUtils from '@date-io/moment';
 import 'moment/locale/es'
 import moment from 'moment';
-import { dosDecimales, obtenerPeriodoDeMoment } from '../../utils/formats';
+import { dosDecimales, handleOnlyNumbers, handleOnlyNumbersDot, obtenerPeriodoDeMoment } from '../../utils/formats';
 import { StyledTableCellScroll, StyledTableRowScroll, TablaScroll } from '../../components/TablaScroll';
 import { gastoService } from '../../services/gastoService';
 import { departamentoService } from '../../services/departamentoService';
@@ -139,6 +139,7 @@ export const ABExpensa = () =>{
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [mensajeSnack, setMensajeSnack] = useState()
     const [snackColor, setSnackColor] = useState()
+    const [errors, setErrors] = useState({})
 
     //variables para la forma de calcular
     const [opcionExpensa, setOpcionExpensa] = useState(0)
@@ -179,6 +180,16 @@ export const ABExpensa = () =>{
     }
 
     const importesCompletos = () =>{
+        setErrors(null)
+        console.log("HOLA")
+        if (!errors.valorComunes) {
+            setErrors(prev => ({ ...prev, valorComunes: "Campo obligatorio" }))
+        }
+
+        if (!errors.valorExtraordinarias) {
+            setErrors(prev => ({ ...prev, valorExtraordinarias: "Campo obligatorio" }))
+        }
+
         return !isNaN(valorComunes) && valorComunes > 0 && !isNaN(valorExtraordinarias) && valorExtraordinarias > 0
     }
 
@@ -321,14 +332,42 @@ export const ABExpensa = () =>{
                     {opcionExpensa > 0 &&
                     <LeftInputBox>
                         <span className={classes.span}>Importe expensas comúnes</span>
-                        <TextField multiline className={classes.inputs} id="valorComunes" value={valorComunes || ''} onChange={(event) => setValorComunes(event.target.value)} name="valorComunes" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="valorComunes" 
+                        value={valorComunes || ''} 
+                        onChange={(event) => setValorComunes(event.target.value)} 
+                        name="valorComunes" 
+                        variant="outlined" 
+                        error={Boolean(errors?.valorComunes)}
+                        helperText={errors?.valorComunes}
+                        inputProps={{ maxLength: 15}}
+                        onInput={ handleOnlyNumbersDot }
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                        />
                         
                     </LeftInputBox>
                     }
                     {opcionExpensa > 0 &&
                     <RightInputBox>
                         <span className={classes.span}>Importe expensas extraordinarias</span>
-                        <TextField multiline className={classes.inputs} id="valorExtraordinarias" value={valorExtraordinarias || ''} onChange={(event) => setValorExtraordinarias(event.target.value)} name="valorExtraordinarias" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="valorExtraordinarias"
+                         value={valorExtraordinarias || ''} 
+                         onChange={(event) => setValorExtraordinarias(event.target.value)} 
+                         name="valorExtraordinarias" 
+                         variant="outlined"
+                         error={Boolean(errors?.valorExtraordinarias)}
+                         helperText={errors?.valorExtraordinarias}
+                         inputProps={{ maxLength: 15}}
+                         onInput={ handleOnlyNumbersDot }
+                         InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                          />
                         
                     </RightInputBox>
                     }

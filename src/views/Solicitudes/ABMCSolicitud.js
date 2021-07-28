@@ -115,10 +115,7 @@ const useStyles = makeStyles({
 });
 
 const estados = [
-    {
-        value: 'Resuelto',
-        label: 'Resuelto',
-    },
+
     {
         value: 'En proceso',
         label: 'En proceso',
@@ -128,12 +125,16 @@ const estados = [
         label: 'Pendiente de resolución',
     },
     {
-        value: 'Rechazado',
-        label: 'Rechazado',
-    },
-    {
         value: 'Pendiente de aprobación',
         label: 'Pendiente de aprobación',
+    },
+    {
+        value: 'Resuelto',
+        label: 'Resuelto',
+    },
+    {
+        value: 'Rechazado',
+        label: 'Rechazado',
     }
 ]
 
@@ -424,7 +425,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                             
                             : 
                             
-                            <TextField 
+                            <Select 
                                 className={classes.inputs} 
                                 id="tipoSolicitud" 
                                 select 
@@ -433,6 +434,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                                 variant={'outlined'} 
                                 error={Boolean(errors?.tipo)}
                                 helperText={errors?.tipo}
+                                inputProps={{classes: { select: classes.select }}}
                                 >
                                 
                                 {tiposDeSolicitud.map((option) => (
@@ -440,7 +442,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                                         {option.label}
                                     </MenuItem>
                                 ))}
-                            </TextField>
+                            </Select>
                         
                         }
                     </RightInputBox>

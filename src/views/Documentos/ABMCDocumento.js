@@ -113,6 +113,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
@@ -196,7 +197,21 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
     }
 
     const verificarCamposVacios = () => {
-        return documento.titulo && documento.descripcion && selectedFile != null
+        setErrors(null)
+        
+        if (!documento.titulo) {
+            setErrors(prev => ({ ...prev, titulo: "Campo obligatorio" }))
+        }
+
+        if (!documento.descripcion) {
+            setErrors(prev => ({ ...prev, descripcion: "Campo obligatorio" }))
+        }
+
+        if (!selectedFile) {
+            setErrors(prev => ({ ...prev, selectedFile: "Campo obligatorio" }))
+        }
+
+        return documento.titulo && documento.descripcion && (selectedFile || documento.enlaceDeDescarga)
     }
 
     const bodyModal = (
@@ -287,19 +302,42 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox clas>
                         <span className={classes.span}>Fecha</span>
-                        <TextField disabled className={classes.inputs} id="fecha" value={documento.fechaCreacion || new Date(Date.now()).toLocaleDateString()} name="fecha" variant="outlined" />
+                        <TextField 
+                        disabled 
+                        className={classes.inputs} 
+                        id="fecha" 
+                        value={documento.fechaCreacion || new Date(Date.now()).toLocaleDateString()} 
+                        name="fecha" 
+                        variant="outlined" 
+                        />
                     </LeftInputBox>
 
 
                     <RightInputBox>
                         <span className={classes.span}>Autor</span>
-                        <TextField disabled className={classes.inputs} id="autor" value={documento.autor || user?.nombreYApellido() || ' '} name="autor" variant="outlined" />
+                        <TextField 
+                        disabled 
+                        className={classes.inputs} 
+                        id="autor" 
+                        value={documento.autor || user?.nombreYApellido() || ' '} 
+                        name="autor" 
+                        variant="outlined" 
+                        />
                     </RightInputBox>
 
                     {user?.esAdmin() &&
                         <LeftInputBox>
                             <span className={classes.span}>Título</span>
-                            <TextField className={classes.inputs} id="titulo" value={documento.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="titulo" 
+                            value={documento.titulo || ''}
+                             onChange={(event) => actualizarValor(event)} 
+                             name="titulo" variant="outlined" 
+                             error={Boolean(errors?.titulo)}
+                             helperText={errors?.titulo}
+                             inputProps={{ maxLength: 70 }}
+                             />
                         </LeftInputBox>
                     }
 
@@ -344,7 +382,18 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                     {user?.esAdmin() &&
                         <CompleteInputBox>
                             <span className={classes.span}>Descripción</span>
-                            <TextField multiline className={classes.inputs} id="descripcion" value={documento.descripcion || ''} onChange={(event) => actualizarValor(event)} name="descripcion" variant="outlined" />
+                            <TextField 
+                            multiline 
+                            className={classes.inputs} 
+                            id="descripcion" 
+                            value={documento.descripcion || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="descripcion" 
+                            variant="outlined" 
+                            error={Boolean(errors?.descripcion)}
+                            helperText={errors?.descripcion}
+                            inputProps={{ maxLength: 500 }}
+                            />
                         </CompleteInputBox>
                     }
 

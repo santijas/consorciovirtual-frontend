@@ -13,6 +13,7 @@ import update from 'immutability-helper';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, CompleteInputBox } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext';
+import { handleOnlyNumbers } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -98,6 +99,7 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const { user, setUser } = useContext(UserContext);
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
@@ -187,6 +189,20 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
     }
 
     const verificarCamposVacios = () => {
+        setErrors(null)
+        if (!telefonoUtil.nombre) {
+            setErrors(prev => ({ ...prev, nombre: "Campo obligatorio" }))
+        }
+
+        if (!telefonoUtil.telefono) {
+            setErrors(prev => ({ ...prev, telefono: "Campo obligatorio" }))
+        }
+
+        if (!telefonoUtil.servicio) {
+            setErrors(prev => ({ ...prev, servicio: "Campo obligatorio" }))
+        }
+        
+
         return telefonoUtil.nombre && telefonoUtil.telefono && telefonoUtil.servicio
     }
 
@@ -207,6 +223,12 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
             </Box>
         </div>
     )
+
+    const enterKey = (e) =>{
+        if (e.key === "Enter") {
+            edicion? modificarTelefonoUtil() : crearTelefonoUtil()
+        }
+    }
 
     return (
 
@@ -233,25 +255,69 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
                     {user.esAdmin() &&
                         <CompleteInputBox clas>
                             <span className={classes.span}>Nombre Completo / Empresa</span>
-                            <TextField className={classes.inputs} id="nombre" value={telefonoUtil.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="nombre" 
+                            value={telefonoUtil.nombre || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="nombre" 
+                            variant="outlined" 
+                            error={Boolean(errors?.nombre)}
+                            helperText={errors?.nombre}
+                            inputProps={{ maxLength: 30 }}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            />
                         </CompleteInputBox>
                     }
                     {user.esAdmin() &&
                         <LeftInputBox>
                             <span className={classes.span} >Servicio</span>
-                            <TextField className={classes.inputs} id="servicio" value={telefonoUtil.servicio || ''} onChange={(event) => actualizarValor(event)} name="servicio" variant="outlined" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="servicio"
+                             value={telefonoUtil.servicio || ''} 
+                             onChange={(event) => actualizarValor(event)} 
+                             name="servicio" 
+                             variant="outlined" 
+                             error={Boolean(errors?.servicio)}
+                             helperText={errors?.servicio}
+                             inputProps={{ maxLength: 30 }}
+                             onKeyDown={(e) => { enterKey(e) }}
+                             />
                         </LeftInputBox>
                     }
                     {user.esAdmin() &&
                         <RightInputBox>
                             <span className={classes.span}>Teléfono</span>
-                            <TextField className={classes.inputs} id="telefono" value={telefonoUtil.telefono || ''} onChange={(event) => actualizarValor(event)} name="telefono" variant="outlined" />
+                            <TextField 
+                            className={classes.inputs} 
+                            id="telefono" 
+                            value={telefonoUtil.telefono || ''} 
+                            onChange={(event) => actualizarValor(event)}
+                             name="telefono" 
+                             variant="outlined" 
+                             error={Boolean(errors?.telefono)}
+                             helperText={errors?.telefono}
+                             inputProps={{ maxLength: 15 }}
+                             onInput={ handleOnlyNumbers }
+                             onKeyDown={(e) => { enterKey(e) }}
+                             />
                         </RightInputBox>
                     }
                     {user.esAdmin() &&
                         <CompleteInputBox>
                             <span className={classes.span}>Anotación</span>
-                            <TextField multiline className={classes.inputs} id="anotacion" value={telefonoUtil.anotacion || ''} onChange={(event) => actualizarValor(event)} name="anotacion" variant="outlined" />
+                            <TextField 
+                            multiline 
+                            className={classes.inputs} 
+                            id="anotacion" 
+                            value={telefonoUtil.anotacion || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="anotacion" 
+                            variant="outlined" 
+                            inputProps={{ maxLength: 500 }}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            />
                         </CompleteInputBox>
                     }
                     {!user.esAdmin() &&

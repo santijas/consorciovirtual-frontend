@@ -14,6 +14,7 @@ import update from 'immutability-helper';
 import { UserContext } from '../../hooks/UserContext';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, FullInputBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
+import { fechaMaxNow } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -96,10 +97,11 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
-    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
-    const [modalStyle] = useState(getModalStyle);
+    const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack()
+    const [modalStyle] = useState(getModalStyle)
     const [usuarios, setUsuarios] = useState('')
-    const { user, setUser } = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext)
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
@@ -179,6 +181,20 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     }
 
     const validarAnuncio = () => {
+
+        setErrors(null)
+        if (!anuncio.titulo) {
+            setErrors(prev => ({ ...prev, titulo: "Campo obligatorio" }))
+        }
+
+        if (!anuncio.fechaVencimiento) {
+            setErrors(prev => ({ ...prev, fechaVencimiento: "Campo obligatorio" }))
+        }
+
+        if (!anuncio.descripcion) {
+            setErrors(prev => ({ ...prev, descripcion: "Campo obligatorio" }))
+        }
+
         return anuncio.titulo && anuncio.fechaVencimiento && anuncio.descripcion
     }
 
@@ -234,17 +250,48 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
 
                     <LeftInputBox>
                         <span className={classes.span} >Título</span>
-                        <TextField className={classes.inputs} id="titulo" value={anuncio.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="titulo" 
+                        value={anuncio.titulo || ''} 
+                        onChange={(event) => actualizarValor(event)} 
+                        name="titulo" 
+                        variant="outlined" 
+                        error={Boolean(errors?.titulo)}
+                        helperText={errors?.titulo}
+                        inputProps={{ maxLength: 70 }}
+                        />
                     </LeftInputBox>
 
                     <RightInputBox>
                         <span className={classes.span}>Vencimiento</span>
-                        <TextField className={classes.inputs} id="fechaVencimiento" value={anuncio.fechaVencimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaVencimiento" type="date" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="fechaVencimiento" 
+                        value={anuncio.fechaVencimiento || ''} 
+                        onChange={(event) => actualizarValor(event)} 
+                        name="fechaVencimiento" 
+                        type="date" 
+                        variant="outlined" 
+                        error={Boolean(errors?.fechaVencimiento)}
+                        helperText={errors?.fechaVencimiento}
+                        InputProps={{inputProps: { min:  fechaMaxNow() }}}
+                        />
                     </RightInputBox>
 
                     <FullInputBox>
                         <span className={classes.span}>Descripción</span>
-                        <TextField className={classes.inputs} id="descripcion" value={anuncio.descripcion || ''} onChange={(event) => actualizarValor(event)} name="descripcion" variant="outlined" />
+                        <TextField 
+                        className={classes.inputs} 
+                        id="descripcion" 
+                        value={anuncio.descripcion || ''} 
+                        onChange={(event) => actualizarValor(event)} 
+                        name="descripcion" 
+                        variant="outlined" 
+                        error={Boolean(errors?.descripcion)}
+                        helperText={errors?.descripcion}
+                        inputProps={{ maxLength: 150 }}
+                        />
                     </FullInputBox>
 
                 </form>
