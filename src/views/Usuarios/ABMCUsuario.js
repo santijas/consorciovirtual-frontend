@@ -16,7 +16,6 @@ import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM, CompleteInputBox } from '../../components/Contenedores';
 import { StyledButtonNewPassoword } from './../../components/Buttons';
 import { UserContext } from '../../hooks/UserContext';
-import { handleOnlyNumbers } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -160,27 +159,67 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     };
 
     useEffect(() => {
-        const fetchUsuario = async () => {
+        const fetchUsuario = () => {
             try {
-                let unUsuario
+                let unUsuario = ''
 
                 if (creacion) {
                     unUsuario = new Usuario()
-                    setUsuario(unUsuario)
-                }  
+                }
+
+                setUsuario(unUsuario)
+            }
+            catch (error) {
+                usarSnack(error.response.data, true)
+            }
+        }
+
+        if (perfil || user?.esAdmin()) {
+            fetchUsuario()
+        } else {
+            history.goBack()
+        }
+    }, [creacion])
+
+
+    useEffect(() => {
+        const fetchUsuario = async () => {
+            try {
+                let unUsuario = ''
 
                 if (edicion) {
                     let listaDepartamentos
                     unUsuario = await usuarioService.getById(params.id)
-                    setUsuario(unUsuario)
                     listaDepartamentos = await departamentoService.getByPropietarioId(params.id)
                     setDepartamentos(listaDepartamentos)
                 }
 
+                setUsuario(unUsuario)
+            }
+            catch (error) {
+                usarSnack(error.response.data, true)
+            }
+        }
+
+        if (perfil || user?.esAdmin()) {
+            fetchUsuario()
+        } else {
+            history.goBack()
+        }
+        
+    }, [params.id])
+
+
+    useEffect(() => {
+        const fetchUsuario = () => {
+            try {
+                let unUsuario = ''
+
                 if (perfil) {
-                    setUsuario(user)
+                    unUsuario = user
                 }
 
+                setUsuario(unUsuario)
             }
             catch (error) {
                 usarSnack(error.response.data, true)
@@ -188,7 +227,8 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         }
 
         fetchUsuario()
-    }, [params.id])
+    }, [perfil])
+
 
 
     const crearUsuario = async () => {
@@ -260,7 +300,11 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         }
 
         if (usuario.dni && (usuario.dni.length !== 8)) {
-            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 8 numeros." }))
+            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 8 numeros sin puntos." }))
+        }
+
+        if (usuario.dni && isNaN(usuario.dni)) {
+            setErrors(prev => ({ ...prev, dni: "El DNI solo puede contener numeros." }))
         }
 
         if (!usuario.correo) {
@@ -284,7 +328,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     }
 
     const validarDni = () => {
-        return usuario.dni.length === 8
+        return usuario.dni.length === 8 && !isNaN(usuario.dni)
     }
 
     const validarCorreo = () => {
@@ -413,7 +457,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     )
 
     return (
-
+        
         <RootBoxABM>
             <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
@@ -469,7 +513,6 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             error={Boolean(errors?.dni)}
                             helperText={errors?.dni}
                             inputProps={{ maxLength: 8 }}
-                            onInput={ handleOnlyNumbers }
                         />
                     </LeftInputBox>
 

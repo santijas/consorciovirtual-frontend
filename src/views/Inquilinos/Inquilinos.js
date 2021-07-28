@@ -71,7 +71,11 @@ export const Inquilinos = () =>{
         setIsLoading(false)
       }
 
-      fetchAllUsers(textoBusqueda)
+      if (user?.esPropietario()) {
+        fetchAllUsers(textoBusqueda)
+      } else {
+        history.goBack()
+      }
       
     },[textoBusqueda])
 
@@ -85,13 +89,12 @@ export const Inquilinos = () =>{
       fetchSnack()
     },[location.state])
 
-    
-
     const newUser = () =>{
       history.push("/newinquilino")
     }
 
     return (
+
         <RootBox>
            <Typography component="h2" variant="h5" className="tittle">
              Inquilinos 

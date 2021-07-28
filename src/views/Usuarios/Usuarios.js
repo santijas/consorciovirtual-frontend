@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography, Snackbar } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { usuarioService } from '../../services/usuarioService';
@@ -10,7 +10,7 @@ import { numeroConPuntos, splitVisual } from '../../utils/formats';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
-
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles ({
     cantidadObject:{
@@ -55,6 +55,7 @@ export const Usuarios = () =>{
     let history = useHistory()  
     const classes = useStyles()
     const [usuarios, setUsuarios] = useState([])
+    const { user } = useContext(UserContext)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
@@ -66,7 +67,11 @@ export const Usuarios = () =>{
         setIsLoading(false)
       }
 
-      fetchAllUsers(textoBusqueda)
+      if (user.esAdmin()) {
+        fetchAllUsers(textoBusqueda)
+      } else {
+        history.goBack()
+      }
       
     },[textoBusqueda])
 
@@ -86,6 +91,7 @@ export const Usuarios = () =>{
     }
 
     return (
+        user.esAdmin() && 
         <RootBox>
            <Typography component="h2" variant="h5" className="tittle">
              Usuarios 
