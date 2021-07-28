@@ -25,6 +25,7 @@ class ReclamoService {
     }
 
     async update(reclamo){
+        console.log(reclamo)
         const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
         await axios.put(`${REST_SERVER_URL}/reclamo/modificar`, reclamo.toJSON(), {params:  {idLogueado} })
     }

@@ -327,7 +327,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                         className={edicion ? classes.inputs : classes.inputsDisabled} 
                         id="estadoReclamo" select 
                         disabled={cambioDeEstadoDesactivado()} 
-                        onChange={handleChangeType} value={estado || ''} 
+                        onChange={handleChangeType} 
+                        value={estado || ''} 
                         label={creacion ? 'Pendiente de resolución' : ''} 
                         variant={creacion ? 'filled' : 'outlined'} 
                         inputProps={{classes: { select: classes.select }}}
@@ -404,7 +405,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarNotas={reclamo.estado !== 'Resuelto' && (user.esAdmin() || user.id === reclamo.idAutor)}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarOBorrarNotas={estadoOriginal !== 'Resuelto' && (user.esAdmin() || user.id === reclamo.idAutor)}></Notas>
                 }
 
             </FormBox>
