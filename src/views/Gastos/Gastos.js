@@ -56,7 +56,7 @@ export const Gastos = () =>{
 
 
     const newUser = () =>{
-      history.push("/newgasto")
+      history.push("/creargasto")
     }
 
     useEffect( ()  =>  {

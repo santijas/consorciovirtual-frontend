@@ -299,12 +299,8 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
             setErrors(prev => ({ ...prev, dni: "Campo obligatorio" }))
         }
 
-        if (usuario.dni && (usuario.dni.length !== 8)) {
-            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 8 numeros sin puntos." }))
-        }
-
-        if (usuario.dni && isNaN(usuario.dni)) {
-            setErrors(prev => ({ ...prev, dni: "El DNI solo puede contener numeros." }))
+        if (usuario.dni && !validarDni()) {
+            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 7 u 8 digitos." }))
         }
 
         if (!usuario.correo) {
@@ -328,7 +324,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
     }
 
     const validarDni = () => {
-        return usuario.dni.length === 8 && !isNaN(usuario.dni)
+        return usuario.dni.length === 8 || usuario.dni.length === 7
     }
 
     const validarCorreo = () => {

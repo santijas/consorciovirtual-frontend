@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Accordion, AccordionDetails, AccordionSummary, makeStyles, Select, Typography } from '@material-ui/core';
+import { Accordion, AccordionDetails, AccordionSummary, InputAdornment, makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
@@ -22,6 +22,7 @@ import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
+import { handleOnlyNumbers } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -84,22 +85,22 @@ const useStyles = makeStyles({
         boxShadow: "0px 6px 16px rgba(0, 0, 0, 0.1)",
         borderRadius: "6px",
         padding: "0 30px 32px 32px"
-      },
-      inputsDate:{
-          textTransform: "capitalize",
-          cursor: "pointer"
-      },
-      delete:{
-          textAlign: "left",
-          color: "red",
-          fontWeight: 600,
-          fontSize: 14,
-          marginTop: 4,
-          cursor: "pointer"
-      },
-      acordeon:{
-        display:"flex",
-        flexDirection:"column",
+    },
+    inputsDate: {
+        textTransform: "capitalize",
+        cursor: "pointer"
+    },
+    delete: {
+        textAlign: "left",
+        color: "red",
+        fontWeight: 600,
+        fontSize: 14,
+        marginTop: 4,
+        cursor: "pointer"
+    },
+    acordeon: {
+        display: "flex",
+        flexDirection: "column",
         justifyContent: "space-between",
         width: "100%",
         borderRadius: "6px",
@@ -119,9 +120,12 @@ const useStyles = makeStyles({
     },
     select: {
         "&:focus": {
-          backgroundColor: "white"
+            backgroundColor: "white"
         }
-      }
+    },
+    helper: {
+        backgroundColor: "white"
+    }
 
 });
 
@@ -204,10 +208,11 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     const [selectedDate, handleDateChange] = useState(new Date());
     const [selectedFile, setSelectedFile] = useState(null);
     const [checkFactura, setCheckFactura] = useState(false)
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
-        //Se usa para modificaciones solamente
+    //Se usa para modificaciones solamente
     let idComprobanteAmodificar;
     let tipoComprobanteAmodificar;
 
@@ -223,9 +228,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                 unGasto = respuesta[0]
                 idComprobanteAmodificar = respuesta[1]
                 tipoComprobanteAmodificar = respuesta[2]
-                if(tipoComprobanteAmodificar === "factura"){
+                if (tipoComprobanteAmodificar === "factura") {
                     unaFactura = await gastoService.getFacturaById(idComprobanteAmodificar)
-                }else{
+                } else {
                     unaFactura = new Factura()
                 }
             }
@@ -314,21 +319,24 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                 setCampoEditado(false)
                 history.push("/gastos", { openChildSnack: true, mensajeChild: "Gasto creado correctamente." })
             } else {
-                usarSnack("Campos obligatorios faltantes.", true)
+                selectedFile
+                ? usarSnack("Campos obligatorios faltantes.", true)
+                : usarSnack("Debe adjuntar un archivo al gasto.", true)
             }
         } catch (error) {
             usarSnack(error.response.data, true)
         }
     }
 
-    const tieneFactura = async () =>{
+    const tieneFactura = async () => {
         await gastoService.create(gasto)
         try {
-            if(checkFactura === true){
+            if (checkFactura === true) {
                 factura.enlaceDeDescarga = gasto.url
+                console.log(factura)
                 await gastoService.createComprobante(factura)
-            }else{
-                let documento = new Documento() 
+            } else {
+                let documento = new Documento()
                 documento.enlaceDeDescarga = gasto.url
                 documento.type = "documento"
                 await gastoService.createComprobante(documento)
@@ -349,7 +357,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                 setCampoEditado(false)
                 usarSnack("Gasto modificado correctamente", false)
             } else {
-                usarSnack("Campos obligatorios faltantes.", true)
+                selectedFile
+                ? usarSnack("Campos obligatorios faltantes.", true)
+                : usarSnack("Debe adjuntar un archivo al gasto.", true)
             }
         } catch (error) {
             usarSnack(error.response.data, true)
@@ -367,7 +377,97 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     }
 
     const validarGasto = () => {
-        return gasto.periodo && gasto.titulo && gasto.importe
+        setErrors(null)
+        if (!gasto.titulo) {
+            setErrors(prev => ({ ...prev, titulo: "Campo obligatorio" }))
+        }
+
+        if (!gasto.periodo) {
+            setErrors(prev => ({ ...prev, periodo: "Campo obligatorio" }))
+        }
+
+        if (!gasto.tipo) {
+            setErrors(prev => ({ ...prev, tipo: "Campo obligatorio" }))
+        }
+
+        if (!gasto.rubro) {
+            setErrors(prev => ({ ...prev, rubro: "Campo obligatorio" }))
+        }
+
+        if (!gasto.importe) {
+            setErrors(prev => ({ ...prev, importe: "Campo obligatorio" }))
+        }
+
+        if (!selectedFile) {
+            setErrors(prev => ({ ...prev, selectedFile: "Campo obligatorio" }))
+        }
+        if(checkFactura){
+            return gasto.titulo && gasto.periodo && gasto.rubro && gasto.tipo && gasto.importe && (selectedFile || gasto.url) && validarFactura()
+        }
+        return gasto.titulo && gasto.periodo && gasto.rubro && gasto.tipo && gasto.importe && (selectedFile || gasto.url)
+    }
+
+    const validarFactura = () =>{
+            if (!factura.fechaFactura) {
+                setErrors(prev => ({ ...prev, fechaFactura: "Campo obligatorio" }))
+            }
+    
+            if (!factura.tipoFactura) {
+                setErrors(prev => ({ ...prev, tipoFactura: "Campo obligatorio" }))
+            }
+
+            if (!factura.puntoDeVenta) {
+                setErrors(prev => ({ ...prev, puntoDeVenta: "Campo obligatorio" }))
+            }
+
+            if (!factura.numeroFactura) {
+                setErrors(prev => ({ ...prev, numeroFactura: "Campo obligatorio" }))
+            }
+
+            if (!factura.cuitProveedor) {
+                setErrors(prev => ({ ...prev, cuitProveedor: "Campo obligatorio" }))
+            }
+            if (!factura.cuitReceptor) {
+                setErrors(prev => ({ ...prev, cuitReceptor: "Campo obligatorio" }))
+            }
+            if (!factura.cae) {
+                setErrors(prev => ({ ...prev, cae: "Campo obligatorio" }))
+            }
+
+            if (!factura.importe) {
+                setErrors(prev => ({ ...prev, importeFactura: "Campo obligatorio" }))
+            }
+
+            if (factura.cae && !validarCae()) {
+                setErrors(prev => ({ ...prev, cae: "El CAE debe tener 14 digitos." }))
+            }
+
+            
+            if (factura.cuitProveedor && !validarCuitProveedor()) {
+                setErrors(prev => ({ ...prev, cuitProveedor: "El Cuit debe tener 11 digitos." }))
+            }
+
+            if (factura.cuitReceptor && !validarCuitReceptor()) {
+                setErrors(prev => ({ ...prev, cuitReceptor: "El Cuit debe tener 11 digitos." }))
+            }
+
+            return factura.fechaFactura && factura.puntoDeVenta && factura.tipoFactura && factura.numeroFactura && factura.cuitProveedor 
+            && factura.cuitReceptor && factura.cae && factura.importe && validarCae() && validarCuitReceptor() && validarCuitProveedor()
+
+    }
+    
+
+    const validarCae = () =>{
+        return factura.cae.length === 14
+    }
+
+    const validarCuitReceptor = () =>{
+        return factura.cuitReceptor.length === 11
+    }
+
+    
+    const validarCuitProveedor = () =>{
+        return factura.cuitProveedor.length === 11
     }
 
     const handleChangeType = (event) => {
@@ -397,18 +497,24 @@ export const ABMCGasto = ({ edicion, creacion }) => {
         setCampoEditado(true)
     };
 
-    const handleFactura = () =>{
-        if(checkFactura === true){
+    const handleFactura = () => {
+        if (checkFactura === true) {
             setCheckFactura(false)
-            if(creacion){
+            if (creacion) {
                 setFactura(new Factura())
             }
-        }else{
+        } else {
             setCheckFactura(true)
         }
     }
 
+    const fechaMax = () =>{
+        return moment(Date.now()).format('YYYY-MM-DD');
+    }
 
+    const fechaMin = () =>{
+        return moment(Date.now()).subtract(3, 'years').format('YYYY-MM-DD');
+    }
 
     const bodyModal = (
 
@@ -494,27 +600,46 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span} >Titulo</span>
-                        <TextField className={classes.inputs} id="titulo" value={gasto.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
+                        <TextField
+                            className={classes.inputs}
+                            id="titulo"
+                            value={gasto.titulo || ''}
+                            onChange={(event) => actualizarValor(event)}
+                            name="titulo"
+                            variant="outlined"
+                            error={Boolean(errors?.titulo)}
+                            helperText={errors?.titulo}
+                            inputProps={{ maxLength: 30 }}
+                        />
                     </RightInputBox>
 
                     {!creacion && edicion &&
                         <LeftInputBox>
                             <span className={classes.span}>Tipo</span>
-                            <TextField className={classes.inputs} id="tipo" value={gasto.tipo || ''} onChange={(event) => actualizarValor(event)} name="tipo" variant="outlined" disabled />
+                            <TextField
+                                className={classes.inputs}
+                                id="tipo" value={gasto.tipo || ''}
+                                onChange={(event) => actualizarValor(event)}
+                                name="tipo"
+                                variant="outlined"
+                                disabled
+                            />
                         </LeftInputBox>
                     }
 
                     {creacion && !edicion &&
                         <LeftInputBox>
                             <span className={classes.span}>Tipo</span>
-                            <Select 
-                            className={classes.inputs} 
-                            id="tipo" 
-                            select 
-                            onChange={handleChangeType} 
-                            value={gasto.tipo || ''} 
-                            variant="outlined" 
-                            inputProps={{classes: { select: classes.select }}}
+                            <Select
+                                className={classes.inputs}
+                                id="tipo"
+                                select
+                                onChange={handleChangeType}
+                                value={gasto.tipo || ''}
+                                variant="outlined"
+                                error={Boolean(errors?.tipo)}
+                                helperText={errors?.tipo}
+                                inputProps={{ classes: { select: classes.select } }}
                             >
                                 {tipoDeGasto.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
@@ -527,19 +652,36 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span}>Monto</span>
-                        <TextField className={classes.inputs} id="importe" value={gasto.importe || ''} onChange={(event) => actualizarValor(event)} name="importe" variant="outlined" type="number" />
+                        <TextField
+                            className={classes.inputs}
+                            id="importe"
+                            value={gasto.importe || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="importe" 
+                            variant="outlined" 
+                            type="text" 
+                            error={Boolean(errors?.importe)}
+                            helperText={errors?.importe}
+                            inputProps={{ maxLength: 8 }}
+                            onInput={ handleOnlyNumbers }
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            }}
+                            />
                     </RightInputBox>
 
                     <LeftInputBox>
                         <span className={classes.span}>Rubro</span>
-                        <Select 
-                        className={classes.inputs} 
-                        id="rubro" 
-                        select 
-                        onChange={handleChangeRubro} 
-                        value={gasto.rubro || ''} 
-                        variant="outlined" 
-                        inputProps={{classes: { select: classes.select }}}
+                        <Select
+                            className={classes.inputs}
+                            id="rubro"
+                            select
+                            onChange={handleChangeRubro}
+                            value={gasto.rubro || ''}
+                            variant="outlined"
+                            inputProps={{ classes: { select: classes.select } }}
+                            error={Boolean(errors?.rubro)}
+                            helperText={errors?.rubro}
                         >
                             {rubros.map((option) => (
                                 <MenuItem key={option.value} value={option.value}>
@@ -553,6 +695,8 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                         <RightInputBox>
                             <span className={classes.span}>Archivo</span>
                             <FileUploader
+                                error={Boolean(errors?.selectedFile)}
+                                helperText={errors?.selectedFile}
                                 onFileSelectSuccess={(file) => setSelectedFile(file)}
                                 onFileSelectError={({ error }) => alert(error)}
                             />
@@ -581,7 +725,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                     }
 
                     {factura &&
-                        <Accordion id="acordeon" className={classes.acordeon} onChange={ handleFactura }>
+                        <Accordion id="acordeon" className={classes.acordeon} onChange={handleFactura}>
                             <AccordionSummary
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
@@ -589,48 +733,146 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                 className={classes.resetStyle}
 
                             >
-                                <Typography className={classes.heading}>{checkFactura === true? "Datos de facturación" : "Agregar datos de facturación"}</Typography>
+                                <Typography className={classes.heading}>{"Datos de facturación"}</Typography>
                             </AccordionSummary>
                             <AccordionDetails className={classes.bodyAcordeon}>
 
-                            <LeftInputBox>
+                                <LeftInputBox>
                                     <span className={classes.span}>Tipo de Factura</span>
-                                    <TextField className={classes.inputs} id="tipoFactura" value={factura.tipoFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="tipofactura" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="tipoFactura" 
+                                    value={factura.tipoFactura || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="tipofactura" 
+                                    variant="outlined" 
+                                    error={Boolean(errors?.tipoFactura)}
+                                    helperText={errors?.tipoFactura}
+                                    inputProps={{ maxLength: 1 }}
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </LeftInputBox>
 
                                 <RightInputBox>
                                     <span className={classes.span}>Fecha de facturación</span>
-                                    <TextField className={classes.inputs} id="fechaFactura" value={factura.fechaFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="fechaFactura" type="date" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="fechaFactura" 
+                                    value={factura.fechaFactura || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="fechaFactura" 
+                                    type="date" 
+                                    variant="outlined" 
+                                    InputProps={{inputProps: { min: fechaMin() , max:  fechaMax() } }}
+                                    error={Boolean(errors?.fechaFactura)}
+                                    helperText={errors?.fechaFactura}
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </RightInputBox>
 
                                 <LeftInputBox>
                                     <span className={classes.span}>Punto de venta</span>
-                                    <TextField className={classes.inputs} id="puntoDeVenta" value={factura.puntoDeVenta || ''} onChange={(event) => actualizarValorFactura(event)} name="puntoDeVenta" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="puntoDeVenta" 
+                                    value={factura.puntoDeVenta || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="puntoDeVenta"
+                                    variant="outlined" 
+                                    error={Boolean(errors?.puntoDeVenta)}
+                                    helperText={errors?.puntoDeVenta}
+                                    inputProps={{ maxLength: 4 }}
+                                    onInput={ handleOnlyNumbers }
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </LeftInputBox>
 
                                 <RightInputBox>
                                     <span className={classes.span}>Numero de factura</span>
-                                    <TextField className={classes.inputs} id="numeroFactura" value={factura.numeroFactura || ''} onChange={(event) => actualizarValorFactura(event)} name="numeroFactura" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="numeroFactura" 
+                                    value={factura.numeroFactura || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="numeroFactura" 
+                                    variant="outlined" 
+                                    error={Boolean(errors?.numeroFactura)}
+                                    helperText={errors?.numeroFactura}
+                                    inputProps={{ maxLength: 8 }}
+                                    onInput={ handleOnlyNumbers }
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </RightInputBox>
 
                                 <LeftInputBox>
                                     <span className={classes.span}>Cuit Proveedor</span>
-                                    <TextField className={classes.inputs} id="cuitProveedor" value={factura.cuitProveedor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitProveedor" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="cuitProveedor" 
+                                    value={factura.cuitProveedor || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)}
+                                    name="cuitProveedor" 
+                                    variant="outlined" 
+                                    error={Boolean(errors?.cuitProveedor)}
+                                    helperText={errors?.cuitProveedor}
+                                    inputProps={{ maxLength: 11 }}
+                                    onInput={ handleOnlyNumbers }
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </LeftInputBox>
 
                                 <RightInputBox>
                                     <span className={classes.span}>Cuit Receptor</span>
-                                    <TextField className={classes.inputs} id="cuitReceptor" value={factura.cuitReceptor || ''} onChange={(event) => actualizarValorFactura(event)} name="cuitReceptor" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="cuitReceptor" 
+                                    value={factura.cuitReceptor || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="cuitReceptor" 
+                                    variant="outlined" 
+                                    error={Boolean(errors?.cuitReceptor)}
+                                    helperText={errors?.cuitReceptor}
+                                    inputProps={{ maxLength: 11 }}
+                                    onInput={ handleOnlyNumbers }
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </RightInputBox>
 
                                 <LeftInputBox>
                                     <span className={classes.span}>CAE</span>
-                                    <TextField className={classes.inputs} id="cae" value={factura.cae || ''} onChange={(event) => actualizarValorFactura(event)} name="cae" variant="outlined" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="cae" 
+                                    value={factura.cae || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="cae" 
+                                    variant="outlined" 
+                                    error={Boolean(errors?.cae)}
+                                    helperText={errors?.cae}
+                                    inputProps={{ maxLength: 14 }}
+                                    onInput={ handleOnlyNumbers }
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    />
                                 </LeftInputBox>
 
                                 <RightInputBox>
                                     <span className={classes.span}>Importe</span>
-                                    <TextField className={classes.inputs} id="importe" value={factura.importe || ''} onChange={(event) => actualizarValorFactura(event)} name="importe" variant="outlined" type="number" />
+                                    <TextField 
+                                    className={classes.inputs} 
+                                    id="importe" value={factura.importe || ''} 
+                                    onChange={(event) => actualizarValorFactura(event)} 
+                                    name="importe" 
+                                    variant="outlined" 
+                                    type="text" 
+                                    error={Boolean(errors?.importeFactura)}
+                                    helperText={errors?.importeFactura}
+                                    inputProps={{ maxLength: 10 }}
+                                    onInput={ handleOnlyNumbers }
+                                    FormHelperTextProps={{ style: {backgroundColor: "white"} }}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                    }}
+                                    />
                                 </RightInputBox>
 
                             </AccordionDetails>

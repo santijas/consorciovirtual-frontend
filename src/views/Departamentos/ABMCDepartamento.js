@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Select, Typography } from '@material-ui/core';
+import { InputAdornment, makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
 import { Link, TextField, MenuItem, Divider, Box } from '@material-ui/core';
@@ -13,7 +13,7 @@ import update from 'immutability-helper';
 import { usuarioService } from '../../services/usuarioService';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
-import { handleOnInput, handleOnlyNumbers } from '../../utils/formats';
+import { handleOnlyNumbers } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -330,7 +330,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         </LeftInputBox>
 
                         <RightInputBox>
-                            <span className={classes.span}>Superficie (m2)</span>
+                            <span className={classes.span}>Superficie</span>
                             <TextField 
                             className={classes.inputs} 
                             id="metrosCuadrados" 
@@ -343,6 +343,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             helperText={errors?.metrosCuadrados}
                             inputProps={{ maxLength: 4 }}
                             onInput={ handleOnlyNumbers }
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">m2</InputAdornment>,
+                            }}
                             />
                         </RightInputBox>
 
@@ -372,7 +375,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         }
 
                         <RightInputBox>
-                            <span className={classes.span}>Porcentaje de expensas (%)</span>
+                            <span className={classes.span}>Porcentaje de expensas</span>
                             <TextField 
                             className={classes.inputs} 
                             id="porcentajeExpensa" 
@@ -385,7 +388,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             helperText={errors?.porcentajeExpensa}
                             inputProps={{ maxLength: 3 }}
                             onInput={ handleOnlyNumbers }
-                            
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                            }}
                             />
                         </RightInputBox>
 

@@ -112,8 +112,8 @@ export const NavBar = () => {
         }
 
           <ListItem button key="Expensas" onClick={() => handleSelectMenu("/expensas")}>
-            <ListItemIcon>{selected === "/expensas" ? <ActiveExpenses className="navicon" /> : <NonActiveExpenses className="navicon" />}</ListItemIcon>
-            <span className={`${(selected === "/expensas") ? "activecolor activesize" : "font"}`}>Expensas</span>
+            <ListItemIcon>{selected.includes("expensa") ? <ActiveExpenses className="navicon" /> : <NonActiveExpenses className="navicon" />}</ListItemIcon>
+            <span className={`${selected.includes("expensa") ? "activecolor activesize" : "font"}`}>Expensas</span>
           </ListItem>
 
           <ListItem button key="Documentos" onClick={() => handleSelectMenu("/documentos")}>

@@ -90,7 +90,7 @@ export const Inquilinos = () =>{
     },[location.state])
 
     const newUser = () =>{
-      history.push("/newinquilino")
+      history.push("/crearinquilino")
     }
 
     return (

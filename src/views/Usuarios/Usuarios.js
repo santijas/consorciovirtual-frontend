@@ -87,7 +87,7 @@ export const Usuarios = () =>{
     },[location.state])
 
     const newUser = () =>{
-      history.push("/newuser")
+      history.push("/crearusuario")
     }
 
     return (

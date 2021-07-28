@@ -62,38 +62,38 @@ export const Routes = () => {
                         <Route><Header/></Route> 
                         <Route><NavBar/></Route> 
                         <PrivateRoute path="/usuarios" exact={true} component={Usuarios}></PrivateRoute>
-                        <Route path="/newuser"><ABMCUsuario creacion={true} edicion={false} perfil={false}/></Route>
+                        <Route path="/crearusuario"><ABMCUsuario creacion={true} edicion={false} perfil={false}/></Route>
                         <Route path="/usuario/:id"><ABMCUsuario creacion={false} edicion={true} perfil={false}/></Route>
                         <Route path="/perfil"><ABMCUsuario creacion={false} edicion={false} perfil={true} /></Route>
                         <Route path="/departamentos" component={Departamentos}></Route>
-                        <Route path="/newdepartamento"><ABMCDepartamento creacion={true} edicion={false}/></Route>
+                        <Route path="/creardepartamento"><ABMCDepartamento creacion={true} edicion={false}/></Route>
                         <Route path="/departamento/:id"><ABMCDepartamento creacion={false} edicion={true} /></Route>
                         <Route path="/anuncios" component={Anuncios}></Route>
-                        <Route path="/newanuncio"><ABMCAnuncio creacion={true} edicion={false}/></Route>
+                        <Route path="/crearanuncio"><ABMCAnuncio creacion={true} edicion={false}/></Route>
                         <Route path="/anuncio/:id"><ABMCAnuncio creacion={false} edicion={true}/></Route>
                         <Route path="/reclamos" component={Reclamos}></Route>
-                        <Route path="/newreclamo"><ABMCReclamo creacion={true} edicion={false}/></Route>
+                        <Route path="/crearreclamo"><ABMCReclamo creacion={true} edicion={false}/></Route>
                         <Route path="/reclamo/:id"><ABMCReclamo creacion={false} edicion={true}/></Route>
                         <Route path="/solicitudes" component={Solicitudes}></Route>
-                        <Route path="/newsolicitud"><ABMCSolicitud creacion={true} edicion={false}/></Route>
+                        <Route path="/crearsolicitud"><ABMCSolicitud creacion={true} edicion={false}/></Route>
                         <Route path="/solicitud/:id"><ABMCSolicitud creacion={false} edicion={true} /></Route>
                         <Route path="/gastos" component={AnularExpensa}><Gastos/></Route>
-                        <Route path="/newgasto"><ABMCGasto creacion={true} edicion={false}/></Route>
+                        <Route path="/creargasto"><ABMCGasto creacion={true} edicion={false}/></Route>
                         <Route path="/gasto/:id"><ABMCGasto creacion={false} edicion={true} /></Route>
                         <Route path="/expensas" component={Expensas}></Route>
-                        <Route path="/newexpensa" component={ABExpensa} ></Route>
+                        <Route path="/crearexpensa" component={ABExpensa} ></Route>
                         <Route path="/expensa/:id" component={ConsultarExpensa}></Route>
                         <Route path="/anularexpensa" component={AnularExpensa}></Route>
                         <Route path="/payment/success/:id*" component={Payment}></Route>
                         <Route path="/chat" component={Chat}></Route>
                         <Route path="/telefonosUtiles" component={TelefonosUtiles}></Route>
-                        <Route path="/newTelefonoUtil"><ABMCTelefonoUtil creacion={true} edicion={false}/></Route>
+                        <Route path="/creartelefonoutil"><ABMCTelefonoUtil creacion={true} edicion={false}/></Route>
                         <Route path="/telefonoUtil/:id"><ABMCTelefonoUtil creacion={false} edicion={true} /></Route>
                         <Route path="/documentos" component={Documentos}></Route>
-                        <Route path="/newDocument"><ABMCDocumento creacion={true} edicion={false}/></Route>
+                        <Route path="/creardocumento"><ABMCDocumento creacion={true} edicion={false}/></Route>
                         <Route path="/documento/:id"><ABMCDocumento creacion={false} edicion={true} /></Route>
                         <Route path="/inquilinos" exact={true} component={Inquilinos}></Route>
-                        <Route path="/newinquilino"><ABMCInquilino creacion={true} edicion={false}/></Route>
+                        <Route path="/crearinquilino"><ABMCInquilino creacion={true} edicion={false}/></Route>
                         <Route path="/inquilino/:id"><ABMCInquilino creacion={false} edicion={true} /></Route>
                     </div>
                 </Switch>

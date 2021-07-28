@@ -48,7 +48,9 @@ const ColumnasCustom = (dato) => {
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-            <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>{anuncioVencido(dato.fechaVencimiento)? "Vencido" : soloFecha(dato.fechaVencimiento)}</StyledTableCell>
+            <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>
+                {anuncioVencido(dato.fechaVencimiento)?  "Vencido" : soloFecha(dato.fechaVencimiento)}
+            </StyledTableCell>
         </StyledTableRow>)
 }
 
@@ -62,7 +64,7 @@ export const Anuncios = () => {
     let location = useLocation()
 
     const newAnuncio = () => {
-        history.push("/newAnuncio")
+        history.push("/crearanuncio")
     }
 
     useEffect(() => {

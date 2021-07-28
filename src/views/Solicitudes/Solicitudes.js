@@ -63,7 +63,7 @@ export const Solicitudes = () => {
 
 
   const newSolicitud = () => {
-    history.push("/newsolicitud")
+    history.push("/crearsolicitud")
   }
 
   useEffect(() => {

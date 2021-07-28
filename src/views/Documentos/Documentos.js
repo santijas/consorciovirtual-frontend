@@ -77,7 +77,7 @@ export const Documentos = () =>{
     },[location.state])
 
     const newDocument = () =>{
-      history.push("/newDocument")
+      history.push("/creardocumento")
     }
 
     return (
@@ -89,7 +89,7 @@ export const Documentos = () =>{
               <Busqueda holder="Buscá por título o nombre de archivo" busqueda={setTextoBusqueda} />
               <div>
                <span className={classes.cantidadObject} > {documentos.length} Documentos </span>
-              <StyledButtonPrimary onClick={newDocument} >Agregar Documento</StyledButtonPrimary>
+              <StyledButtonPrimary onClick={newDocument} >Agregar documento</StyledButtonPrimary>
               </div>
            </SearchBox>
            { documentos.length > 0 &&

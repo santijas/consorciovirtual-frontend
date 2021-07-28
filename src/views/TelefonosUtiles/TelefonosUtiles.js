@@ -83,7 +83,7 @@ export const TelefonosUtiles = () =>{
     },[location.state])
 
     const newTelefonoUtil = () =>{
-      history.push("/newTelefonoUtil")
+      history.push("/creartelefonoutil")
     }
 
     return (
@@ -95,7 +95,7 @@ export const TelefonosUtiles = () =>{
               <Busqueda holder="Buscá por servicio" busqueda={setTextoBusqueda} />
               <div>
                <span className={classes.cantidadObject} > {telefonos.length} Teléfonos útiles </span>
-              <StyledButtonPrimary onClick={newTelefonoUtil} >Agregar Teléfono Útil</StyledButtonPrimary>
+              <StyledButtonPrimary onClick={newTelefonoUtil} >Agregar teléfono útil</StyledButtonPrimary>
               </div>
            </SearchBox>
            {telefonos.length>1 &&

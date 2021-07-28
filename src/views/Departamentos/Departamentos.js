@@ -57,7 +57,7 @@ export const Departamentos = () =>{
     let history = useHistory()  
 
     const newDepto = () =>{
-      history.push("/newdepartamento")
+      history.push("/creardepartamento")
     }
 
     useEffect( ()  =>  {

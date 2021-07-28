@@ -105,13 +105,13 @@ function getModalStyle() {
 
 export const ABMCDocumento = ({ edicion, creacion }) => {
     const classes = useStyles();
+    const { user, setUser } = useContext(UserContext);
     const [documento, setDocumento] = useState('')
     const [campoEditado, setCampoEditado] = useState(false)
     const [cambiosGuardados, setCambiosGuardados] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
-    const { user, setUser } = useContext(UserContext);
     const [selectedFile, setSelectedFile] = useState(null);
 
     let history = useHistory()
@@ -293,17 +293,17 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
 
                     <RightInputBox>
                         <span className={classes.span}>Autor</span>
-                        <TextField disabled className={classes.inputs} id="autor" value={documento.autor || user.nombreYApellido()} name="autor" variant="outlined" />
+                        <TextField disabled className={classes.inputs} id="autor" value={documento.autor || user?.nombreYApellido() || ' '} name="autor" variant="outlined" />
                     </RightInputBox>
 
-                    {user.esAdmin() &&
+                    {user?.esAdmin() &&
                         <LeftInputBox>
                             <span className={classes.span}>Título</span>
                             <TextField className={classes.inputs} id="titulo" value={documento.titulo || ''} onChange={(event) => actualizarValor(event)} name="titulo" variant="outlined" />
                         </LeftInputBox>
                     }
 
-                    {!user.esAdmin() &&
+                    {!user?.esAdmin() &&
                         <LeftInputBox>
                             <span className={classes.span}>Título</span>
                             <TextField disabled className={classes.inputs} id="titulo" value={documento.titulo} name="titulo" variant="outlined" />
@@ -328,7 +328,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                                 documento.enlaceDeDescarga ?
                                     <Box display="flex" flexDirection="column">
                                         <StyledButtonPrimary className={classes.botones} onClick={onDownload} >Descargar documento</StyledButtonPrimary>
-                                        {user.esAdmin() && <span className={classes.delete} onClick={deleteFile}>Eliminar archivo</span>}
+                                        {user?.esAdmin() && <span className={classes.delete} onClick={deleteFile}>Eliminar archivo</span>}
                                     </Box>
                                     :
                                     <FileUploader
@@ -341,7 +341,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                         </RightInputBox>
                     }
 
-                    {user.esAdmin() &&
+                    {user?.esAdmin() &&
                         <CompleteInputBox>
                             <span className={classes.span}>Descripción</span>
                             <TextField multiline className={classes.inputs} id="descripcion" value={documento.descripcion || ''} onChange={(event) => actualizarValor(event)} name="descripcion" variant="outlined" />
@@ -349,7 +349,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                     }
 
 
-                    {!user.esAdmin() &&
+                    {!user?.esAdmin() &&
                         <CompleteInputBox>
                             <span className={classes.span}>Descripción</span>
                             <TextField disabled multiline className={classes.inputs} id="descripcion" value={documento.descripcion} name="descripcion" variant="outlined" />
@@ -361,13 +361,13 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
             </FormBox>
 
             <RightFormBox>
-                {user.esAdmin() && creacion &&
+                {user?.esAdmin() && creacion &&
                     <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearDocumento()} >Crear Documento</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToDocumentos}>Cancelar</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                {user.esAdmin() && edicion && !creacion &&
+                {user?.esAdmin() && edicion && !creacion &&
                     <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarDocumento}>Guardar cambios</StyledButtonPrimary>

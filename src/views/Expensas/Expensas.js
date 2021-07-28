@@ -62,7 +62,7 @@ export const Expensas = () =>{
     let history = useHistory()
 
     const newExpensa = () =>{
-      history.push("/newexpensa")
+      history.push("/crearexpensa")
     }
 
     const anularExpensa = () =>{

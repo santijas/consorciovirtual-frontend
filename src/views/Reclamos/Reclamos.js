@@ -61,7 +61,7 @@ export const Reclamos = () => {
 
 
   const newReclamo = () => {
-    history.push("/newreclamo")
+    history.push("/crearreclamo")
   }
 
   useEffect(() => {
@@ -92,7 +92,7 @@ export const Reclamos = () => {
         <Busqueda holder="Buscá por id, asunto o estado" busqueda={setTextoBusqueda} />
         <div>
           <span className={classes.cantidadObject} > {reclamos.length} reclamos </span>
-          <StyledButtonPrimary onClick={newReclamo} >Agregar Reclamo</StyledButtonPrimary>
+          <StyledButtonPrimary onClick={newReclamo} >Agregar reclamo</StyledButtonPrimary>
         </div>
       </SearchBox>
       {reclamos.length > 0 &&
