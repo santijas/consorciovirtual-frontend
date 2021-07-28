@@ -15,6 +15,7 @@ import useSnack from '../../hooks/UseSnack';
 import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext'; 
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 
 
 const useStyles = makeStyles ({
@@ -92,6 +93,29 @@ const useStyles = makeStyles ({
         "&:focus": {
           backgroundColor: "white"
         }
+      },
+      icon: {
+          height: "70px",
+          color: "grey",
+          width: "70px",
+      },
+      textoGris: {
+          color: "grey"
+      },
+      mensajeIcon: {
+          display:"flex",
+          flexDirection: "column",
+          alignItems: "center"
+      },
+      dot:{
+        height: "125px",
+        width: "125px",
+        backgroundColor: "#D5D5D5",
+        borderRadius: "50%",
+        display: "flex",
+        justifyContent:"center",
+        alignItems:"center",
+        margin: "15px 0 20px"
       }
   });
 
@@ -208,6 +232,10 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
         return inquilino.dni.length === 8
     }
 
+    const tieneDeptosDeshabitados = () => {
+        return departamentos.length != 0
+    }
+
     const bodyModal = (
       
         <div style={modalStyle} className={classes.paper}>
@@ -259,77 +287,90 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
                     <Chevron className={classes.chevron}/>
                     Volver a inquilinos
                 </Link>
-                { creacion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                        Nuevo inquilino
-                     </Typography>
-                }
-                
-                { !creacion && edicion &&
-                    <Typography component="h2" variant="h5" className="tittle">
-                    Modificar inquilino
-                    </Typography>
-                }
-        
-                <form className={classes.form} noValidate autoComplete="off">
-                    <LeftInputBox>
-                        <span className={classes.span}>Nombre</span>
-                        <TextField className={classes.inputs} id="nombre" value={inquilino.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
-                    </LeftInputBox>
-
-                    <RightInputBox>
-                        <span className={classes.span} >Apellido</span>
-                        <TextField className={classes.inputs} id="apellido" value={inquilino.apellido || ''} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
-                    </RightInputBox>
-
-                    <LeftInputBox>
-                        <span className={classes.span}>DNI</span>
-                        <TextField className={classes.inputs} id="dni" value={inquilino.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" type="number"/>
-                    </LeftInputBox>
-
-                    <RightInputBox>
-                        <span className={classes.span}>E-mail</span>
-                        <TextField className={classes.inputs} id="correo" value={inquilino.correo || ''} onChange={(event) => actualizarValor(event)} name="correo"  variant="outlined" />
-                    </RightInputBox>
-
-                    <LeftInputBox>
-                        <span className={classes.span}>Fecha de nacimiento</span>
-                        <TextField className={classes.inputs} id="fechaNacimiento" value={inquilino.fechaNacimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
-                    </LeftInputBox>
-
-                    <RightInputBox>
-                        <span className={classes.span}>Departamento</span>
-                       { (!edicion && creacion && inquilino)?  
-                       <Select 
-                       className={classes.inputs} 
-                       id="departamento" 
-                       select 
-                       onChange={ seleccionarDepto } 
-                       value={deptoSeleccionado || ''} 
-                       variant="outlined" 
-                       inputProps={{classes: { select: classes.select }}}
-                       >
-                                {departamentos.map((option) => (
-                                <MenuItem key={option.id} value={option.id}>
-                                {option.piso} º {option.nroDepartamento} {option.torre? <span>Torre {option.torre } </span>: ""}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                        :
-                        <div class={classes.pisoDepto}>
-                            {inquilino.piso} º {inquilino.nroDepartamento}  { inquilino.torre? <span>Torre {inquilino.torre } </span>: "" }
-                        </div>     
-                        }
-                    </RightInputBox>
+            {  ( creacion && tieneDeptosDeshabitados() )?
+                <div>
+                    { creacion &&
+                        <Typography component="h2" variant="h5" className="tittle">
+                            Nuevo inquilino
+                        </Typography>
+                    }
                     
-                </form> 
-                      
-            </FormBox>
+                    { !creacion && edicion &&
+                        <Typography component="h2" variant="h5" className="tittle">
+                        Modificar inquilino
+                        </Typography>
+                    }
+            
+                    <form className={classes.form} noValidate autoComplete="off">
+                        <LeftInputBox>
+                            <span className={classes.span}>Nombre</span>
+                            <TextField className={classes.inputs} id="nombre" value={inquilino.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
+                        </LeftInputBox>
+
+                        <RightInputBox>
+                            <span className={classes.span} >Apellido</span>
+                            <TextField className={classes.inputs} id="apellido" value={inquilino.apellido || ''} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
+                        </RightInputBox>
+
+                        <LeftInputBox>
+                            <span className={classes.span}>DNI</span>
+                            <TextField className={classes.inputs} id="dni" value={inquilino.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" type="number"/>
+                        </LeftInputBox>
+
+                        <RightInputBox>
+                            <span className={classes.span}>E-mail</span>
+                            <TextField className={classes.inputs} id="correo" value={inquilino.correo || ''} onChange={(event) => actualizarValor(event)} name="correo"  variant="outlined" />
+                        </RightInputBox>
+
+                        <LeftInputBox>
+                            <span className={classes.span}>Fecha de nacimiento</span>
+                            <TextField className={classes.inputs} id="fechaNacimiento" value={inquilino.fechaNacimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
+                        </LeftInputBox>
+
+                        <RightInputBox>
+                            <span className={classes.span}>Departamento</span>
+                        { (!edicion && creacion && inquilino)?  
+                        <Select 
+                        className={classes.inputs} 
+                        id="departamento" 
+                        select 
+                        onChange={ seleccionarDepto } 
+                        value={deptoSeleccionado || ''} 
+                        variant="outlined" 
+                        inputProps={{classes: { select: classes.select }}}
+                        >
+                                    {departamentos.map((option) => (
+                                    <MenuItem key={option.id} value={option.id}>
+                                    {option.piso} º {option.nroDepartamento}   { option.torre? (" Torre " + option.torre)  : "" }
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            :
+                            <div class={classes.pisoDepto}>
+                                {inquilino.piso} º {inquilino.nroDepartamento} { inquilino.torre? <span> Torre {inquilino.torre } </span>: "" }
+                            </div>     
+                            }
+                        </RightInputBox>
+                        
+                    </form> 
+                </div>
+                : 
+                <div className={classes.mensajeIcon}>
+                    <span className={classes.dot}>
+                        <PersonAddDisabledIcon className={classes.icon}></PersonAddDisabledIcon>
+                    </span>
+                    <div className={classes.textoGris}>Debés contar con al menos un departamento deshabitado para poder crear y asignarle un inquilino</div>
+                </div> }
+            </FormBox> 
 
             <RightFormBox>
-                { creacion && !isLoading &&
+                { creacion && !isLoading && 
                 <ButtonBox>
-                    <StyledButtonPrimary className={classes.botones} onClick={() => crearInquilino() } >Crear inquilino</StyledButtonPrimary>
+                    { tieneDeptosDeshabitados()?
+                        <StyledButtonPrimary className={classes.botones} onClick={() => crearInquilino() } >Crear inquilino</StyledButtonPrimary>
+                        :
+                        <StyledButtonPrimary className={classes.botonesDisabled} disabled >Crear inquilino</StyledButtonPrimary>
+                    }
                     <StyledButtonSecondary className={classes.botones} onClick={ backToInquilinos }>Cancelar</StyledButtonSecondary>
                 </ButtonBox>
                 }

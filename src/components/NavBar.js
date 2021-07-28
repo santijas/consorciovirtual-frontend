@@ -97,7 +97,7 @@ export const NavBar = () => {
             <span className={`${selected.includes("solicitud") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
           </ListItem>
 
-        { !user.esInquilino() &&
+        { user.esPropietario() &&
           <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("/inquilinos")}>
             <ListItemIcon>{selected.includes("inquilino") ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
             <span className={`${selected.includes("inquilino") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
