@@ -149,6 +149,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const { user, setUser } = useContext(UserContext);
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
@@ -240,6 +241,16 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     }
 
     const validarReclamo = () => {
+        setErrors(null)
+
+        if (!reclamo.asunto) {
+            setErrors(prev => ({ ...prev, asunto: "Campo obligatorio" }))
+        }
+
+        if (!reclamo.mensaje) {
+            setErrors(prev => ({ ...prev, descripcion: "Campo obligatorio" }))
+        }
+
         return reclamo.asunto && reclamo.mensaje
     }
 
@@ -332,8 +343,24 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Asunto</span>
-                        {edicion ? <span className={classes.span}>{reclamo.asunto}</span>
-                            : <TextField className={classes.inputs} id="asunto" variant="outlined" value={reclamo.asunto || ''} onChange={(event) => actualizarValor(event)}></TextField>}
+                        {edicion ? 
+
+                            <span className={classes.span}>{reclamo.asunto}</span>
+                            
+                            : 
+                            
+                            <TextField 
+                                className={classes.inputs} 
+                                maxLength="140" 
+                                id="asunto" 
+                                variant="outlined" 
+                                value={reclamo.asunto || ''} 
+                                onChange={(event) => actualizarValor(event)}
+                                error={Boolean(errors?.asunto)}
+                                helperText={errors?.asunto}
+                                inputProps={{ maxLength: 140 }}
+                            />
+                        }
                     </LeftInputBox>
 
                 </form>
@@ -341,8 +368,25 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 <div className={classes.contenedorDescripcion}>
                     <div className={classes.contenedorInputDescripcion}>
                         <span className={classes.spanDisabled}>Descripción</span>
-                        {edicion ? <span className={classes.span}>{reclamo.mensaje}</span>
-                            : <TextField className={classes.inputs} id="mensaje" name="mensaje" variant="outlined" value={reclamo.mensaje || ''} onChange={(event) => actualizarValor(event)}></TextField>}
+                        {edicion ? 
+                        
+                            <span className={classes.span}>{reclamo.mensaje}</span>
+                            
+                            : 
+                        
+                            <TextField 
+                                className={classes.inputs} 
+                                multiline 
+                                id="mensaje" 
+                                name="mensaje" 
+                                variant="outlined" 
+                                value={reclamo.mensaje || ''} 
+                                onChange={(event) => actualizarValor(event)}
+                                error={Boolean(errors?.descripcion)}
+                                helperText={errors?.descripcion}
+                                inputProps={{ maxLength: 500 }}
+                            />
+                        }
                     </div>
                 </div>
 

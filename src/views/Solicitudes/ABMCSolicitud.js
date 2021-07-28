@@ -174,6 +174,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const [openModal, setOpenModal] = useState(false)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
+    const [errors, setErrors] = useState({})
 
     let history = useHistory()
     const params = useParams()
@@ -274,6 +275,21 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     }
 
     const validarSolicitud = () => {
+        setErrors(null)
+    
+        if (!solicitud.titulo) {
+            setErrors(prev => ({ ...prev, titulo: "Campo obligatorio" }))
+        }
+    
+        if (!solicitud.detalle) {
+            setErrors(prev => ({ ...prev, detalle: "Campo obligatorio" }))
+        }
+
+        if (!tipo) {
+            setErrors(prev => ({ ...prev, tipo: "Campo obligatorio" }))
+        }
+    
+
         return solicitud.titulo && solicitud.detalle && tipo
     }
 
@@ -381,20 +397,52 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
 
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Titulo</span>
-                        {edicion ? <span className={classes.span}>{solicitud.titulo}</span>
-                            : <TextField className={classes.inputs} id="titulo" variant="outlined" value={solicitud.titulo || ''} onChange={(event) => actualizarValor(event)}></TextField>}
+                        {edicion ? 
+
+                            <span className={classes.span}>{solicitud.titulo}</span>
+                            
+                            : 
+                            
+                            <TextField 
+                                className={classes.inputs} 
+                                id="titulo" 
+                                variant="outlined" 
+                                value={solicitud.titulo || ''} 
+                                onChange={(event) => actualizarValor(event)}
+                                error={Boolean(errors?.titulo)}
+                                helperText={errors?.titulo}
+                                inputProps={{ maxLength: 140 }}
+                            />
+                        }
                     </LeftInputBox>
 
                     <RightInputBox>
                         <span className={classes.spanDisabled}>Tipo</span>
-                        {edicion ? <span className={classes.span}>{solicitud.tipo}</span>
-                            : <TextField className={classes.inputs} id="tipoSolicitud" select onChange={cambiarTipoSolicitud} value={tipo || ''} variant={'outlined'} >
+                        {edicion ? 
+                        
+                            <span className={classes.span}>{solicitud.tipo}</span>
+                            
+                            : 
+                            
+                            <TextField 
+                                className={classes.inputs} 
+                                id="tipoSolicitud" 
+                                select 
+                                onChange={cambiarTipoSolicitud} 
+                                value={tipo || ''} 
+                                variant={'outlined'} 
+                                error={Boolean(errors?.tipo)}
+                                helperText={errors?.tipo}
+                                >
+                                
                                 {tiposDeSolicitud.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         {option.label}
                                     </MenuItem>
                                 ))}
-                            </TextField>}
+                            </TextField>
+                        
+                        }
                     </RightInputBox>
 
                 </form>
@@ -402,8 +450,24 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 <div className={classes.contenedorDescripcion}>
                     <div className={classes.contenedorInputDescripcion}>
                         <span className={classes.spanDisabled}>Descripción</span>
-                        {edicion ? <span className={classes.span}>{solicitud.detalle}</span>
-                            : <TextField className={classes.inputs} id="detalle" name="detalle" variant="outlined" value={solicitud.detalle || ''} onChange={(event) => actualizarValor(event)}></TextField>}
+                        {edicion ? 
+                        
+                            <span className={classes.span}>{solicitud.detalle}</span>
+                            
+                            :
+                            
+                            <TextField 
+                                className={classes.inputs} 
+                                multiline 
+                                id="detalle" 
+                                name="detalle"
+                                variant="outlined" 
+                                value={solicitud.detalle || ''} 
+                                onChange={(event) => actualizarValor(event)}
+                                error={Boolean(errors?.detalle)}
+                                helperText={errors?.detalle}
+                                inputProps={{ maxLength: 500 }}
+                                />}
                     </div>
                 </div>
 
