@@ -14,6 +14,7 @@ import update from 'immutability-helper';
 import { SolicitudTecnica } from '../../domain/solicitudTecnica';
 import { UserContext } from '../../hooks/UserContext';
 import useSnack from '../../hooks/UseSnack';
+import { padLeadingZeros } from '../../utils/formats';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 
 const useStyles = makeStyles({
@@ -340,7 +341,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Nro de solicitud técnica</span>
-                        <span className={classes.nroSolicitud}>{edicion ? solicitud.id : '-'}</span>
+                        <span className={classes.nroSolicitud}>{edicion ? padLeadingZeros(solicitud.id, 5) : '-'}</span>
                     </LeftInputBox>
 
                     <RightInputBox>
@@ -407,7 +408,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarNotas={true}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarNotas={estado !== 'Resuelto' && estado !== 'Rechazado'}></Notas>
                 }
 
             </FormBox>

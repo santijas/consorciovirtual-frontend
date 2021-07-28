@@ -16,6 +16,7 @@ import { UserContext } from '../../hooks/UserContext';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import { soloFecha } from '../../utils/formats';
+import { padLeadingZeros } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -301,7 +302,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Nro de reclamo</span>
-                        <span className={classes.nroReclamo}>{edicion ? reclamo.id : '-'}</span>
+                        <span className={classes.nroReclamo}>{edicion ? padLeadingZeros(reclamo.id, 5) : '-'}</span>
                     </LeftInputBox>
 
                     <RightInputBox>

@@ -11,6 +11,7 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
+import { padLeadingZeros } from '../../utils/formats';
 
 const useStyles = makeStyles({
   cantidadObject: {
@@ -47,7 +48,7 @@ const ColumnasCustom = (dato) => {
     <StyledTableRow key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
-          <span className="tableBold">{dato.id}</span>
+          <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
           <span >{soloFecha(dato.fecha)}</span>
         </div>
       </StyledTableCell>
