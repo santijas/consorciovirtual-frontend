@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Avatar, TextField, FormControlLabel, Checkbox, Link, Paper, Grid, Box, Typography } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,29 +15,30 @@ import Inquilinos from '../assets/images/Inquilinos.png'
 import Expensas from '../assets/images/Expensas.png'
 import Gastos from '../assets/images/Gastos.png'
 import Chat from '../assets/images/Chat.png'
+import { UserContext } from '../hooks/UserContext';
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     flexDirection: "column",
-    width:"100%",
+    width: "100%",
   },
-  image:{
-    display:"flex",
-    justifyContent:"flex-end",
+  image: {
+    display: "flex",
+    justifyContent: "flex-end",
     backgroundImage: `url(${Fondo})`,
     backgroundColor: "#F5F5F5",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     boxShadow: "1px -2px 5px 3px black",
-    flexGrow:"2"
+    flexGrow: "2"
   },
-  footer:{
-    display:"flex",
-    justifyContent:"space-around",
-    height:"fit-content" ,
-    flexGrow:"0"
+  footer: {
+    display: "flex",
+    justifyContent: "space-around",
+    height: "fit-content",
+    flexGrow: "0"
   },
   paper: {
     margin: theme.spacing(20, 4),
@@ -59,21 +60,21 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-  container:{
+  container: {
     borderRadius: "5px",
     maxHeight: "700px",
-    boxShadow:"0px 0px 8px 1px rgba(0,0,0,0.50)",
-    display:"flex",
-    alignItems:"center",
-    margin:"20px 20px 20px 0px"
+    boxShadow: "0px 0px 8px 1px rgba(0,0,0,0.50)",
+    display: "flex",
+    alignItems: "center",
+    margin: "20px 20px 20px 0px"
   },
-  bold:{
+  bold: {
     fontWeight: 500,
     fontSize: 18,
     color: "rgba(0, 0, 0, 0.60)",
-    textAlign:"center"
+    textAlign: "center"
   },
-  contenedorIcono:{
+  contenedorIcono: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -88,38 +89,42 @@ export const Login = () => {
   const [remember, setRemember] = useState(false)
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [mensajeSnack, setMensajeSnack] = useState('')
+  const { user, setUser } = useContext(UserContext);
 
   let history = useHistory()
   const classes = useStyles();
   const { loginUser } = useAuth();
 
-  useEffect(() =>{
+  useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
 
-     if(window.localStorage.getItem('mailLogged')){
+    if (window.localStorage.getItem('mailLogged')) {
       setRemember(true)
-     }
-
-     if(loggedUserJSON){
-       const user = JSON.parse(loggedUserJSON)
-       setCorreo(user.correo)
-       setPassword(user.password)
     }
-  },[])
+
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setCorreo(user.correo)
+      setPassword(user.password)
+    }
+    
+    setUser(null)
+
+  }, [])
 
 
-  const handleRememberStorage = () =>{
-    if(remember){
+  const handleRememberStorage = () => {
+    if (remember) {
       window.localStorage.setItem('mailLogged', correo)
-    } else{
+    } else {
       window.localStorage.removeItem('mailLogged')
     }
   }
 
-  const redirectTypeUser = (user) =>{
-    if(user.tipo === "Propietario" || user.tipo === "Inquilino"){
+  const redirectTypeUser = (user) => {
+    if (user.tipo === "Propietario" || user.tipo === "Inquilino") {
       history.push("/departamentos")
-    }else{
+    } else {
       history.push('/usuarios')
     }
   }
@@ -127,14 +132,14 @@ export const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault()
 
-    try{
+    try {
       const logueado = await loginUser(correo, password)
       handleRememberStorage()
       redirectTypeUser(logueado)
-    }catch(e){
+    } catch (e) {
       usarSnack(e.message)
     }
-} 
+  }
 
   const handleChange = (event) => {
     setRemember(event.target.checked);
@@ -146,17 +151,17 @@ export const Login = () => {
   }
 
   return (
-  <Box className={classes.root}>
-    <Box className={classes.image} >
-        
+    <Box className={classes.root}>
+      <Box className={classes.image} >
+
         <Box className={classes.container} component={Paper}>
           <div className={classes.paper}>
 
             <Avatar className={classes.avatar}>
-              <LockOutlinedIcon  />
+              <LockOutlinedIcon />
             </Avatar>
 
-            <img src={Logo} className={classes.logo} alt="Consorcio Virtual"/>
+            <img src={Logo} className={classes.logo} alt="Consorcio Virtual" />
 
             <form className={classes.form}>
               <TextField
@@ -184,7 +189,7 @@ export const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <FormControlLabel
-                control={<Checkbox value={remember} checked={remember}  onChange={handleChange} color="primary" />}
+                control={<Checkbox value={remember} checked={remember} onChange={handleChange} color="primary" />}
                 label="Recordarme"
               />
               <StyledButtonPrimary
@@ -198,44 +203,44 @@ export const Login = () => {
               </StyledButtonPrimary>
             </form>
           </div>
+        </Box>
       </Box>
+      <Box className={classes.footer}>
+
+        <Box className={classes.contenedorIcono}>
+          <img src={Documentos} alt="Documentos"></img>
+          <span className={classes.bold}>Accedé a los anuncios y la documentacion.</span>
+        </Box>
+
+        <Box className={classes.contenedorIcono}>
+          <img src={Solicitudes} alt="Solicitudes"></img>
+          <span className={classes.bold}>Realizá reclamos y solicitudes tecnicas.</span>
+        </Box>
+
+        <Box className={classes.contenedorIcono}>
+          <img src={Gastos} alt="Gastos"></img>
+          <span className={classes.bold}>Consultá los gastos del mes.</span>
+        </Box>
+
+        <Box className={classes.contenedorIcono}>
+          <img src={Expensas} alt="Expensas"></img>
+          <span className={classes.bold}>Pagá tus expensas.</span>
+        </Box>
+
+        <Box className={classes.contenedorIcono}>
+          <img src={Inquilinos} alt="Inquilinos"></img>
+          <span className={classes.bold}>Gestioná tus inquilinos.</span>
+        </Box>
+
+        <Box className={classes.contenedorIcono}>
+          <img src={Chat} alt="Chat"></img>
+          <span className={classes.bold}>Chateá con tus vecinos.</span>
+        </Box>
+
+      </Box>
+      <SnackbarComponent snackColor={"#F23D4F"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
     </Box>
-    <Box className={classes.footer}>
 
-      <Box className={classes.contenedorIcono}>
-        <img src={Documentos} alt="Documentos"></img>
-        <span className={classes.bold}>Accedé a los anuncios y la documentacion.</span>
-      </Box>
 
-      <Box className={classes.contenedorIcono}>
-        <img src={Solicitudes} alt="Solicitudes"></img>
-        <span className={classes.bold}>Realizá reclamos y solicitudes tecnicas.</span>
-      </Box>
-
-      <Box className={classes.contenedorIcono}>
-        <img src={Gastos} alt="Gastos"></img>
-        <span className={classes.bold}>Consultá los gastos del mes.</span>
-      </Box>
-
-      <Box className={classes.contenedorIcono}>
-        <img src={Expensas} alt="Expensas"></img>
-        <span className={classes.bold}>Pagá tus expensas.</span>
-      </Box>
-
-      <Box className={classes.contenedorIcono}>
-        <img src={Inquilinos} alt="Inquilinos"></img>
-        <span className={classes.bold}>Gestioná tus inquilinos.</span>
-      </Box>
-
-      <Box className={classes.contenedorIcono}>
-        <img src={Chat} alt="Chat"></img>
-        <span className={classes.bold}>Chateá con tus vecinos.</span>
-      </Box>
-
-    </Box>
-    <SnackbarComponent snackColor={"#F23D4F"} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)}/>
-  </Box>
-  
-        
   );
 }

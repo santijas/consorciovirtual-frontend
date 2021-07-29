@@ -93,8 +93,6 @@ export const Header = () => {
     }
 
     const logout = () => {
-        window.localStorage.removeItem('loggedUser')
-        setUser(null)
         setAnchorEl(null)
         history.push("/")
     }
