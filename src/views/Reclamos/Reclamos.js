@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { reclamoService } from '../../services/reclamoService';
 import { Busqueda } from '../../components/Busqueda'
@@ -12,13 +12,6 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { padLeadingZeros } from '../../utils/formats';
-
-const useStyles = makeStyles({
-  cantidadObject: {
-    fontWeight: 300,
-    marginRight: 10
-  },
-});
 
 const headers = [
   { id: "id", label: "Reclamo" },
@@ -51,7 +44,6 @@ const ColumnasCustom = (dato) => {
   )
 }
 export const Reclamos = () => {
-  const classes = useStyles();
   const [reclamos, setReclamos] = useState([])
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -92,7 +84,7 @@ export const Reclamos = () => {
       <SearchBox>
         <Busqueda holder="Buscá por id, asunto o estado" busqueda={setTextoBusqueda} />
         <div>
-          <span className={classes.cantidadObject} > {reclamos.length} reclamos </span>
+          <span className="cantidadObject" > {reclamos.length} reclamos </span>
           <StyledButtonPrimary onClick={newReclamo} >Agregar reclamo</StyledButtonPrimary>
         </div>
       </SearchBox>

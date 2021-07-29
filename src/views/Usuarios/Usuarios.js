@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { makeStyles, Typography, Snackbar } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { usuarioService } from '../../services/usuarioService';
 import { Busqueda } from '../../components/Busqueda'
@@ -11,13 +11,6 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
-
-const useStyles = makeStyles ({
-    cantidadObject:{
-      fontWeight: 300,
-      marginRight: 10
-    },
-  });
 
 const headers = [
   {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
@@ -53,7 +46,6 @@ const ColumnasCustom = (dato) => {
 export const Usuarios = () =>{
     const location = useLocation()
     let history = useHistory()  
-    const classes = useStyles()
     const [usuarios, setUsuarios] = useState([])
     const { user } = useContext(UserContext)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
@@ -99,7 +91,7 @@ export const Usuarios = () =>{
            <SearchBox> 
               <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={setTextoBusqueda} />
               <div>
-               <span className={classes.cantidadObject} > {usuarios.length} usuarios </span>
+               <span className="cantidadObject" > {usuarios.length} usuarios </span>
               <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
               </div>
            </SearchBox>

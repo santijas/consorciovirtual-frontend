@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
@@ -11,13 +11,6 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
-
-const useStyles = makeStyles ({
-    cantidadObject:{
-      fontWeight: 300,
-      marginRight: 10
-    },
-  });
 
 const headers = [
   {id: "periodo", label:"Periodo"},
@@ -45,7 +38,6 @@ return (
 )
 }
 export const Gastos = () =>{
-    const classes = useStyles();
     const location = useLocation();
     const [gastos, setGastos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
@@ -89,7 +81,7 @@ export const Gastos = () =>{
            <SearchBox> 
               <Busqueda holder="Buscá por título o monto" busqueda={setTextoBusqueda} />
               <div>
-               <span className={classes.cantidadObject} > {gastos.length} gastos </span>
+               <span className="cantidadObject" > {gastos.length} gastos </span>
               <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>
               </div>
            </SearchBox>

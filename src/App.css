@@ -68,14 +68,7 @@ body, html {
   background-color: #159D74;
 }
 
-.activesize{
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-  font-weight: 600!important;
-}
 
-.font{
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-}
 
 .MuiList-padding{
   margin-top: 28px!important;
@@ -195,4 +188,53 @@ button.mercadopago-button {
   background-color: #f5f5f5;
   margin: 0!important;
   padding: 2px 14px;
+}
+
+/* FUENTES Y SIZES */
+
+.activesize{
+  font-family: "ProximaNovaNormal";
+  font-weight: 600!important;
+  line-height: 30px;
+}
+
+.font{
+  font-family: "ProximaNovaNormal";
+  color: #5C5C5C;
+  font-size:16px;
+  line-height: 30px;
+}
+
+.spanTitleGrey{
+  text-align: left;
+  margin-left: 10px;
+  margin-bottom: 6px ;
+  color:rgba(0, 0, 0, 0.45);
+  font-size: 15px;
+  font-family:"ProximaNovaNormal";
+}
+
+.spanTitle{
+  text-align: left;
+  margin-left: 10px;
+  margin-bottom: 6px ;
+  font-size: 15px;
+  font-family:"ProximaNovaNormal";
+}
+
+.spanNormal{
+  text-align: left;
+  margin-left: 10px;
+  margin-bottom: 6px ;
+  font-family:"ProximaNovaNormal";
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.cantidadObject{
+  font-size: 16px;
+  margin-right: 10px;
+  font-family:"ProximaNovaNormal";
+  color: rgba(0, 0, 0, 0.45);
+  line-height: 18px;
 }

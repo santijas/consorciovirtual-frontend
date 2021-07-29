@@ -1,24 +1,17 @@
 import React, { useEffect, useState,  useContext } from 'react'
-import { makeStyles, Typography, Snackbar } from '@material-ui/core';
+import {  Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { usuarioService } from '../../services/usuarioService';
 import { Busqueda } from '../../components/Busqueda'
 import { StyledButtonPrimary } from '../../components/Buttons'
 import { useHistory, useLocation } from 'react-router-dom';
 import { SnackbarComponent } from '../../components/Snackbar'
-import { numeroConPuntos, splitVisual } from '../../utils/formats';
+import { numeroConPuntos } from '../../utils/formats';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext'; 
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
-
-const useStyles = makeStyles ({
-    cantidadObject:{
-      fontWeight: 300,
-      marginRight: 10
-    },
-  });
 
 const headers = [
   {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
@@ -52,7 +45,6 @@ const ColumnasCustom = (dato) => {
 export const Inquilinos = () =>{
     const location = useLocation()
     let history = useHistory()  
-    const classes = useStyles()
     const [inquilinos, setInquilinos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -102,7 +94,7 @@ export const Inquilinos = () =>{
            <SearchBox> 
               <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={setTextoBusqueda} />
               <div>
-               <span className={classes.cantidadObject} > 
+               <span className="cantidadObject" > 
                {inquilinos.length} inquilinos </span>
               <StyledButtonPrimary onClick={newUser} >Agregar inquilino</StyledButtonPrimary>
               </div>

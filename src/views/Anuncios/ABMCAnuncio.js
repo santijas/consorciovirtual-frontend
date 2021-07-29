@@ -14,7 +14,7 @@ import update from 'immutability-helper';
 import { UserContext } from '../../hooks/UserContext';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, FullInputBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
-import { fechaMaxNow } from '../../utils/formats';
+import { fechaMaxNow, soloFecha } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -228,29 +228,31 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
 
                 {!creacion && edicion &&
                     <Typography component="h2" variant="h5" className="tittle">
-                        Modificar anuncio
+                        { user?.esAdmin() ? "Modificar anuncio" : "Consultar anuncio" }
                     </Typography>
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
 
                     <LeftInputBox>
-                        <span className={classes.span}>Fecha</span>
+                        <span className={user?.esAdmin()? "spanTitleGrey" : "spanTitleGrey"}>Fecha</span>
                         <div className={classes.contenedorFecha}>
-                            <span className={classes.span}>{edicion ? anuncio.fechaCreacion : (new Date()).toLocaleDateString()}</span>
+                            <span className="spanNormal">{edicion ? soloFecha(anuncio.fechaCreacion) : (soloFecha(new Date()).toLocaleDateString())}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={classes.span}>Autor</span>
-                        <span className={classes.span}>{edicion ? anuncio.nombreAutor : user?.nombreYApellido()}</span>
+                        <span className={user?.esAdmin()? "spanTitleGrey" : "spanTitleGrey"}>Autor</span>
+                        <span className="spanNormal">{edicion ? anuncio.nombreAutor : user?.nombreYApellido()}</span>
                     </RightInputBox>
 
 
                     <LeftInputBox>
-                        <span className={classes.span} >Título</span>
-                        <TextField 
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"} >Título</span>
+                        
+                        {user?.esAdmin() 
+                        ? <TextField 
                         className={classes.inputs} 
                         id="titulo" 
                         value={anuncio.titulo || ''} 
@@ -261,11 +263,15 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                         helperText={errors?.titulo}
                         inputProps={{ maxLength: 70 }}
                         />
+                        :<span className="spanNormal">{anuncio.titulo || ''}</span>
+                        }   
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={classes.span}>Vencimiento</span>
-                        <TextField 
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Vencimiento</span>
+                        
+                        {user?.esAdmin() 
+                        ?  <TextField 
                         className={classes.inputs} 
                         id="fechaVencimiento" 
                         value={anuncio.fechaVencimiento || ''} 
@@ -277,11 +283,14 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                         helperText={errors?.fechaVencimiento}
                         InputProps={{inputProps: { min:  fechaMaxNow() }}}
                         />
+                        :<span className="spanNormal">{soloFecha(anuncio.fechaVencimiento) || ''}</span>
+                        }   
                     </RightInputBox>
 
                     <FullInputBox>
-                        <span className={classes.span}>Descripción</span>
-                        <TextField 
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Descripción</span>
+                        {user?.esAdmin() 
+                        ? <TextField 
                         className={classes.inputs} 
                         id="descripcion" 
                         value={anuncio.descripcion || ''} 
@@ -292,20 +301,23 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                         helperText={errors?.descripcion}
                         inputProps={{ maxLength: 150 }}
                         />
+                        :<span className="spanNormal">{anuncio.descripcion || ''}</span>
+                        }
                     </FullInputBox>
 
                 </form>
 
             </FormBox>
-
+                
             <RightFormBox>
-                {creacion &&
+                
+                {creacion && user?.esAdmin() &&
                     <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearAnuncio()} >Crear anuncio</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToAnuncios}>Cancelar</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                {edicion && !creacion &&
+                {edicion && !creacion && user?.esAdmin() &&
                     <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarAnuncio}>Guardar cambios</StyledButtonPrimary>
@@ -316,14 +328,14 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar anuncio</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                <Divider className={classes.divider} />
+                { user?.esAdmin() && <Divider className={classes.divider} /> }
 
-                {edicion && !creacion &&
+                {edicion && !creacion  &&
                     <Historial tipo="ANUNCIO" id={params.id} update={cambiosGuardados} />
                 }
 
             </RightFormBox>
-
+             
             <SnackbarComponent snackColor={snackColor} openSnackbar={openSnackbar} mensajeSnack={mensajeSnack} handleCloseSnack={() => setOpenSnackbar(false)} />
 
             <ModalComponent openModal={openModal} bodyModal={bodyModal} handleCloseModal={() => setOpenModal(false)} />

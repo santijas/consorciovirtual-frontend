@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography, Snackbar } from '@material-ui/core';
+import {  Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { telefonoUtilService } from '../../services/telefonoUtilService';
 import { Busqueda } from '../../components/Busqueda'
@@ -10,13 +10,6 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
-
-const useStyles = makeStyles ({
-    cantidadObject:{
-      fontWeight: 300,
-      marginRight: 10
-    },
-  });
 
 const headers = [
   {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
@@ -55,7 +48,6 @@ const ColumnasCustom = (dato) => {
 export const TelefonosUtiles = () =>{
     const location = useLocation()
     let history = useHistory()  
-    const classes = useStyles()
     const [telefonos, setTelefonos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -94,7 +86,7 @@ export const TelefonosUtiles = () =>{
            <SearchBox> 
               <Busqueda holder="Buscá por servicio" busqueda={setTextoBusqueda} />
               <div>
-               <span className={classes.cantidadObject} > {telefonos.length} Teléfonos útiles </span>
+               <span className="cantidadObject" > {telefonos.length} Teléfonos útiles </span>
               <StyledButtonPrimary onClick={newTelefonoUtil} >Agregar teléfono útil</StyledButtonPrimary>
               </div>
            </SearchBox>

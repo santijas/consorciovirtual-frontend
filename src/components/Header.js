@@ -54,12 +54,15 @@ const useStyles = makeStyles({
     nombreTipo: {
         display: "flex",
         flexDirection: "column",
-        textAlign: "left"
+        textAlign: "left",
+        fontFamily: "ProximaNovaNormal",
+        fontSize: 16
     },
     span: {
         textAlign: "left",
-        fontSize: 12,
-        fontWeight: 300
+        fontSize: 14,
+        color:"rgba(0, 0, 0, 0.6)",
+        fontFamily: "ProximaNovaNormal"
     },
     desplegable: {
         marginLeft: 10

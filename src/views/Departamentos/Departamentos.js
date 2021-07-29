@@ -10,13 +10,6 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
-const useStyles = makeStyles ({
-    cantidadObject:{
-      fontWeight: 300,
-      marginRight: 10
-    }
-  });
-
 
   const headers = [
     {id: "piso", label:"Departamento"},
@@ -48,7 +41,6 @@ const useStyles = makeStyles ({
 
 export const Departamentos = () =>{
     const location = useLocation();
-    const classes = useStyles();
     const [departamentos, setDepartamentos] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -90,7 +82,7 @@ export const Departamentos = () =>{
             <SearchBox> 
                 <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={setTextoBusqueda} />
                 <div>
-                <span className={classes.cantidadObject} > {departamentos.length} departamentos </span>
+                <span className="cantidadObject" > {departamentos.length} departamentos </span>
                 <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
                 </div>
             </SearchBox>

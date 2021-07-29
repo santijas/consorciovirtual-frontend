@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { makeStyles, Typography } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react'
+import { Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { Busqueda } from '../../components/Busqueda'
 import { useHistory } from 'react-router-dom';
@@ -11,13 +11,8 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { fechaYaPaso, soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { UserContext } from '../../hooks/UserContext';
 
-const useStyles = makeStyles({
-    cantidadObject: {
-        fontWeight: 300,
-        marginRight: 10
-    },
-});
 
 const headers = [
     { id: "fechaCreacion", label: "Fecha" },
@@ -55,11 +50,11 @@ const ColumnasCustom = (dato) => {
 }
 
 export const Anuncios = () => {
-    const classes = useStyles();
     const [anuncios, setAnuncios] = useState([])
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const { user, setUser } = useContext(UserContext)
     let history = useHistory()
     let location = useLocation()
 
@@ -95,8 +90,8 @@ export const Anuncios = () => {
             <SearchBox>
                 <Busqueda holder="Buscá por fecha, título o autor" busqueda={setTextoBusqueda} />
                 <div>
-                    <span className={classes.cantidadObject} > {anuncios.length} anuncios </span>
-                    <StyledButtonPrimary onClick={newAnuncio}>Agregar anuncio</StyledButtonPrimary>
+                    <span className="cantidadObject" > {anuncios.length} anuncios </span>
+                    { user?.esAdmin()? <StyledButtonPrimary onClick={newAnuncio}>Agregar anuncio</StyledButtonPrimary>: <span></span>}
                 </div>
             </SearchBox>
             {anuncios.length > 0 &&

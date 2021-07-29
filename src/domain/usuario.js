@@ -15,6 +15,10 @@ export class Usuario {
       return this.tipo === "Administrador" || this.tipo === "Administrador_consorcio"
     }
 
+    esAdminGeneral(){
+      return this.tipo === "Administrador"
+    }
+
     esPropietario(){
       return this.tipo === "Propietario"
     }

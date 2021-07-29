@@ -361,7 +361,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
             :
 
             <div style={modalStyle} className={classes.paper}>
-                <h2 id="simple-modal-title">CAMBIAR CONTRASEÑA</h2>
+                <h2 id="simple-modal-title">Cambiar contraseña</h2>
                 <p id="simple-modal-description">Ingrese su nueva contraseña</p>
                 <form className={classes.form} noValidate autoComplete="off">
 
@@ -535,7 +535,9 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             InputProps={{inputProps: { min: fechaMinNacimiento() , max:  fechaMaxNacimiento() } }}
                         />
                     </LeftInputBox>
-
+                    {
+                        !perfil &&
+                    
                     <RightInputBox>
                         <span className={classes.span}>Tipo de usuario</span>
                         <Select
@@ -559,7 +561,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             }
                         </Select>
                     </RightInputBox>
-
+                    }
                     {edicion && !creacion && departamentos.length > 0 &&
                         <LeftInputBox>
                             <span className={classes.spanDisabled}>Piso</span>

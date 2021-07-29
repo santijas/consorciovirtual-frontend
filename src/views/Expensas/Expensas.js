@@ -13,10 +13,6 @@ import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 
 
 const useStyles = makeStyles ({
-    cantidadObject:{
-      fontWeight: 300,
-      marginRight: 10
-    },
     botonAnular:{
       marginLeft: 8
     },
@@ -97,7 +93,7 @@ export const Expensas = () =>{
            <SearchBox> 
               <Busqueda holder="Buscá por departamento o monto" busqueda={setTextoBusqueda} />
               <div className={classes.contenedorBotones}>
-               <span className={classes.cantidadObject} > {expensas.length} expensas </span>
+               <span className="cantidadObject" > {expensas.length} expensas </span>
               <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>
               <StyledButtonSecondary className={classes.botonAnular} onClick={anularExpensa}>Anular expensas</StyledButtonSecondary>
               </div>

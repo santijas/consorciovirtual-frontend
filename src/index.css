@@ -18,3 +18,10 @@ code {
    url("./assets/fonts/ProximaNova/proximanova-bold.otf") format("truetype");
   font-weight: bold;
   }
+
+  
+@font-face {
+  font-family: "ProximaNovaNormal";
+  src: local("ProximaNovaNormal"),
+   url("./assets/fonts/ProximaNova/proximanova-regular.otf") format("truetype");
+  }

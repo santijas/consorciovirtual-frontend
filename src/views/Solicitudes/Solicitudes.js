@@ -13,13 +13,6 @@ import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
 import { padLeadingZeros } from '../../utils/formats';
 
-const useStyles = makeStyles({
-  cantidadObject: {
-    fontWeight: 300,
-    marginRight: 10
-  },
-});
-
 const headers = [
   { id: "id", label: "Solicitud" },
   { id: "nombreAutor", label: "Autor" },
@@ -60,7 +53,6 @@ const ColumnasCustom = (dato) => {
 }
 
 export const Solicitudes = () => {
-  const classes = useStyles();
   const [solicitudes, setSolicitudes] = useState([])
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -102,7 +94,7 @@ export const Solicitudes = () => {
       <SearchBox>
         <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={setTextoBusqueda} />
         <div>
-          <span className={classes.cantidadObject} > {solicitudes.length} solicitudes técnicas </span>
+          <span className="cantidadObject" > {solicitudes.length} solicitudes técnicas </span>
           <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>
         </div>
       </SearchBox>
