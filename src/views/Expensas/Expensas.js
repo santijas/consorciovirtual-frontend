@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { expensaService } from '../../services/expensaService';
@@ -10,6 +10,7 @@ import { SnackbarComponent } from '../../components/Snackbar';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { UserContext } from '../../hooks/UserContext';
 
 
 const useStyles = makeStyles ({
@@ -54,6 +55,7 @@ export const Expensas = () =>{
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const { user } = useContext(UserContext)
 
     let history = useHistory()
 
@@ -94,8 +96,10 @@ export const Expensas = () =>{
               <Busqueda holder="Buscá por departamento o monto" busqueda={setTextoBusqueda} />
               <div className={classes.contenedorBotones}>
                <span className="cantidadObject" > {expensas.length} expensas </span>
-              <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>
-              <StyledButtonSecondary className={classes.botonAnular} onClick={anularExpensa}>Anular expensas</StyledButtonSecondary>
+               
+              {user?.esAdmin() && <StyledButtonPrimary onClick={newExpensa} >Calcular expensas</StyledButtonPrimary>}
+              {user?.esAdmin() && <StyledButtonSecondary className={classes.botonAnular} onClick={anularExpensa}>Anular expensas</StyledButtonSecondary>}
+               
               </div>
            </SearchBox>
            {expensas.length > 0 &&

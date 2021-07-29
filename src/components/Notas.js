@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export const Notas = ({ notas, setCampoEditado, update, puedeAgregarOBorrarNotas }) => {
+export const Notas = ({ notas, setCampoEditado, update, puedeAgregar }) => {
     const classes = useStyles();
     const [textoNota, setTextoNota] = useState('')
     const [textoInvalido, setTextoInvalido] = useState(false)
@@ -81,7 +81,8 @@ export const Notas = ({ notas, setCampoEditado, update, puedeAgregarOBorrarNotas
         if (textoNota) {
             let nota = {
                 autor: user.nombre,
-                texto: textoNota
+                texto: textoNota,
+                idAutor: user.id
             }
             notas.push(nota)
             setCampoEditado(true)
@@ -124,7 +125,7 @@ export const Notas = ({ notas, setCampoEditado, update, puedeAgregarOBorrarNotas
                             <Typography variant="body2" align="right">{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleTimeString().replace(/(.*)\D\d+/, '$1') : new Date().toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Typography>
                             </div> 
                             {
-                                user.tipo === 'Administrador_consorcio' && puedeAgregarOBorrarNotas && 
+                                (user.tipo === 'Administrador_consorcio' || user.id === nota.idAutor) && 
                                 <IconButton className={classes.botonEliminarNota} onClick={() => eliminarNota(nota)}>
                                     <DeleteForeverSharpIcon color="error"/>
                                 </IconButton> 
@@ -132,7 +133,7 @@ export const Notas = ({ notas, setCampoEditado, update, puedeAgregarOBorrarNotas
                         </div>
                     </ListItem>
                 })}
-                {puedeAgregarOBorrarNotas &&
+                {puedeAgregar &&
                     <ListItem button divider>
                         <TextField 
                         error={textoInvalido} 

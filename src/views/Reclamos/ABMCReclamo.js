@@ -405,7 +405,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregarOBorrarNotas={estadoOriginal !== 'Resuelto' && (user.esAdmin() || user.id === reclamo.idAutor)}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregar={estadoOriginal !== 'Resuelto' && (user.esAdmin() || user.id === reclamo.idAutor)}></Notas>
                 }
 
             </FormBox>
