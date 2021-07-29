@@ -6,6 +6,7 @@ import { EscrituraChat } from '../../components/EscrituraChat';
 import { chatService } from '../../services/chatService';
 import { UserContext } from '../../hooks/UserContext'; 
 import { RootBox, SearchBox } from '../../components/Contenedores';
+import NavBar from '../../components/NavBar';
 
 
 export const Chat = () => {
@@ -13,10 +14,9 @@ export const Chat = () => {
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const { user } = useContext(UserContext)
 
-
   const getMensajes = async (string) => {
     let listaMensajes = await chatService.getMensajes(string)
-    setMensajes(listaMensajes)
+    setMensajes(listaMensajes)  
   }
 
   const enviarMensaje = async (mensaje) => {
@@ -24,16 +24,23 @@ export const Chat = () => {
     setTimeout(() => chatService.sendMessage(mensaje), 500)
   }
 
+  const onReturn = () => {
+    chatService.closeWebSocket()
+  }
 
   useEffect(() => {
     getMensajes(textoBusqueda)
     chatService.connect(getMensajes)
-
     return () => {
-      chatService.closeWebSocket()
+      onReturn()
     }
   }, [textoBusqueda])
 
+  useEffect( () => {
+    return () => {
+      if (mensajes) chatService.sendRegistry(mensajes[0]?.id,user?.id)
+    }
+  })
 
   return (
 

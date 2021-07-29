@@ -38,6 +38,7 @@ export const NavBar = () => {
   let history = useHistory();
   let location = useLocation()
   const [selected, setSelected] = useState('usuarios')
+  const [mensajesSinLeer, setMensajesSinLeer] = useState(null)
   const { user } = useContext(UserContext);
 
 
@@ -46,14 +47,26 @@ export const NavBar = () => {
     setSelected(location.pathname)
   }
 
+  const getMensajesSinLeer = async () => {
+    let cantMensajes = await chatService.getCantidadDeMensajes(user.id)
+    setMensajesSinLeer(cantMensajes)
+  }
+
+  const conMensajesNuevos = () =>{
+    return  mensajesSinLeer != null && mensajesSinLeer != 0
+  }
+
   useEffect(() => {
     setSelected(location.pathname)
-    chatService.connectUsuarioWS()
+  }, [location])
+
+  useEffect( ()=>{
+    chatService.connectUsuarioWS(getMensajesSinLeer)
 
     return () => {
       chatService.closeWebSocket()
     }
-  }, [location])
+  },[] )
 
   return (
     <Drawer
@@ -123,7 +136,7 @@ export const NavBar = () => {
 
           <ListItem button key="Chat" onClick={() => handleSelectMenu("/chat")}>
             <ListItemIcon>{selected.includes("chat") ? <ActiveChat className="navicon" /> : <NonActiveChat className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>
+            <span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>{ conMensajesNuevos() && !selected.includes("chat") && <span>{mensajesSinLeer}</span> }
           </ListItem>
 
           <ListItem button key="TelefonosUtiles" onClick={() => handleSelectMenu("/telefonosUtiles")}>

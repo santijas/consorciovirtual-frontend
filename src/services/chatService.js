@@ -13,33 +13,34 @@ class ChatService {
 
         this.webSocket = new WebSocket('ws://localhost:8080/chat')
         this.webSocket.onopen = (event) => {
-            console.log("CONECTADO POR WS")
+            console.log("Open /chat")
         }
 
         this.webSocket.onmessage = async  (event) => {
-            const mensajes = JSON.parse(event.data);
+            // const mensajes = JSON.parse(event.data);
             getMensajes("")
         };
       
         this.webSocket.onclose = (event) => {
-            console.log('Close: ', event);
+            console.log('Close /chat');
         };  
     }
 
-    connectUsuarioWS() {
+    connectUsuarioWS(getMensajesSinLeer) {
 
         this.webSocket = new WebSocket('ws://localhost:8080/cantidad-mensajes')
         this.webSocket.onopen = (event) => {
-            console.log("CONECTADO A CANTIDAD_MENSAJES_ENDPOINT")
+            console.log("Open /cantidad-mensajes")
+            getMensajesSinLeer()
         }
 
         this.webSocket.onmessage = async  (event) => {
-            const mensaje = JSON.parse(event.data);
-            console.log("mensaje: ",mensaje)
+            // const mensaje = JSON.parse(event.data);
+            getMensajesSinLeer()
         };
       
         this.webSocket.onclose = (event) => {
-            console.log('Close CANTIDAD_MENSAJES_ENDPOINT: ', event);
+            console.log('Close /cantidad-mensajes')
         };  
     }
 
@@ -59,12 +60,17 @@ class ChatService {
     async enviarMensaje(mensaje,usuarioId){
         const mensajeAEnviar = new MensajeRequest(usuarioId,mensaje)
         await axios.post(`${REST_SERVER_URL}/mensajes/send`, mensajeAEnviar  )
-        console.log("MENSAJE ENVIADO")
     }
 
-    async getCantidadDeMensajes(usuarioId){
-        let cantidadMensajes = await axios.post(`${REST_SERVER_URL}/mensajes/cantidad/${usuarioId}`  )
-        console.log("cantidadMensajes: ",cantidadMensajes.data)
+    async getCantidadDeMensajes(userId){
+        let cantidadMensajes = await axios.post(`${REST_SERVER_URL}/mensajes/cantidad/${userId}`  )
+        console.log("cantidadMensajesSinLeer: ",cantidadMensajes.data)
+        return cantidadMensajes.data
+    }
+
+    async sendRegistry(mensajeId,userId){
+        console.log("ultimo mensaje leido: ",mensajeId)
+        await axios.post(`${REST_SERVER_URL}/mensajes/registro/${userId}/${mensajeId}`  )
     }
 }
 

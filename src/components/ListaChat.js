@@ -100,7 +100,7 @@ export const ListaChat = ({listaDeMensajes,userId}) => {
     
     useEffect( ()  =>  {
         getMensajes()
-    })
+    },)
 
     return (
         <div className={classes.root}>
