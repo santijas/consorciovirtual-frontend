@@ -32,6 +32,11 @@ class SolicitudService {
         await axios.put(`${REST_SERVER_URL}/solicitud/eliminar/${id}`)
     }
 
+    mandarCorreoNuevaNota(id){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        axios.post(`${REST_SERVER_URL}/enviarCorreo/notaEnSolicitud/${id}/${idLogueado}`)
+    }
+
 }
 
 export const solicitudService = new SolicitudService()

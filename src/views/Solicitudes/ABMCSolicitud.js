@@ -176,6 +176,8 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack();
     const [modalStyle] = useState(getModalStyle);
     const [errors, setErrors] = useState({})
+    // Para Mail
+    const [cantNotas, setCantNotas] = useState()
 
     let history = useHistory()
     const params = useParams()
@@ -193,6 +195,7 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
                 setEstadoOriginal(unaSolicitud.estado.nombreEstado)
                 setTitulo(unaSolicitud.titulo)
                 setNotas(unaSolicitud.notas)
+                setCantNotas(unaSolicitud.notas.length)
                 setDetalle(unaSolicitud.detalle)
             }
             setSolicitud(unaSolicitud)
@@ -256,6 +259,13 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
             nuevaSolicitud.estado.id = (estado === 'Pendiente de resolución') ? 1 : 2
             nuevaSolicitud.notas = notas
             await solicitudService.update(solicitud)
+            if(cantNotas < notas.length){
+                try{
+                    solicitudService.mandarCorreoNuevaNota(solicitud.id)
+                } catch (error) {
+                   window.alert("No se pudo enviar el correo notificando la nueva nota")
+                }
+            }
             setCambiosGuardados(true)
             setCampoEditado(false)
             setEstadoOriginal(estado)

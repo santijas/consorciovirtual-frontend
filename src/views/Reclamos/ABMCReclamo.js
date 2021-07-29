@@ -155,6 +155,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const [modalStyle] = useState(getModalStyle);
     const { user, setUser } = useContext(UserContext);
     const [errors, setErrors] = useState({})
+    // Para Mail
+    const [cantNotas, setCantNotas] = useState()
 
     let history = useHistory()
     const params = useParams()
@@ -168,6 +170,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         } else {
             unReclamo = await reclamoService.getById(params.id)
             setNotas(unReclamo.notas)
+            setCantNotas(unReclamo.notas.length)
             setEstado(unReclamo.estado)
             setEstadoOriginal(unReclamo.estado)
             setAsunto(unReclamo.asunto)
@@ -226,6 +229,14 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
             nuevoReclamo.autor = { id: nuevoReclamo.idAutor }
             nuevoReclamo.notas = notas
             await reclamoService.update(nuevoReclamo)
+            console.log(cantNotas < notas.length)
+            if(cantNotas < notas.length){
+                try{
+                    reclamoService.mandarCorreoNuevaNota(reclamo.id)
+                } catch (error) {
+                   window.alert("No se pudo enviar el correo notificando la nueva nota")
+                }
+            }
             setCambiosGuardados(true)
             setEstadoOriginal(estado)
             setCampoEditado(false)

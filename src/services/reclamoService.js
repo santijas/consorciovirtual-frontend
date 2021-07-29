@@ -35,6 +35,11 @@ class ReclamoService {
         await axios.delete(`${REST_SERVER_URL}/reclamo/eliminar/${id}`, {params:  {idLogueado} })
     }
 
+    mandarCorreoNuevaNota(id){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        axios.post(`${REST_SERVER_URL}/enviarCorreo/notaEnReclamo/${id}/${idLogueado}`)
+    }
+
 }
 
 export const reclamoService = new ReclamoService()
