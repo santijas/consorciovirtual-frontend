@@ -9,7 +9,7 @@ import { splitTipo } from '../utils/formats';
 import Logo from '../assets/logo.png'
 import { UserContext } from '../hooks/UserContext';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         background: "white",
         width: "100%",
@@ -32,11 +32,17 @@ const useStyles = makeStyles({
         alignSelf: "center",
         alignItems: "center",
         marginRight: 100,
+        [theme.breakpoints.down("sm")]: {
+            marginRight: 0
+        }
     },
     avatar: {
         display: "flex",
         background: "red",
-        marginRight: 5
+        marginRight: 5,
+        [theme.breakpoints.down("sm")]: {
+            fontSize: 14,
+        }
     },
     menuUser: {
         marginTop: 55,
@@ -56,21 +62,31 @@ const useStyles = makeStyles({
         flexDirection: "column",
         textAlign: "left",
         fontFamily: "ProximaNovaNormal",
-        fontSize: 16
+        fontSize: 16,
+        [theme.breakpoints.down("sm")]: {
+            fontSize: 12,
+        }
     },
     span: {
         textAlign: "left",
         fontSize: 14,
         color:"rgba(0, 0, 0, 0.6)",
-        fontFamily: "ProximaNovaNormal"
+        fontFamily: "ProximaNovaNormal",
+        [theme.breakpoints.down("sm")]: {
+            fontSize: 11,
+        }
     },
     desplegable: {
         marginLeft: 10
     },
     logo: {
         marginLeft: 25,
+        [theme.breakpoints.down("sm")]: {
+            marginLeft: 0,
+            width: 110
+        }
     }
-});
+}));
 
 export const Header = () => {
     const classes = useStyles();

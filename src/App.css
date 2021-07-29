@@ -6,6 +6,7 @@ body, html {
   margin: 0;
   padding: 0;
   background-color:#F5F5F5!important;
+  font-family:"ProximaNovaNormal";
 }
 
 .App-logo {
@@ -68,8 +69,6 @@ body, html {
   background-color: #159D74;
 }
 
-
-
 .MuiList-padding{
   margin-top: 28px!important;
 }
@@ -85,14 +84,17 @@ body, html {
 
 .tableBold{
   font-weight: 600!important;
+  font-family:"ProximaNovaBold"!important;
+  font-size: 15px!important;
 }
 
 .tableNormal{
   font-style: normal!important;
   font-weight: normal!important;
-  font-size: 14px!important;
+  font-size: 15px!important;
   line-height: 18px!important;
   color: rgba(0, 0, 0, 0.40)!important;
+  font-family:"ProximaNovaNormal"!important;
 }
 
 .Mui-disabled{
@@ -181,6 +183,7 @@ button.mercadopago-button {
 
 .tittle{
   text-align: left;
+  font-family: "ProximaNovaNormal";
 }
 
 
@@ -245,4 +248,30 @@ button.mercadopago-button {
 
 .uppercase{
   text-transform: capitalize;
+}
+
+
+@media (max-width: 768px) {
+  .MuiListItemIcon-root {
+    min-width: 0px!important;
+  }
+
+  .tableBold{
+    font-size: 12px!important;
+  }
+
+  .tableNormal{
+    font-size: 12px!important;
+  }
+  .spanNormal{
+    font-size: 13px!important;
+  }
+
+  .spanTitleGrey{
+    font-size: 12px!important;
+  }
+
+  .spanTitle{
+    font-size: 12px!important;
+  }
 }

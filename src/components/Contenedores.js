@@ -7,6 +7,9 @@ export const RootBox = withStyles((theme) => ({
         marginTop: 110,
         marginRight: 50,
         flexDirection: "column",
+        [theme.breakpoints.down("sm")]: {
+            marginLeft: 100
+          }
     },
     }))(Box);
 
@@ -16,7 +19,10 @@ export const RootBoxABM = withStyles((theme) => ({
         marginLeft: 300,
         flexDirection: "row",
         boxSizing: "unset",
-        marginTop: 70
+        marginTop: 70,
+        [theme.breakpoints.down("sm")]: {
+            marginLeft: 100
+          }
     },
     }))(Box);
 
@@ -30,7 +36,10 @@ export const FormBox = withStyles((theme) => ({
         overflowY: "auto",
         marginBottom: 100,
         maxWidth: "1400px",
-        paddingTop: 40
+        paddingTop: 40,
+        [theme.breakpoints.down("sm")]: {
+            paddingRight: 30
+          }
     },
     }))(Box);
 
@@ -44,7 +53,10 @@ export const RightFormBox = withStyles((theme) => ({
         backgroundColor: "white",
         width: "450px",
         flexDirection: "column",
-        overflowY: "auto"
+        overflowY: "auto",
+        [theme.breakpoints.down("sm")]: {
+            display:"none",
+          }
     },
     }))(Box);
 
@@ -54,7 +66,11 @@ export const LeftInputBox = withStyles((theme) => ({
         flexDirection: "column",
         flex: "50%",
         maxWidth: "48%",
-        marginBottom: 50
+        marginBottom: 50,
+        [theme.breakpoints.down("sm")]: {
+            flex: "0 1 auto",
+            maxWidth: "100%",
+          }
     },
     }))(Box);
 
@@ -64,7 +80,11 @@ export const RightInputBox = withStyles((theme) => ({
         flexDirection: "column",
         flex: "50%",
         maxWidth: "48%",
-        marginBottom: 50
+        marginBottom: 50,
+        [theme.breakpoints.down("sm")]: {
+            flex: "0 1 auto",
+            maxWidth: "100%",
+          }
     },
     }))(Box);
 
@@ -100,5 +120,8 @@ export const SearchBox = withStyles((theme) => ({
         display: "flex",
         justifyContent: "space-between",
         marginTop: 20,
+        [theme.breakpoints.down("sm")]: {
+            flexDirection:"column",
+          }
     },
     }))(Box);

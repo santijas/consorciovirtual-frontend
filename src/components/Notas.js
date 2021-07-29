@@ -125,7 +125,7 @@ export const Notas = ({ notas, setCampoEditado, update, puedeAgregar }) => {
                             <Typography variant="body2" align="right">{nota.fechaHora ? (new Date(nota.fechaHora)).toLocaleTimeString().replace(/(.*)\D\d+/, '$1') : new Date().toLocaleTimeString().replace(/(.*)\D\d+/, '$1')}</Typography>
                             </div> 
                             {
-                                (user.tipo === 'Administrador_consorcio' || user.id === nota.idAutor) && 
+                                (user?.tipo === 'Administrador_consorcio' || user?.id === nota.idAutor) && 
                                 <IconButton className={classes.botonEliminarNota} onClick={() => eliminarNota(nota)}>
                                     <DeleteForeverSharpIcon color="error"/>
                                 </IconButton> 

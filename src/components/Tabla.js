@@ -21,7 +21,10 @@ export const StyledTableCell = withStyles((theme) => ({
   },
   root: {
     padding: 30,
-    border: "none"
+    border: "none",
+    [theme.breakpoints.down("sm")]: {
+      padding: "30px 5px",
+    }
   }
 }))(TableCell);
 
@@ -35,12 +38,15 @@ export const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 700,
     border: "none",
     borderSpacing: "0 1em",
-    borderCollapse: "separate"
+    borderCollapse: "separate",
+    [theme.breakpoints.down("sm")]: {
+      minWidth: 300
+    }
   },
   container:{
     marginTop: 30,
@@ -50,13 +56,18 @@ const useStyles = makeStyles({
   head:{
       borderBottom:"none",
       padding: "0 0 0 30px",
-      color: "rgba(0, 0, 0, 0.45)"
+      color: "rgba(0, 0, 0, 0.45)",
+      fontFamily:"ProximaNovaBold",
+      [theme.breakpoints.down("sm")]: {
+        fontSize: 12,
+        padding:"0px 5px"
+      }
   },
   paginator:{
     display:"flex",
     justifyContent:"flex-end"
   }
-});
+}));
 
 const descendingComparator = (a, b, orderBy) =>{
   if (b[orderBy] < a[orderBy]) {

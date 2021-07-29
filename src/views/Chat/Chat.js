@@ -20,7 +20,7 @@ export const Chat = () => {
   }
 
   const enviarMensaje = async (mensaje) => {
-    await chatService.enviarMensaje(mensaje, user.id)
+    await chatService.enviarMensaje(mensaje, user?.id)
     setTimeout(() => chatService.sendMessage(mensaje), 500)
   }
 

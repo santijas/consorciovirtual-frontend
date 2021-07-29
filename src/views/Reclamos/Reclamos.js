@@ -33,7 +33,7 @@ const ColumnasCustom = (dato) => {
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
           <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
-          <span >{soloFecha(dato.fecha)}</span>
+          <span className="tableNormal">{soloFecha(dato.fecha)}</span>
         </div>
       </StyledTableCell>
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>

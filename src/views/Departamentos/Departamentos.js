@@ -82,7 +82,7 @@ export const Departamentos = () =>{
               Departamentos
             </Typography>
             <SearchBox> 
-                <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={setTextoBusqueda} />
+                <Busqueda holder="Buscá por departamento, propietario, inquilino" busqueda={setTextoBusqueda} />
                 <div>
                 <span className="cantidadObject" > {departamentos.length} departamentos </span>
                 { user?.esAdmin() && <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary> }

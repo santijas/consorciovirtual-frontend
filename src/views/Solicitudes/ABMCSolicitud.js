@@ -305,9 +305,9 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     }
 
     const mostrarPosiblesEstados = () => {
-        if (user.esPropietario()) {
+        if (user?.esPropietario()) {
             return estados.filter(nombreEstado =>  estadoOriginal === nombreEstado.value || nombreEstado.value === 'Pendiente de resolución' || nombreEstado.value === 'Rechazado' )
-        } else if (user.esAdmin()) {
+        } else if (user?.esAdmin()) {
             return estados.filter(nombreEstado => {
                 if (estadoOriginal === 'En proceso') {
                     return estadoOriginal === nombreEstado.value || nombreEstado.value === 'Resuelto'
@@ -321,12 +321,12 @@ export const ABMCSolicitud = ({ edicion, creacion }) => {
     }
 
     const cambioDeEstadoDesactivado = () => {
-        const usuarioEsPropietarioYFueAprobada = user.esPropietario() && (estadoOriginal === 'Pendiente de resolución' || estadoOriginal === 'En proceso')
+        const usuarioEsPropietarioYFueAprobada = user?.esPropietario() && (estadoOriginal === 'Pendiente de resolución' || estadoOriginal === 'En proceso')
         
         return creacion
             || estadoOriginal === 'Resuelto'
             || estadoOriginal === 'Rechazado'
-            || user.esInquilino()
+            || user?.esInquilino()
             || usuarioEsPropietarioYFueAprobada
     }
 

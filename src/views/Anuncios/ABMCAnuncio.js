@@ -231,7 +231,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
                     <LeftInputBox>
                         <span className={user?.esAdmin()? "spanTitleGrey" : "spanTitleGrey"}>Fecha</span>
                         <div className={classes.contenedorFecha}>
-                            <span className="spanNormal">{edicion ? soloFecha(anuncio.fechaCreacion) : (soloFecha(new Date()).toLocaleDateString())}</span>
+                            <span className="spanNormal">{edicion ? soloFecha(anuncio.fechaCreacion) : (soloFecha(new Date()))}</span>
                             {edicion && <CalendarTodayIcon className={classes.iconoFecha}></CalendarTodayIcon>}
                         </div>
                     </LeftInputBox>

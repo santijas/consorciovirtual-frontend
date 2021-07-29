@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 import React, { useState } from 'react'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) =>({
     inputIcono: {
         position: "relative",
         right: 28,
@@ -26,11 +26,14 @@ const useStyles = makeStyles({
             outline:"none",
             border: "1px solid rgba(0, 0, 0, 0.50)"
          },
+         [theme.breakpoints.down("sm")]: {
+            width: 380
+          }
     },
     contenedorBusqueda: {
 
     }
-});
+}));
 
 export const Busqueda = ({ busqueda, holder }) => {
     const [textoIngresado, setTextoIngresado] = useState('')

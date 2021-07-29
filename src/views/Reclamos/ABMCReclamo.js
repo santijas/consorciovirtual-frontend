@@ -166,7 +166,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
         if (creacion) {
             unReclamo = new Reclamo()
             unReclamo.fecha = new Date()
-            unReclamo.autor = { id: user.id }
+            unReclamo.autor = { id: user?.id }
         } else {
             unReclamo = await reclamoService.getById(params.id)
             setNotas(unReclamo.notas)
@@ -271,7 +271,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     }
 
     const mostrarPosiblesEstados = () => {
-        if (user.esAdmin()) {
+        if (user?.esAdmin()) {
             return estados.filter(nombreEstado => {
                 if (estadoOriginal === 'En proceso') {
                     return estadoOriginal === nombreEstado.value || nombreEstado.value === 'Resuelto'
@@ -287,8 +287,8 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
     const cambioDeEstadoDesactivado = () => {        
         return creacion
             || estadoOriginal === 'Resuelto'
-            || user.esInquilino()
-            || user.esPropietario()
+            || user?.esInquilino()
+            || user?.esPropietario()
     }
 
     const bodyModal = (
@@ -354,7 +354,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
 
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Autor</span>
-                        {creacion ? <span className={classes.span}>{user.nombre + " " + user.apellido}</span>
+                        {creacion ? <span className={classes.span}>{user?.nombre + " " + user?.apellido}</span>
                             : <span className={classes.span}>{reclamo.nombreAutor}</span>}
                     </LeftInputBox>
 
@@ -416,7 +416,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 </div>
 
                 {(edicion && !creacion) &&
-                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregar={estadoOriginal !== 'Resuelto' && (user.esAdmin() || user.id === reclamo.idAutor)}></Notas>
+                    <Notas notas={notas} setCampoEditado={setCampoEditado} update={setNotas} puedeAgregar={estadoOriginal !== 'Resuelto' && (user?.esAdmin() || user?.id === reclamo.idAutor)}></Notas>
                 }
 
             </FormBox>

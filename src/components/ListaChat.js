@@ -25,17 +25,20 @@ const useStyles = makeStyles ({
     mensajePropio: {
         display: "flex",
         flexDirection: "row-reverse",
-        padding: "10px"
+        padding: "10px",
+        fontFamily:"ProximaNovaNormal"
     },
     mensajePropioInterno: {
         backgroundColor: "#159D74",
         padding: "13px 16px",
         borderRadius: "8px 8px 0 8px",
         marginLeft: "10px",
-        color: "white"
+        color: "white",
+        fontFamily:"ProximaNovaNormal"
     },
     mensajeAjeno: {
-        padding: "10px"
+        padding: "10px",
+        fontFamily:"ProximaNovaNormal"
         
     },
     mensajeAjenoInterno: {
@@ -51,15 +54,18 @@ const useStyles = makeStyles ({
         backgroundColor: "white",
         padding: "13px 16px",
         borderRadius: "0 8px 8px 8px",
-        marginRight: "10px"
+        marginRight: "10px",
+        fontFamily:"ProximaNovaNormal"
     },
     mensajeAjenoFechaHora: {
         fontSize: "0.9rem",
         paddingTop: "3px",
-        color: "grey"
+        color: "grey",
+        fontFamily:"ProximaNovaNormal"
     },
     mensajeAjenoHora: {
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontFamily:"ProximaNovaNormal"
     },
 
 })
@@ -77,7 +83,7 @@ export const ListaChat = ({listaDeMensajes,userId}) => {
 
     const mensajeBloque = (mensaje) => {
         //SE TIENE QUE LIGAR CON EL ID DE USUARIO POSTA
-        return userId == mensaje.idEmisor? 
+        return userId === mensaje.idEmisor? 
             <div className={classes.mensajePropio} key={mensaje.id}>
                 <span className={classes.mensajePropioInterno}>{mensaje.mensaje}</span>
                 <span className={classes.mensajeAjenoFechaHora}>

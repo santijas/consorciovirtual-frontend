@@ -24,12 +24,20 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    [theme.breakpoints.down("sm")]: {
+      width: "auto"
+    }
   },
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     backgroundColor: "#FDFDFD",
     padding: theme.spacing(3),
+  },
+  textItem:{
+    [theme.breakpoints.down("sm")]: {
+      display:"none"
+    }
   }
 }));
 
@@ -48,7 +56,7 @@ export const NavBar = () => {
   }
 
   const getMensajesSinLeer = async () => {
-    let cantMensajes = await chatService.getCantidadDeMensajes(user.id)
+    let cantMensajes = await chatService.getCantidadDeMensajes(user?.id)
     setMensajesSinLeer(cantMensajes)
   }
 
@@ -84,64 +92,64 @@ export const NavBar = () => {
         { user.esAdmin() &&
           <ListItem button key="Usuarios" onClick={() => handleSelectMenu("/usuarios")}>
             <ListItemIcon>{selected.includes("usuario") ? <ActiveUser className="navicon activecolor" /> : <NonActiveUser className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("usuario") ? "activecolor activesize" : "font"}`}>Usuarios</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("usuario") ? "activecolor activesize" : "font"}`} >Usuarios</span></span>
           </ListItem>
         }
 
 
           <ListItem button key="Departamentos" onClick={() => handleSelectMenu("/departamentos")}>
             <ListItemIcon>{selected.includes("departamento") ? <ActiveApartment className="navicon" /> : <NonActiveApartment className="navicon" />}</ListItemIcon>
-            <span className={`${(selected.includes("departamento")) ? "activecolor activesize" : "font"}`}>Departamentos</span>
+            <span className={classes.textItem} ><span className={`${(selected.includes("departamento")) ? "activecolor activesize" : "font"}`}>Departamentos</span></span>
           </ListItem>
         
 
           <ListItem button key="Anuncios" onClick={() => handleSelectMenu("/anuncios")}>
             <ListItemIcon>{selected.includes("anuncio") ? <ActiveAnnouncement className="navicon" /> : <NonActiveAnnouncement className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("anuncio") ? "activecolor activesize" : "font"}`}>Anuncios</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("anuncio") ? "activecolor activesize" : "font"}`}>Anuncios</span></span>
           </ListItem>
 
           <ListItem button key="Reclamos" onClick={() => handleSelectMenu("/reclamos")}>
             <ListItemIcon>{selected.includes("reclamo") ? <ActiveClaims className="navicon" /> : <NonActiveClaims className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("reclamo") ? "activecolor activesize" : "font"}`}>Reclamos</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("reclamo") ? "activecolor activesize" : "font"}`}>Reclamos</span></span>
           </ListItem>
 
           <ListItem button key="Solicitudes técnicas" onClick={() => handleSelectMenu("/solicitudes")}>
             <ListItemIcon>{selected.includes("solicitud") ? <ActiveRequest className="navicon" /> : <NonActiveRequest className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("solicitud") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("solicitud") ? "activecolor activesize" : "font"}`}>Solicitudes Técnicas</span></span>
           </ListItem>
 
         { user.esPropietario() &&
           <ListItem button key="Inquilinos" onClick={() => handleSelectMenu("/inquilinos")}>
             <ListItemIcon>{selected.includes("inquilino") ? <ActiveInquiline className="navicon" /> : <NonActiveInquiline className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("inquilino") ? "activecolor activesize" : "font"}`}>Inquilinos</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("inquilino") ? "activecolor activesize" : "font"}`}>Inquilinos</span></span>
           </ListItem>
         }
 
 
           <ListItem button key="Gastos" onClick={() => handleSelectMenu("/gastos")}>
             <ListItemIcon>{selected.includes("gasto") ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("gasto") ? "activecolor activesize" : "font"}`}>Gastos</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("gasto") ? "activecolor activesize" : "font"}`}>Gastos</span></span>
           </ListItem>
         
 
           <ListItem button key="Expensas" onClick={() => handleSelectMenu("/expensas")}>
             <ListItemIcon>{selected.includes("expensa") ? <ActiveExpenses className="navicon" /> : <NonActiveExpenses className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("expensa") ? "activecolor activesize" : "font"}`}>Expensas</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("expensa") ? "activecolor activesize" : "font"}`}>Expensas</span></span>
           </ListItem>
 
           <ListItem button key="Documentos" onClick={() => handleSelectMenu("/documentos")}>
             <ListItemIcon>{selected.includes("documento") ? <ActiveDocuments className="navicon" /> : <NonActiveDocuments className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("documento") ? "activecolor activesize" : "font"}`}>Documentos</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("documento") ? "activecolor activesize" : "font"}`}>Documentos</span></span>
           </ListItem>
 
           <ListItem button key="Chat" onClick={() => handleSelectMenu("/chat")}>
             <ListItemIcon>{selected.includes("chat") ? <ActiveChat className="navicon" /> : <NonActiveChat className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>{ conMensajesNuevos() && !selected.includes("chat") && <span>{mensajesSinLeer}</span> }
+            <span className={classes.textItem} ><span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>{ conMensajesNuevos() && !selected.includes("chat") && <span>{mensajesSinLeer}</span> }</span>
           </ListItem>
 
           <ListItem button key="TelefonosUtiles" onClick={() => handleSelectMenu("/telefonosUtiles")}>
             <ListItemIcon>{selected.includes("telefono") ? <ActiveTelefonosUtiles className="navicon" /> : <NonActiveTelefonosUtiles className="navicon" />}</ListItemIcon>
-            <span className={`${selected.includes("telefono") ? "activecolor activesize" : "font"}`}>Teléfonos Útiles</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("telefono") ? "activecolor activesize" : "font"}`}>Teléfonos Útiles</span></span>
           </ListItem>
 
       </List>
