@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {  Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { telefonoUtilService } from '../../services/telefonoUtilService';
@@ -9,6 +9,7 @@ import { SnackbarComponent } from '../../components/Snackbar'
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { UserContext } from '../../hooks/UserContext';
 
 
 const headers = [
@@ -52,6 +53,7 @@ export const TelefonosUtiles = () =>{
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const { user } = useContext(UserContext)
 
     useEffect( ()  =>  {
       const fetchAll = async (textoBusqueda) => {
@@ -87,7 +89,7 @@ export const TelefonosUtiles = () =>{
               <Busqueda holder="Buscá por servicio" busqueda={setTextoBusqueda} />
               <div>
                <span className="cantidadObject" > {telefonos.length} Teléfonos útiles </span>
-              <StyledButtonPrimary onClick={newTelefonoUtil} >Agregar teléfono útil</StyledButtonPrimary>
+              {user?.esAdmin() && <StyledButtonPrimary onClick={newTelefonoUtil} >Agregar teléfono útil</StyledButtonPrimary> }
               </div>
            </SearchBox>
            {telefonos.length>1 &&

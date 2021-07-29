@@ -104,12 +104,12 @@ export const NavBar = () => {
           </ListItem>
         }
 
-        { user.esAdmin() &&
+
           <ListItem button key="Gastos" onClick={() => handleSelectMenu("/gastos")}>
             <ListItemIcon>{selected.includes("gasto") ? <ActiveGastos className="navicon" /> : <NonActiveGastos className="navicon" />}</ListItemIcon>
             <span className={`${selected.includes("gasto") ? "activecolor activesize" : "font"}`}>Gastos</span>
           </ListItem>
-        }
+        
 
           <ListItem button key="Expensas" onClick={() => handleSelectMenu("/expensas")}>
             <ListItemIcon>{selected.includes("expensa") ? <ActiveExpenses className="navicon" /> : <NonActiveExpenses className="navicon" />}</ListItemIcon>

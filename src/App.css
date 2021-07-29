@@ -50,10 +50,10 @@ body, html {
   width: 1.5em;
   height: 1.5em;
   display: inline-block;
-  font-size: 1.5rem;
   transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   flex-shrink: 0;
   user-select: none;
+  font-size: 28px!important;
 }
 
 .activecolor{
@@ -190,6 +190,10 @@ button.mercadopago-button {
   padding: 2px 14px;
 }
 
+.MuiListItemIcon-root {
+  min-width: 42px!important;
+}
+
 /* FUENTES Y SIZES */
 
 .activesize{
@@ -237,4 +241,8 @@ button.mercadopago-button {
   font-family:"ProximaNovaNormal";
   color: rgba(0, 0, 0, 0.45);
   line-height: 18px;
+}
+
+.uppercase{
+  text-transform: capitalize;
 }

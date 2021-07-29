@@ -40,27 +40,12 @@ const useStyles = makeStyles({
         backgroundColor: "white",
         textAlign: "left"
     },
-    span: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6
-    },
     botones: {
         display: "flex",
         marginTop: 10,
     },
     divider: {
         marginTop: 40
-    },
-    inputsDisabled: {
-        textAlign: "left",
-        marginLeft: 10
-    },
-    spanDisabled: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6,
-        color: "grey"
     },
     botonesDisabled: {
         background: "rgba(0, 0, 0 ,10%)",
@@ -247,15 +232,17 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
 
                 {!creacion && edicion &&
                     <Typography component="h2" variant="h5" className="tittle">
-                        Modificar teléfono útil
+                        {user?.esAdmin()? "Modificar teléfono útil" : "Consultar teléfono útil"}
                     </Typography>
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
-                    {user.esAdmin() &&
-                        <CompleteInputBox clas>
-                            <span className={classes.span}>Nombre Completo / Empresa</span>
-                            <TextField 
+                    
+                        <CompleteInputBox>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Nombre Completo / Empresa</span>
+                            
+                            {user?.esAdmin() 
+                            ?<TextField 
                             className={classes.inputs} 
                             id="nombre" 
                             value={telefonoUtil.nombre || ''} 
@@ -267,12 +254,16 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
                             inputProps={{ maxLength: 30 }}
                             onKeyDown={(e) => { enterKey(e) }}
                             />
+                            :<span className="spanNormal">{telefonoUtil.nombre || ''}</span>
+                        } 
                         </CompleteInputBox>
-                    }
-                    {user.esAdmin() &&
+                    
+                    
                         <LeftInputBox>
-                            <span className={classes.span} >Servicio</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"} >Servicio</span>
+                            
+                            {user?.esAdmin() 
+                            ? <TextField 
                             className={classes.inputs} 
                             id="servicio"
                              value={telefonoUtil.servicio || ''} 
@@ -284,12 +275,16 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
                              inputProps={{ maxLength: 30 }}
                              onKeyDown={(e) => { enterKey(e) }}
                              />
+                             :<span className="spanNormal">{telefonoUtil.servicio || ''}</span>
+                        } 
                         </LeftInputBox>
-                    }
-                    {user.esAdmin() &&
+                    
+                    
                         <RightInputBox>
-                            <span className={classes.span}>Teléfono</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Teléfono</span>
+                           
+                            {user?.esAdmin() 
+                            ? <TextField 
                             className={classes.inputs} 
                             id="telefono" 
                             value={telefonoUtil.telefono || ''} 
@@ -302,12 +297,16 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
                              onInput={ handleOnlyNumbers }
                              onKeyDown={(e) => { enterKey(e) }}
                              />
+                             :<span className="spanNormal">{telefonoUtil.telefono || ''}</span>
+                            } 
                         </RightInputBox>
-                    }
-                    {user.esAdmin() &&
+                    
+                    
                         <CompleteInputBox>
-                            <span className={classes.span}>Anotación</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Anotación</span>
+                            
+                            {user?.esAdmin() 
+                            ? <TextField 
                             multiline 
                             className={classes.inputs} 
                             id="anotacion" 
@@ -318,44 +317,23 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
                             inputProps={{ maxLength: 500 }}
                             onKeyDown={(e) => { enterKey(e) }}
                             />
+                            :<span className="spanNormal">{telefonoUtil.anotacion || ''}</span>
+                        } 
                         </CompleteInputBox>
-                    }
-                    {!user.esAdmin() &&
-                        <CompleteInputBox clas>
-                            <span className={classes.span}>Nombre Completo / Empresa</span>
-                            <TextField disabled className={classes.inputs} id="nombre" value={telefonoUtil.nombre} name="nombre" variant="outlined" />
-                        </CompleteInputBox>
-                    }
-                    {!user.esAdmin() &&
-                        <LeftInputBox>
-                            <span className={classes.span} >Servicio</span>
-                            <TextField disabled className={classes.inputs} id="servicio" value={telefonoUtil.servicio} name="servicio" variant="outlined" />
-                        </LeftInputBox>
-                    }
-                    {!user.esAdmin() &&
-                        <RightInputBox>
-                            <span className={classes.span}>Teléfono</span>
-                            <TextField disabled className={classes.inputs} id="telefono" value={telefonoUtil.telefono} name="telefono" variant="outlined" />
-                        </RightInputBox>
-                    }
-                    {!user.esAdmin() &&
-                        <CompleteInputBox>
-                            <span className={classes.span}>Anotación</span>
-                            <TextField multiline disabled className={classes.inputs} id="anotacion" value={telefonoUtil.anotacion} name="anotacion" variant="outlined" />
-                        </CompleteInputBox>
-                    }
+                    
+
                 </form>
 
             </FormBox>
 
             <RightFormBox>
-                {user.esAdmin() && creacion &&
+                {user?.esAdmin() && creacion &&
                     <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearTelefonoUtil()} >Crear Teléfono Útil</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToTelefenosUtiles}>Cancelar</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                {user.esAdmin() && edicion && !creacion &&
+                {user?.esAdmin() && edicion && !creacion &&
                     <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={modificarTelefonoUtil}>Guardar cambios</StyledButtonPrimary>
@@ -366,7 +344,7 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar teléfono útil</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                <Divider className={classes.divider} />
+                { user?.esAdmin() && <Divider className={classes.divider} /> }
 
                 {edicion && !creacion &&
                     <Historial tipo="TELEFONOUTIL" id={params.id} update={cambiosGuardados} />

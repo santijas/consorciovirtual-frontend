@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Accordion, AccordionDetails, AccordionSummary, InputAdornment, makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
@@ -21,7 +21,8 @@ import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
-import { fechaMaxNow, fechaMinGasto, fechaMinMenosTresAños, handleOnlyNumbers, handleOnlyNumbersDot } from '../../utils/formats';
+import { fechaMaxNow, fechaMinGasto, fechaMinMenosTresAños, handleOnlyNumbers, handleOnlyNumbersDot, obtenerPeriodoDeMoment } from '../../utils/formats';
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles({
     link: {
@@ -208,6 +209,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [checkFactura, setCheckFactura] = useState(false)
     const [errors, setErrors] = useState({})
+    const { user } = useContext(UserContext)
 
     let history = useHistory()
     const params = useParams()
@@ -258,7 +260,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     }
 
     const backToGastos = () => {
-        history.push("/gastos")
+        history.goBack()
     }
 
     const popupModal = () => {
@@ -511,6 +513,11 @@ export const ABMCGasto = ({ edicion, creacion }) => {
     }
 
 
+    const formatRubro = (unRubro) =>{
+        return rubros.find( rubro => rubro.value === unRubro)?.label
+    }
+
+
 
     const bodyModal = (
 
@@ -546,7 +553,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
             <FormBox>
                 <Link className={classes.link} onClick={backToGastos}>
                     <Chevron className={classes.chevron} />
-                    Volver a gastos
+                    Volver atras
                 </Link>
                 {creacion &&
                     <Typography component="h2" variant="h5" className="tittle">
@@ -556,7 +563,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
                 {!creacion && edicion &&
                     <Typography component="h2" variant="h5" className="tittle">
-                        Modificar gasto
+                        {user?.esAdmin() ? "Modificar gasto" : "Gasto"}
                     </Typography>
                 }
 
@@ -564,7 +571,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
                     {creacion &&
                         <LeftInputBox>
-                            <span className={classes.span}>Período</span>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Período</span>
                             <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')} >
                                 <DatePicker
                                     views={["year", "month"]}
@@ -580,8 +587,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
 
                     {!creacion && edicion &&
                         <LeftInputBox>
-                            <span className={classes.span}>Período</span>
-                            <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')}>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Período</span>
+                            {user?.esAdmin() 
+                            ? <MuiPickersUtilsProvider utils={MomentUtils} locale={moment().locale('es')}>
                                 <DatePicker
                                     className={classes.inputsDate}
                                     views={["year", "month"]}
@@ -591,12 +599,15 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     onChange={(event) => actualizarValor(event)}
                                 />
                             </MuiPickersUtilsProvider>
+                            :<span className="spanNormal uppercase">{moment(gasto.periodo).format("MMMM YYYY") || ''}</span>
+                        } 
                         </LeftInputBox>
                     }
 
                     <RightInputBox>
-                        <span className={classes.span} >Titulo</span>
-                        <TextField
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"} >Titulo</span>
+                        {user?.esAdmin() 
+                        ? <TextField
                             className={classes.inputs}
                             id="titulo"
                             value={gasto.titulo || ''}
@@ -607,12 +618,15 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                             helperText={errors?.titulo}
                             inputProps={{ maxLength: 30 }}
                         />
+                        :<span className="spanNormal">{gasto.titulo || ''}</span>
+                        } 
                     </RightInputBox>
 
                     {!creacion && edicion &&
                         <LeftInputBox>
-                            <span className={classes.span}>Tipo</span>
-                            <TextField
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Tipo</span>
+                            {user?.esAdmin() 
+                                ? <TextField
                                 className={classes.inputs}
                                 id="tipo" value={gasto.tipo || ''}
                                 onChange={(event) => actualizarValor(event)}
@@ -620,12 +634,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                 variant="outlined"
                                 disabled
                             />
+                            :<span className="spanNormal">{gasto.tipo || ''}</span>
+                        } 
                         </LeftInputBox>
                     }
 
                     {creacion && !edicion &&
                         <LeftInputBox>
-                            <span className={classes.span}>Tipo</span>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Tipo</span>
                             <Select
                                 className={classes.inputs}
                                 id="tipo"
@@ -643,12 +659,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     </MenuItem>
                                 ))}
                             </Select>
+                        
                         </LeftInputBox>
                     }
 
                     <RightInputBox>
-                        <span className={classes.span}>Monto</span>
-                        <TextField
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Monto</span>
+                        {user?.esAdmin() 
+                        ? <TextField
                             className={classes.inputs}
                             id="importe"
                             value={gasto.importe || ''} 
@@ -664,11 +682,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                             }}
                             />
+                            :<span className="spanNormal">${gasto.importe || ''}</span>
+                        } 
                     </RightInputBox>
 
                     <LeftInputBox>
-                        <span className={classes.span}>Rubro</span>
-                        <Select
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Rubro</span>
+                        {user?.esAdmin() 
+                        ? <Select
                             className={classes.inputs}
                             id="rubro"
                             select
@@ -685,11 +706,13 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                 </MenuItem>
                             ))}
                         </Select>
+                        :<span className="spanNormal">{formatRubro(gasto.rubro) || ''}</span>
+                    } 
                     </LeftInputBox>
 
-                    {creacion && !edicion &&
+                    {creacion && !edicion && user?.esAdmin() &&
                         <RightInputBox>
-                            <span className={classes.span}>Archivo</span>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Archivo</span>
                             <FileUploader
                                 error={Boolean(errors?.selectedFile)}
                                 helperText={errors?.selectedFile}
@@ -702,18 +725,21 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                     {!creacion && edicion &&
 
                         <RightInputBox>
-                            <span className={classes.span}>Archivo</span>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Archivo</span>
                             {
                                 gasto.url ?
                                     <Box display="flex" flexDirection="column">
                                         <StyledButtonPrimary className={classes.botones} onClick={onDownload} >Descargar documento</StyledButtonPrimary>
-                                        <span className={classes.delete} onClick={deleteFile}>Eliminar archivo</span>
+                                        { user?.esAdmin() && <span className={classes.delete} onClick={deleteFile}>Eliminar archivo</span>}
                                     </Box>
                                     :
-                                    <FileUploader
+                                    ( user?.esAdmin()?  <FileUploader
                                         onFileSelectSuccess={(file) => handleSelectFile(file)}
                                         onFileSelectError={({ error }) => alert(error)}
-                                    />
+                                        />
+                                        :
+                                        <span className="spanNormal">No se cargó archivo.</span>
+                                    )
                             }
 
 
@@ -734,8 +760,9 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                             <AccordionDetails className={classes.bodyAcordeon}>
 
                                 <LeftInputBox>
-                                    <span className={classes.span}>Tipo de Factura</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Tipo de Factura</span>
+                                    {user?.esAdmin() 
+                                    ? <TextField 
                                     className={classes.inputs} 
                                     id="tipoFactura" 
                                     value={factura.tipoFactura || ''} 
@@ -747,11 +774,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     inputProps={{ maxLength: 1 }}
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.tipoFactura || ''}</span>
+                        } 
                                 </LeftInputBox>
 
                                 <RightInputBox>
-                                    <span className={classes.span}>Fecha de facturación</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Fecha de facturación</span>
+                                    {user?.esAdmin() 
+                                    ? <TextField 
                                     className={classes.inputs} 
                                     id="fechaFactura" 
                                     value={factura.fechaFactura || ''} 
@@ -764,11 +794,15 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     helperText={errors?.fechaFactura}
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.fechaFactura || ''}</span>
+                                } 
+
                                 </RightInputBox>
 
                                 <LeftInputBox>
-                                    <span className={classes.span}>Punto de venta</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Punto de venta</span>
+                                    {user?.esAdmin() 
+                                    ?     <TextField 
                                     className={classes.inputs} 
                                     id="puntoDeVenta" 
                                     value={factura.puntoDeVenta || ''} 
@@ -781,11 +815,15 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     onInput={ handleOnlyNumbers }
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.puntoDeVenta || ''}</span>
+                                } 
+
                                 </LeftInputBox>
 
                                 <RightInputBox>
-                                    <span className={classes.span}>Numero de factura</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Numero de factura</span>
+                                    {user?.esAdmin() 
+                                 ?    <TextField 
                                     className={classes.inputs} 
                                     id="numeroFactura" 
                                     value={factura.numeroFactura || ''} 
@@ -798,11 +836,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     onInput={ handleOnlyNumbers }
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.numeroFactura || ''}</span>
+                        } 
                                 </RightInputBox>
 
                                 <LeftInputBox>
-                                    <span className={classes.span}>Cuit Proveedor</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Cuit Proveedor</span>
+                                    {user?.esAdmin() 
+                                    ? <TextField 
                                     className={classes.inputs} 
                                     id="cuitProveedor" 
                                     value={factura.cuitProveedor || ''} 
@@ -815,11 +856,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     onInput={ handleOnlyNumbers }
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.cuitProveedor || ''}</span>
+                        } 
                                 </LeftInputBox>
 
                                 <RightInputBox>
-                                    <span className={classes.span}>Cuit Receptor</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Cuit Receptor</span>
+                                    {user?.esAdmin() 
+                                    ? <TextField 
                                     className={classes.inputs} 
                                     id="cuitReceptor" 
                                     value={factura.cuitReceptor || ''} 
@@ -832,11 +876,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     onInput={ handleOnlyNumbers }
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.cuitReceptor || ''}</span>
+                        } 
                                 </RightInputBox>
 
                                 <LeftInputBox>
-                                    <span className={classes.span}>CAE</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>CAE</span>
+                                    {user?.esAdmin() 
+                                    ?<TextField 
                                     className={classes.inputs} 
                                     id="cae" 
                                     value={factura.cae || ''} 
@@ -849,11 +896,14 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     onInput={ handleOnlyNumbers }
                                     FormHelperTextProps={{ style: {backgroundColor: "white"} }}
                                     />
+                                    :<span className="spanNormal">{factura.cae || ''}</span>
+                        } 
                                 </LeftInputBox>
 
                                 <RightInputBox>
-                                    <span className={classes.span}>Importe</span>
-                                    <TextField 
+                                    <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Importe</span>
+                                    {user?.esAdmin() 
+                                    ?   <TextField 
                                     className={classes.inputs} 
                                     id="importe" value={factura.importe || ''} 
                                     onChange={(event) => actualizarValorFactura(event)} 
@@ -869,6 +919,8 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                     }}
                                     />
+                                    :<span className="spanNormal">{factura.importe || ''}</span>
+                        } 
                                 </RightInputBox>
 
                             </AccordionDetails>
@@ -879,13 +931,13 @@ export const ABMCGasto = ({ edicion, creacion }) => {
             </FormBox>
 
             <RightFormBox>
-                {creacion &&
+                {creacion && user?.esAdmin() &&
                     <ButtonBox>
                         <StyledButtonPrimary className={classes.botones} onClick={() => createData()} >Crear gasto</StyledButtonPrimary>
                         <StyledButtonSecondary className={classes.botones} onClick={backToGastos}>Cancelar</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                {edicion && !creacion &&
+                {edicion && !creacion && user?.esAdmin() &&
                     <ButtonBox>
                         {campoEditado &&
                             <StyledButtonPrimary className={classes.botones} onClick={updateData}>Guardar cambios</StyledButtonPrimary>
@@ -896,7 +948,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar gasto</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                <Divider className={classes.divider} />
+                {user?.esAdmin() &&<Divider className={classes.divider} />}
 
                 {edicion && !creacion &&
                     <Historial tipo='GASTO' id={params.id} update={cambiosGuardados} />

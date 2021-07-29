@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {  Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { documentoService } from '../../services/documentoService';
@@ -10,6 +10,7 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
+import { UserContext } from '../../hooks/UserContext';
 
 
 const headers = [
@@ -46,6 +47,7 @@ export const Documentos = () =>{
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const { user } = useContext(UserContext)
 
     useEffect( ()  =>  {
       const fetchAll = async (textoBusqueda) => {
@@ -81,7 +83,7 @@ export const Documentos = () =>{
               <Busqueda holder="Buscá por título o nombre de archivo" busqueda={setTextoBusqueda} />
               <div>
                <span className="cantidadObject" > {documentos.length} Documentos </span>
-              <StyledButtonPrimary onClick={newDocument} >Agregar documento</StyledButtonPrimary>
+              { user?.esAdmin() && <StyledButtonPrimary onClick={newDocument} >Agregar documento</StyledButtonPrimary> }
               </div>
            </SearchBox>
            { documentos.length > 0 &&

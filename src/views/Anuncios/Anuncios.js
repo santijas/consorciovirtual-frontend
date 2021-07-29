@@ -54,7 +54,7 @@ export const Anuncios = () => {
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
-    const { user, setUser } = useContext(UserContext)
+    const { user } = useContext(UserContext)
     let history = useHistory()
     let location = useLocation()
 
@@ -91,7 +91,7 @@ export const Anuncios = () => {
                 <Busqueda holder="Buscá por fecha, título o autor" busqueda={setTextoBusqueda} />
                 <div>
                     <span className="cantidadObject" > {anuncios.length} anuncios </span>
-                    { user?.esAdmin()? <StyledButtonPrimary onClick={newAnuncio}>Agregar anuncio</StyledButtonPrimary>: <span></span>}
+                    { user?.esAdmin() && <StyledButtonPrimary onClick={newAnuncio}>Agregar anuncio</StyledButtonPrimary>}
                 </div>
             </SearchBox>
             {anuncios.length > 0 &&

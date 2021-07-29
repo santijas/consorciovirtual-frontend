@@ -16,9 +16,7 @@ import { UserContext } from '../../hooks/UserContext';
 //Archivo
 import { FileUploader } from '../../components/FileUploader'
 import axios from 'axios';
-import { REST_SERVER_URL } from "../../services/configuration";
-
-
+import { soloFecha } from '../../utils/formats';
 
 const useStyles = makeStyles({
     link: {
@@ -45,27 +43,12 @@ const useStyles = makeStyles({
         backgroundColor: "white",
         textAlign: "left"
     },
-    span: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6
-    },
     botones: {
         display: "flex",
         marginTop: 10,
     },
     divider: {
         marginTop: 40
-    },
-    inputsDisabled: {
-        textAlign: "left",
-        marginLeft: 10
-    },
-    spanDisabled: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6,
-        color: "grey"
     },
     botonesDisabled: {
         background: "rgba(0, 0, 0 ,10%)",
@@ -295,27 +278,31 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
 
                 {!creacion && edicion &&
                     <Typography component="h2" variant="h5" className="tittle">
-                        Modificar Documento
+                        {user?.esAdmin()? "Modificar Documento" : "Documento"}
                     </Typography>
                 }
 
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox clas>
-                        <span className={classes.span}>Fecha</span>
-                        <TextField 
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Fecha</span>
+                        {user?.esAdmin() 
+                        ? <TextField 
                         disabled 
                         className={classes.inputs} 
                         id="fecha" 
-                        value={documento.fechaCreacion || new Date(Date.now()).toLocaleDateString()} 
+                        value={soloFecha(documento.fechaCreacion) || soloFecha(new Date(Date.now()).toLocaleDateString())} 
                         name="fecha" 
                         variant="outlined" 
                         />
+                        :<span className="spanNormal">{documento.fechaCreacion || ''}</span>
+                        } 
                     </LeftInputBox>
 
 
                     <RightInputBox>
-                        <span className={classes.span}>Autor</span>
-                        <TextField 
+                        <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Autor</span>
+                        {user?.esAdmin() 
+                        ? <TextField 
                         disabled 
                         className={classes.inputs} 
                         id="autor" 
@@ -323,12 +310,15 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                         name="autor" 
                         variant="outlined" 
                         />
+                        :<span className="spanNormal">{documento.autor || ''}</span>
+                        } 
                     </RightInputBox>
 
-                    {user?.esAdmin() &&
+                
                         <LeftInputBox>
-                            <span className={classes.span}>Título</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Título</span>
+                            {user?.esAdmin() 
+                            ?   <TextField 
                             className={classes.inputs} 
                             id="titulo" 
                             value={documento.titulo || ''}
@@ -338,15 +328,11 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                              helperText={errors?.titulo}
                              inputProps={{ maxLength: 70 }}
                              />
+                             :<span className="spanNormal">{documento.titulo || ''}</span>
+                        } 
                         </LeftInputBox>
-                    }
+                    
 
-                    {!user?.esAdmin() &&
-                        <LeftInputBox>
-                            <span className={classes.span}>Título</span>
-                            <TextField disabled className={classes.inputs} id="titulo" value={documento.titulo} name="titulo" variant="outlined" />
-                        </LeftInputBox>
-                    }
 
                     {creacion && !edicion &&
                         <RightInputBox>
@@ -361,7 +347,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                     {!creacion && edicion &&
 
                         <RightInputBox>
-                            <span className={classes.span}>Archivo</span>
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Archivo</span>
                             {
                                 documento.enlaceDeDescarga ?
                                     <Box display="flex" flexDirection="column">
@@ -375,14 +361,14 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                                     />
                             }
 
-
                         </RightInputBox>
                     }
 
-                    {user?.esAdmin() &&
                         <CompleteInputBox>
-                            <span className={classes.span}>Descripción</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Descripción</span>
+                            
+                            {user?.esAdmin() 
+                            ? <TextField 
                             multiline 
                             className={classes.inputs} 
                             id="descripcion" 
@@ -394,16 +380,10 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                             helperText={errors?.descripcion}
                             inputProps={{ maxLength: 500 }}
                             />
+                            :<span className="spanNormal">{documento.descripcion || ''}</span>
+                        } 
                         </CompleteInputBox>
-                    }
-
-
-                    {!user?.esAdmin() &&
-                        <CompleteInputBox>
-                            <span className={classes.span}>Descripción</span>
-                            <TextField disabled multiline className={classes.inputs} id="descripcion" value={documento.descripcion} name="descripcion" variant="outlined" />
-                        </CompleteInputBox>
-                    }
+                    
 
                 </form>
 
@@ -427,7 +407,7 @@ export const ABMCDocumento = ({ edicion, creacion }) => {
                         <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar documento</StyledButtonSecondary>
                     </ButtonBox>
                 }
-                <Divider className={classes.divider} />
+                { user?.esAdmin() && <Divider className={classes.divider} /> }
 
                 {edicion && !creacion &&
                     <Historial tipo="DOCUMENTO" id={params.id} update={cambiosGuardados} />

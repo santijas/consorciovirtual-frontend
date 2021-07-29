@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { InputAdornment, makeStyles, Select, Typography } from '@material-ui/core';
 import { StyledButtonPrimary, StyledButtonSecondary } from '../../components/Buttons'
 import { useHistory, useParams, Prompt } from 'react-router-dom';
@@ -14,6 +14,7 @@ import { usuarioService } from '../../services/usuarioService';
 import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import { handleOnlyNumbers, handleOnlyNumbersDot } from '../../utils/formats';
+import { UserContext } from '../../hooks/UserContext';
 
 const useStyles = makeStyles({
     link: {
@@ -40,27 +41,12 @@ const useStyles = makeStyles({
         backgroundColor: "white",
         textAlign: "left"
     },
-    span: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6
-    },
     botones: {
         display: "flex",
         marginTop: 10,
     },
     divider: {
         marginTop: 40
-    },
-    inputsDisabled: {
-        textAlign: "left",
-        marginLeft: 10
-    },
-    spanDisabled: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6,
-        color: "grey"
     },
     botonesDisabled: {
         background: "rgba(0, 0, 0 ,10%)",
@@ -113,6 +99,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
     const [propietarioId, setPropietarioId] = useState(null)
     const [inquilinoId, setInquilinoId] = useState(null)
     const [errors, setErrors] = useState({})
+    const { user } = useContext(UserContext) 
 
     let history = useHistory()
     const params = useParams()
@@ -291,15 +278,18 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
                     {!creacion && edicion &&
                         <Typography component="h2" variant="h5" className="tittle">
-                            Modificar departamento
+                           {user?.esAdmin()? "Modificar departamento" : "Departamento"} 
                         </Typography>
                     }
 
                     <form className={classes.form} noValidate autoComplete="off">
 
                         <LeftInputBox>
-                            <span className={classes.span}>Piso</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Piso</span>
+                            
+                            
+                            {user?.esAdmin() 
+                            ?<TextField 
                             className={classes.inputs} 
                             id="piso" 
                             type="text"
@@ -313,12 +303,16 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             onInput={ handleOnlyNumbers }
                             onKeyDown={(e) => { enterKey(e) }}
                             />
+                            :<span className="spanNormal">{departamento.piso || ''}</span>
+                        } 
                         </LeftInputBox>
 
 
                         <RightInputBox>
-                            <span className={classes.span}>Numero - Letra Departamento</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Numero - Letra Departamento</span>
+                            
+                            {user?.esAdmin() 
+                            ?<TextField 
                             className={classes.inputs} 
                             id="nroDepartamento" 
                             value={departamento.nroDepartamento || ''} 
@@ -330,25 +324,33 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             inputProps={{ maxLength: 3 }}
                             onKeyDown={(e) => { enterKey(e) }}
                             />
+                            :<span className="spanNormal">{departamento.nroDepartamento || ''}</span>
+                        } 
                         </RightInputBox>
 
                         <LeftInputBox>
-                            <span className={classes.span} >Torre</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"} >Torre</span>
+                            
+                            {user?.esAdmin() 
+                            ?<TextField 
                             className={classes.inputs} 
                             id="torre" 
-                            value={departamento.torre || ''} 
+                            value={departamento.torre || '-'} 
                             onChange={(event) => actualizarValor(event)} 
                             name="torre" 
                             variant="outlined" 
                             inputProps={{ maxLength: 3 }}
                             onKeyDown={(e) => { enterKey(e) }}
                             />
+                            :<span className="spanNormal">{departamento.torre || ''}</span>
+                        } 
                         </LeftInputBox>
 
                         <RightInputBox>
-                            <span className={classes.span}>Superficie</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Superficie</span>
+                            
+                            {user?.esAdmin() 
+                            ?<TextField 
                             className={classes.inputs} 
                             id="metrosCuadrados" 
                             value={departamento.metrosCuadrados || ''} 
@@ -365,13 +367,15 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                 endAdornment: <InputAdornment position="end">m2</InputAdornment>,
                             }}
                             />
+                            :<span className="spanNormal">{departamento.metrosCuadrados || ''}</span>
+                        } 
                         </RightInputBox>
 
                         {usuarios && departamento &&
                             <LeftInputBox>
-                                <span className={classes.span}>Propietario</span>
-                                {departamento &&
-                                    <Select 
+                                <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Propietario</span>
+                                {departamento && user?.esAdmin() 
+                                    ?<Select 
                                     className={classes.inputs} 
                                     id="propietario"
                                     select 
@@ -389,13 +393,18 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                                 {option.id}.  {option.nombre} {option.apellido}
                                             </MenuItem>
                                         ))}
-                                    </Select>}
+                                    </Select>
+                                    :<span className="spanNormal">{propietarioId || ''}</span>
+                                } 
+                                    
                             </LeftInputBox>
                         }
 
                         <RightInputBox>
-                            <span className={classes.span}>Porcentaje de expensas</span>
-                            <TextField 
+                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Porcentaje de expensas</span>
+                            
+                            {user?.esAdmin() 
+                            ?<TextField 
                             className={classes.inputs} 
                             id="porcentajeExpensa" 
                             onChange={(event) => actualizarValor(event)} 
@@ -412,13 +421,16 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                 endAdornment: <InputAdornment position="end">%</InputAdornment>,
                             }}
                             />
+                            :<span className="spanNormal">{departamento.porcentajeExpensa || ''}</span>
+                        } 
                         </RightInputBox>
 
 
                         {inquilinos && departamento && edicion && !creacion &&
                             <LeftInputBox>
-                                <span className={classes.span}>Inquilino</span>
-                                {departamento && 
+                                <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Inquilino</span>
+
+                                {departamento && user?.esAdmin()?
                                 <Select 
                                 className={classes.inputInquilino} 
                                 id="inquilino" 
@@ -440,7 +452,10 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                             {option.id}. {option.nombre} {option.apellido}
                                         </MenuItem>
                                     ))}
-                                </Select>}
+                                </Select>
+                                :<span className="spanNormal">{inquilinoId || ''}</span>
+                                
+                            }
                             </LeftInputBox>}
 
                     </form>
@@ -448,13 +463,13 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                 </FormBox>
 
                 <RightFormBox>
-                    {creacion &&
+                    {creacion && user?.esAdmin() &&
                         <ButtonBox>
                             <StyledButtonPrimary className={classes.botones} onClick={() => crearDepartamento()} >Crear departamento</StyledButtonPrimary>
                             <StyledButtonSecondary className={classes.botones} onClick={backToUsers}>Cancelar</StyledButtonSecondary>
                         </ButtonBox>
                     }
-                    {edicion && !creacion && propietarioId &&
+                    {edicion && !creacion && propietarioId && user?.esAdmin() &&
                         <ButtonBox>
                             {campoEditado &&
                                 <StyledButtonPrimary className={classes.botones} onClick={modificarDepartamento}>Guardar cambios</StyledButtonPrimary>
@@ -465,7 +480,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                             <StyledButtonSecondary className={classes.botones} onClick={popupModalDelete}>Eliminar Departamento</StyledButtonSecondary>
                         </ButtonBox>
                     }
-                    <Divider className={classes.divider} />
+                    { user?.esAdmin() && <Divider className={classes.divider} />}
 
                     {edicion && !creacion &&
                         <Historial tipo="DEPARTAMENTO" id={params.id} update={cambiosGuardados} />

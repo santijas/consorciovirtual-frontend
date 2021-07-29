@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { Busqueda } from '../../components/Busqueda'
@@ -10,6 +10,7 @@ import { dosDecimales, formatDate, numeroConPuntos } from '../../utils/formats';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { UserContext } from '../../hooks/UserContext';
 
 
 const headers = [
@@ -43,6 +44,7 @@ export const Gastos = () =>{
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const { user } = useContext(UserContext)
     let history = useHistory()
 
 
@@ -82,7 +84,7 @@ export const Gastos = () =>{
               <Busqueda holder="Buscá por título o monto" busqueda={setTextoBusqueda} />
               <div>
                <span className="cantidadObject" > {gastos.length} gastos </span>
-              <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>
+              { user?.esAdmin() && <StyledButtonPrimary onClick={newUser} >Agregar gasto</StyledButtonPrimary>}
               </div>
            </SearchBox>
 

@@ -41,11 +41,6 @@ const useStyles = makeStyles({
         backgroundColor: "white",
         textAlign: "left"
     },
-    span: {
-        textAlign: "left",
-        marginLeft: 10,
-        marginBottom: 6
-    },
     contenedorFecha: {
         display: "flex",
         justifyContent: "space-between",
@@ -99,8 +94,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
     const [openModal, setOpenModal] = useState(false)
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack, snackColor } = useSnack()
     const [modalStyle] = useState(getModalStyle)
-    const [usuarios, setUsuarios] = useState('')
-    const { user, setUser } = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const [errors, setErrors] = useState({})
 
     let history = useHistory()
@@ -228,7 +222,7 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
 
                 {!creacion && edicion &&
                     <Typography component="h2" variant="h5" className="tittle">
-                        { user?.esAdmin() ? "Modificar anuncio" : "Consultar anuncio" }
+                        { user?.esAdmin() ? "Modificar anuncio" : "Anuncio" }
                     </Typography>
                 }
 

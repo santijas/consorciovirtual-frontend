@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { departamentoService } from '../../services/departamentoService';
@@ -9,6 +9,7 @@ import { SnackbarComponent } from '../../components/Snackbar';
 import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { UserContext } from '../../hooks/UserContext';
 
 
   const headers = [
@@ -45,6 +46,7 @@ export const Departamentos = () =>{
     const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
+    const { user } = useContext(UserContext)
 
     let history = useHistory()  
 
@@ -83,7 +85,7 @@ export const Departamentos = () =>{
                 <Busqueda holder="Buscá por departamento, propietario, inquilino o estado de cuenta" busqueda={setTextoBusqueda} />
                 <div>
                 <span className="cantidadObject" > {departamentos.length} departamentos </span>
-                <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary>
+                { user?.esAdmin() && <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary> }
                 </div>
             </SearchBox>
             {
