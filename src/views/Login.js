@@ -90,6 +90,7 @@ export const Login = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [mensajeSnack, setMensajeSnack] = useState('')
   const { user, setUser } = useContext(UserContext);
+  const [errors, setErrors] = useState({})
 
   let history = useHistory()
   const classes = useStyles();
@@ -129,15 +130,35 @@ export const Login = () => {
     }
   }
 
+  const validarLogin = () => {
+    setErrors(null)
+
+    if (!correo) {
+        setErrors(prev => ({ ...prev, correo: "Campo obligatorio" }))
+    }
+
+    if (!password) {
+        setErrors(prev => ({ ...prev, password: "Campo obligatorio" }))
+    }
+
+    return correo && password
+}
+
+
   const handleLogin = async (e) => {
     e.preventDefault()
 
     try {
-      const logueado = await loginUser(correo, password)
-      handleRememberStorage()
-      redirectTypeUser(logueado)
+      if(validarLogin()){
+        const logueado = await loginUser(correo, password)
+        handleRememberStorage()
+        redirectTypeUser(logueado)
+      } else {
+        usarSnack("Campos obligatorios faltantes.", true)
+      }
     } catch (e) {
-      usarSnack(e.message)
+      console.log(e.message)
+      usarSnack("Usuario o contraseña incorrectos.")
     }
   }
 
@@ -175,6 +196,8 @@ export const Login = () => {
                 autoFocus
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
+                error={Boolean(errors?.correo)}
+                helperText={errors?.correo}
               />
               <TextField
                 variant="outlined"
@@ -187,6 +210,8 @@ export const Login = () => {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={Boolean(errors?.password)}
+                helperText={errors?.password}
               />
               <FormControlLabel
                 control={<Checkbox value={remember} checked={remember} onChange={handleChange} color="primary" />}
