@@ -122,6 +122,7 @@ export const Inquilinos = () =>{
 
       if (user?.esPropietario()) {
         fetchAllUsers(textoBusqueda)
+        setIsLoading(false)
       } else {
         history.goBack()
       }
