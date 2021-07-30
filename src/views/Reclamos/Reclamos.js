@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { reclamoService } from '../../services/reclamoService';
@@ -12,6 +12,7 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { padLeadingZeros } from '../../utils/formats';
+import { UserContext } from '../../hooks/UserContext';
 
 const headers = [
   { id: "id", label: "Reclamo" },
@@ -48,7 +49,7 @@ export const Reclamos = () => {
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-
+  const { user } = useContext(UserContext)
   let history = useHistory()
   let location = useLocation()
 
@@ -85,7 +86,7 @@ export const Reclamos = () => {
         <Busqueda holder="Buscá por id, asunto o estado" busqueda={setTextoBusqueda} />
         <div>
           <span className="cantidadObject" > {reclamos.length} reclamos </span>
-          <StyledButtonPrimary onClick={newReclamo} >Agregar reclamo</StyledButtonPrimary>
+         {!user?.esAdmin() && <StyledButtonPrimary onClick={newReclamo} >Agregar reclamo</StyledButtonPrimary>}
         </div>
       </SearchBox>
       {reclamos.length > 0 &&

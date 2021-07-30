@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { Tabla, StyledTableRow, StyledTableCell } from '../../components/Tabla';
 import { Busqueda } from '../../components/Busqueda'
@@ -12,6 +12,7 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
 import { padLeadingZeros } from '../../utils/formats';
+import { UserContext } from '../../hooks/UserContext';
 
 const headers = [
   { id: "id", label: "Solicitud" },
@@ -57,6 +58,7 @@ export const Solicitudes = () => {
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
   const [textoBusqueda, setTextoBusqueda] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useContext(UserContext)
 
   let history = useHistory()
   let location = useLocation()
@@ -95,7 +97,7 @@ export const Solicitudes = () => {
         <Busqueda holder="Buscá por solicitud, autor, titulo o estado" busqueda={setTextoBusqueda} />
         <div>
           <span className="cantidadObject" > {solicitudes.length} solicitudes técnicas </span>
-          <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>
+          {!user?.esAdmin() && <StyledButtonPrimary onClick={newSolicitud}>Agregar solicitud técnica</StyledButtonPrimary>}
         </div>
       </SearchBox>
       {solicitudes.length > 0 &&
