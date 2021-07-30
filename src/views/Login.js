@@ -28,13 +28,16 @@ const useStyles = makeStyles((theme) => ({
   },
   image: {
     display: "flex",
-    justifyContent: "flex-end",
+    width:"100%",
     backgroundImage: `url(${Fondo})`,
     backgroundColor: "#F5F5F5",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     boxShadow: "1px -2px -1px 3px black",
-    flexGrow: "2"
+    flexGrow: "2",
+    [theme.breakpoints.down("sm")]: {
+      justifyContent:"center"
+    },
   },
   footer: {
     position: "fixed",
@@ -48,10 +51,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#ffffffc7",
     boxShadow: "inset 0px 0px 4px 0px black",
     [theme.breakpoints.down("sm")]: {
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      position: "relative",
+      display:"none"
     },
   },
   paper: {
@@ -64,12 +64,16 @@ const useStyles = makeStyles((theme) => ({
     maxHeigth: "100px!important",
     opacity: "none",
 
+
   },
   avatar: {
     margin: theme.spacing(0),
     width: "4rem",
     height: "4rem",
     backgroundColor: "#159D74",
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
   },
   form: {
     width: '100%',
@@ -77,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       width: "100%",
       margin: theme.spacing(1),
+      height:"100%"
     },
   },
   submit: {
@@ -89,9 +94,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     margin: "30px 180px 20px 0px",
+    justifyContent:"flex-end",
     [theme.breakpoints.down("sm")]: {
-      width: "100%",
       margin: theme.spacing(1),
+      alignSelf:"center",
+      justifySelf:"center",
     },
     [theme.breakpoints.down("lg")]: {
       maxHeight: "580px",
@@ -121,41 +128,40 @@ const useStyles = makeStyles((theme) => ({
   },
   logoCV: {
     width: "30rem",
-    position: "absolute",
-    left: "11rem",
-    top: "15rem",
     [theme.breakpoints.down("sm")]: {
-      position: "absolute",
-      width: "10rem",
-      left: "7.5rem",
-      top: "2rem",
-      margin: theme.spacing(1),
-    },
-    [theme.breakpoints.down("lg")]: {
-      position: "absolute",
-      width: "25rem",
-      left: "7.5rem",
-      top: "9rem",
-      margin: theme.spacing(1),
+      display:"none"
     },
   },
   slogan: {
-    position: 'absolute',
     left: '12.3rem',
     top: '24rem',
     fontSize: '2.4rem',
     [theme.breakpoints.down("sm")]: {
       display: "none",
     },
-    [theme.breakpoints.down("lg")]: {
-      left: '9rem',
-      top: '17rem',
-      fontSize: '1.4rem',
-    },
   },
   textoLogin: {
     color: "#159D74",
+  },
+  logoPaper:{
+    display:"none",
+    [theme.breakpoints.down("sm")]: {
+      width: "15rem",
+      display:"flex",
+    },
+  },
+  logoContainer:{
+    display:"flex",
+    flexDirection:"column",
+    marginTop: 200,
+    marginLeft:150,
+    paddingRight: 20,
+    flex:"50%",
+    [theme.breakpoints.down("sm")]: {
+      display:"none"
+    },
   }
+
 }));
 
 export const Login = () => {
@@ -252,7 +258,7 @@ export const Login = () => {
 
         <div className={classes.logoContainer}>
           <div className="logo-login animate__animated animate__fadeIn">
-            <img src={LogoCV} className={classes.logoCV} />
+            <img src={LogoCV} className={classes.logoCV} alt="Logo"/>
           </div>
           <div className="slogan-login animate__animated animate__fadeIn">
             <span className={classes.slogan}>Una <b>nueva experiencia</b> en la gestión de tu consorcio.</span>
@@ -261,7 +267,7 @@ export const Login = () => {
 
         <Box className={classes.container} component={Paper}>
           <div className={classes.paper} >
-
+            <img src={LogoCV} className={classes.logoPaper} alt="Logo"/>
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
