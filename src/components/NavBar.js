@@ -11,16 +11,15 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: 'flex'
   },
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-
+    marginLeft: drawerWidth
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
+    flexShrink: 0
   },
   drawerPaper: {
     width: drawerWidth,

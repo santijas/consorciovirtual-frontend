@@ -28,9 +28,15 @@ const useStyles = makeStyles((theme) =>({
          },
          [theme.breakpoints.down("sm")]: {
             width: 380
-          }
+          },
+
+          '@media (max-width: 1000px)': {
+            width: '100%',
+            }
     },
     contenedorBusqueda: {
+
+        
 
     }
 }));

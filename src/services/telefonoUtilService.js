@@ -10,6 +10,7 @@ class TelefonoUtilService{
 
     async getBySearch(palabraBuscada) {
         const listaJSON = await axios.get(`${REST_SERVER_URL}/contactosUtiles`, {params:{ palabraBuscada }})
+        console.log(listaJSON.data)
         return listaJSON.data
     }
 

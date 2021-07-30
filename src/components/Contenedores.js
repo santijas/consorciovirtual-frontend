@@ -19,10 +19,14 @@ export const RootBoxABM = withStyles((theme) => ({
         marginLeft: 300,
         flexDirection: "row",
         boxSizing: "unset",
-        marginTop: 70,
+        marginTop: 70   ,
         [theme.breakpoints.down("sm")]: {
             marginLeft: 100
-          }
+          },
+          '@media (max-width: 650px)': {
+            flexDirection: "column",
+            marginLeft: 70
+          },
     },
     }))(Box);
 
@@ -39,6 +43,11 @@ export const FormBox = withStyles((theme) => ({
         paddingTop: 40,
         [theme.breakpoints.down("sm")]: {
             paddingRight: 30
+          },
+          '@media (max-width: 650px)': {
+            position: "relative",
+            width: "100%",
+            marginBottom: 25,
           }
     },
     }))(Box);
@@ -51,11 +60,13 @@ export const RightFormBox = withStyles((theme) => ({
         height: "100%",
         display: "flex",
         backgroundColor: "white",
-        width: "450px",
+        width: "35vw",
         flexDirection: "column",
         overflowY: "auto",
-        [theme.breakpoints.down("sm")]: {
-            display:"none",
+          '@media (max-width: 650px)': {
+            position: "relative",
+            width: "100%",
+            paddingTop: 5,
           }
     },
     }))(Box);
@@ -70,6 +81,9 @@ export const LeftInputBox = withStyles((theme) => ({
         [theme.breakpoints.down("sm")]: {
             flex: "0 1 auto",
             maxWidth: "100%",
+          },
+          '@media (max-width: 650px)': {
+            flex: "100%",
           }
     },
     }))(Box);
@@ -84,6 +98,10 @@ export const RightInputBox = withStyles((theme) => ({
         [theme.breakpoints.down("sm")]: {
             flex: "0 1 auto",
             maxWidth: "100%",
+          }
+          ,
+          '@media (max-width: 650px)': {
+            flex: "100%",
           }
     },
     }))(Box);

@@ -8,7 +8,17 @@ export const StyledButtonPrimary = withStyles((theme) => ({
     background: "#159D74",
     padding: "10px 24px",
     borderRadius: 2,
-    textTransform: "none"
+    textTransform: "none",
+    float: "none",
+    '@media (max-width: 1000px)': {
+      marginTop: "2vh",
+      float: "right",
+    },
+    '@media (max-width: 400px)': {
+      marginTop: "2vh",
+      float: "right",
+      width: "100%"
+    }
   }
 }))(Button);
 

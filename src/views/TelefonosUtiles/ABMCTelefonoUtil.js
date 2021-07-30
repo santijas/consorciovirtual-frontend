@@ -193,7 +193,7 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
     }
 
     const verificarNumeroTelefonico = () => {
-        return true
+        return telefonoUtil.length < 16
     }
 
     const bodyModal = (
