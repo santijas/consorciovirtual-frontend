@@ -37,7 +37,7 @@ const useStyles = makeStyles({
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "space-between",
-        marginTop: 30
+        marginTop: 30,
     },
     inputs: {
         backgroundColor: "white",
@@ -329,7 +329,7 @@ export const ABMCReclamo = ({ edicion, creacion }) => {
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
                         <span className={classes.spanDisabled}>Nro de reclamo</span>
-                        <span className={classes.nroReclamo}>{edicion ? padLeadingZeros(reclamo.id, 5) : '-'}</span>
+                        <span className={classes.nroReclamo}>{edicion ? padLeadingZeros(reclamo?.id, 5) : '-'}</span>
                     </LeftInputBox>
 
                     <RightInputBox>

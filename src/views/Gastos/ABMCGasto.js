@@ -597,6 +597,7 @@ export const ABMCGasto = ({ edicion, creacion }) => {
                                     disabled
                                     inputVariant="outlined"
                                     onChange={(event) => actualizarValor(event)}
+                                    inputProps={{ style:{textTransform:"capitalize"} }}
                                 />
                             </MuiPickersUtilsProvider>
                             :<span className="spanNormal uppercase">{moment(gasto.periodo).format("MMMM YYYY") || ''}</span>
