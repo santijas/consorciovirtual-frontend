@@ -66,9 +66,6 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down("sm")]: {
             fontSize: 12,
         },
-        '@media (max-width: 500px)': {
-            display: 'none'
-        }
     },
     span: {
         textAlign: "left",

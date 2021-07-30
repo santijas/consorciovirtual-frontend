@@ -10,13 +10,7 @@ export const StyledButtonPrimary = withStyles((theme) => ({
     borderRadius: 2,
     textTransform: "none",
     float: "none",
-    '@media (max-width: 1000px)': {
-      marginTop: "2vh",
-      float: "right",
-    },
-    '@media (max-width: 400px)': {
-      marginTop: "2vh",
-      float: "right",
+    [theme.breakpoints.down("sm")]: {
       width: "100%"
     }
   }
@@ -29,7 +23,10 @@ export const StyledButtonSecondary = withStyles((theme) => ({
     background: "rgba(187, 14 ,14 ,15%)",
     padding: "10px 24px",
     borderRadius: 2,
-    textTransform: "none"
+    textTransform: "none",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%"
+    }
   }
 }))(Button);
 

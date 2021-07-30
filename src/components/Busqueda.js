@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) =>({
             border: "1px solid rgba(0, 0, 0, 0.50)"
          },
          [theme.breakpoints.down("sm")]: {
-            width: 380
+            width: 380,
+            marginBottom: 30
           },
 
           '@media (max-width: 1000px)': {

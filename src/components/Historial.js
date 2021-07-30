@@ -7,6 +7,9 @@ const useStyles = makeStyles((theme) => ({
     tittle: {
         textAlign: "left",
         marginTop: 20,
+        [theme.breakpoints.down("sm")]: {
+            display:"none"
+          }
     },
     spanAvatar: {
         margin: "2px 0 0 10px",
@@ -28,7 +31,10 @@ const useStyles = makeStyles((theme) => ({
     contenedorHistorial: {
         maxHeight: 510,
         height: 510,
-        overflowY: "scroll"
+        overflowY: "scroll",
+        [theme.breakpoints.down("sm")]: {
+            display:"none"
+          }
     },
     sinCambios:{
         color: "rgba(0, 0, 0, 0.56)",
@@ -36,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
         fontFamily:"ProximaNovaNormal",
         textAlign:"center",
         margin: "2px 0 0 10px",
-    }
+    },
+
 }));
 
 export const Historial = ({ tipo, id, update }) => {

@@ -4,7 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { makeStyles, Typography } from '@material-ui/core';
 import { StyledButtonPrimary } from './Buttons';
 
-const useStyles = makeStyles ({
+const useStyles = makeStyles ((theme)=>({
     root: {
         display: 'flex',
         width: '100%',
@@ -18,12 +18,18 @@ const useStyles = makeStyles ({
         border: "2px solid rgb(232, 232, 232)",
         padding: "12px",
         outline: "none",
-        fontSize: "0.85rem"
+        fontSize: "0.85rem",
+        [theme.breakpoints.down("sm")]: {
+            width: "100%"
+          }
     },
     buttonDisabled: {
         background: "rgba(0, 0, 0 ,10%)",
+        [theme.breakpoints.down("sm")]: {
+            maxWidth: 30
+          }
     }
-})
+}))
 
 
 

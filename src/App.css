@@ -264,6 +264,7 @@ button.mercadopago-button {
 }
 
 
+
 @media (max-width: 768px) {
   .MuiListItemIcon-root {
     min-width: 0px!important;
@@ -286,5 +287,9 @@ button.mercadopago-button {
 
   .spanTitle{
     font-size: 12px!important;
+  }
+
+  .cantidadObject{
+    display:none
   }
 }

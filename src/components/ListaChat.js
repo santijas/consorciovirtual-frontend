@@ -6,7 +6,7 @@ import { horaYMinutos, soloFecha } from '../utils/formats';
 import { usuarioService } from '../services/usuarioService'
 
 
-const useStyles = makeStyles ({
+const useStyles = makeStyles ((theme) => ({
     root: {
         height: "50vh",
         backgroundColor: "rgb(232, 232, 232)",
@@ -15,6 +15,9 @@ const useStyles = makeStyles ({
         flexDirection: "column-reverse",
         padding: "30px 20px",
         overflow: "auto",
+        [theme.breakpoints.down("sm")]: {
+            
+          },
         //Estos comandos son para que no se muestren la barra del overflow.
         scrollbarWidth: "none",         //En Firefox
         msOverflowStyle: "none",        // En Edge
@@ -26,7 +29,10 @@ const useStyles = makeStyles ({
         display: "flex",
         flexDirection: "row-reverse",
         padding: "10px",
-        fontFamily:"ProximaNovaNormal"
+        fontFamily:"ProximaNovaNormal",
+        [theme.breakpoints.down("sm")]: {
+  
+        },
     },
     mensajePropioInterno: {
         backgroundColor: "#159D74",
@@ -34,7 +40,9 @@ const useStyles = makeStyles ({
         borderRadius: "8px 8px 0 8px",
         marginLeft: "10px",
         color: "white",
-        fontFamily:"ProximaNovaNormal"
+        fontFamily:"ProximaNovaNormal",
+        [theme.breakpoints.down("sm")]: {
+        },
     },
     mensajeAjeno: {
         padding: "10px",
@@ -68,7 +76,7 @@ const useStyles = makeStyles ({
         fontFamily:"ProximaNovaNormal"
     },
 
-})
+}))
 
 export const ListaChat = ({listaDeMensajes,userId}) => {
     const classes = useStyles();
