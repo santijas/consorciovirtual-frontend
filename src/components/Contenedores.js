@@ -54,7 +54,7 @@ export const RightFormBox = withStyles((theme) => ({
         height: "100%",
         display: "flex",
         backgroundColor: "white",
-        width: "35%",
+        width: "450px",
         flexDirection: "column",
         overflowY: "auto",
         [theme.breakpoints.down("sm")]: {
