@@ -88,16 +88,16 @@ const useStyles = makeStyles({
     },
     select: {
         "&:focus": {
-          backgroundColor: "white",
-          border:"none",
-          cursor:"pointer"
-          
+            backgroundColor: "white",
+            border: "none",
+            cursor: "pointer"
+
         }
-      },
-      input:{
-          display:"none"
-      },
-    textFieldSelect:{
+    },
+    input: {
+        display: "none"
+    },
+    textFieldSelect: {
         backgroundColor: "white",
         textAlign: "left",
         cursor: "pointer"
@@ -185,7 +185,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                 if (creacion) {
                     unUsuario = new Usuario()
                     setUsuario(unUsuario)
-                }  
+                }
 
                 if (edicion) {
                     let listaDepartamentos
@@ -285,6 +285,14 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
             setErrors(prev => ({ ...prev, dni: "El DNI debe contener 7 u 8 digitos." }))
         }
 
+        if (!usuario.telefono) {
+            setErrors(prev => ({ ...prev, telefono: "Campo obligatorio" }))
+        }
+
+        if (usuario.telefono && !validarTelefono()) {
+            setErrors(prev => ({ ...prev, telefono: "El numero de teléfono debe contener 10 digitos." }))
+        }
+
         if (!usuario.correo) {
             setErrors(prev => ({ ...prev, correo: "Campo obligatorio" }))
         }
@@ -302,11 +310,15 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         }
 
 
-        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && usuario.fechaNacimiento && usuario.tipo && validarDni() && validarCorreo()
+        return usuario.nombre && usuario.apellido && usuario.dni && usuario.correo && usuario.fechaNacimiento && usuario.tipo && usuario.telefono && validarDni() && validarCorreo() && validarTelefono()
     }
 
     const validarDni = () => {
         return usuario.dni.length === 8 || usuario.dni.length === 7
+    }
+
+    const validarTelefono = () => {
+        return usuario.telefono.length === 10
     }
 
     const validarCorreo = () => {
@@ -336,7 +348,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         return currentPassword && newPassword && newPasswordValidator && (newPassword === newPasswordValidator)
     }
 
-    
+
     const cleanAndCloseModal = () => {
         setOpenModal(false)
         setNewPassword('')
@@ -430,33 +442,33 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         (creacion || edicion) ? "Volver a usuarios" : "Volver atrás"
     )
 
-    const tittleText = () =>{
-        if(creacion){
-         return "Nuevo usuario"
+    const tittleText = () => {
+        if (creacion) {
+            return "Nuevo usuario"
         }
 
-        if(edicion && user?.esAdminGeneral()){
+        if (edicion && user?.esAdminGeneral()) {
             return "Modificar usuario"
         }
 
-        if(perfil){
+        if (perfil) {
             return "Perfil de usuario"
         }
 
-        if(edicion && !user?.esAdminGeneral()){
+        if (edicion && !user?.esAdminGeneral()) {
             return "Usuario"
         }
     }
 
 
-    const enterKey = (e) =>{
+    const enterKey = (e) => {
         if (e.key === "Enter") {
-            edicion? modificarUsuario() : crearUsuario()
+            edicion ? modificarUsuario() : crearUsuario()
         }
     }
 
     return (
-        
+
         <RootBoxABM>
             <Prompt when={campoEditado} message={"Hay modificaciones sin guardar. ¿Desea salir de todas formas?"} />
             <FormBox>
@@ -472,155 +484,164 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
 
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
-                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Nombre</span>
-                        {user?.esAdminGeneral() 
-                        ? <TextField
-                            className={classes.inputs}
-                            id="nombre"
-                            value={usuario?.nombre || ''}
-                            onChange={(event) => updateValue(event)}
-                            name="nombre"
-                            variant="outlined"
-                            error={Boolean(errors?.name)}
-                            helperText={errors?.name}
-                            inputProps={{ maxLength: 15 }}
-                            onKeyDown={(e) => { enterKey(e) }}
-                        />
-                        :<span className="spanNormal">{usuario?.nombre || ''}</span>
-                        } 
+                        <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"}>Nombre</span>
+                        {user?.esAdminGeneral()
+                            ? <TextField
+                                className={classes.inputs}
+                                id="nombre"
+                                value={usuario?.nombre || ''}
+                                onChange={(event) => updateValue(event)}
+                                name="nombre"
+                                variant="outlined"
+                                error={Boolean(errors?.name)}
+                                helperText={errors?.name}
+                                inputProps={{ maxLength: 15 }}
+                                onKeyDown={(e) => { enterKey(e) }}
+                            />
+                            : <span className="spanNormal">{usuario?.nombre || ''}</span>
+                        }
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"} >Apellido</span>
-                        {user?.esAdminGeneral() 
-                        ? <TextField
-                            className={classes.inputs}
-                            id="apellido"
-                            value={usuario?.apellido || ''}
-                            onChange={(event) => updateValue(event)}
-                            name="apellido"
-                            variant="outlined"
-                            error={Boolean(errors?.lastName)}
-                            helperText={errors?.lastName}
-                            inputProps={{ maxLength: 25 }}
-                            onKeyDown={(e) => { enterKey(e) }}
-                        />
-                        :<span className="spanNormal">{usuario?.apellido || ''}</span>
-                        } 
+                        <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"} >Apellido</span>
+                        {user?.esAdminGeneral()
+                            ? <TextField
+                                className={classes.inputs}
+                                id="apellido"
+                                value={usuario?.apellido || ''}
+                                onChange={(event) => updateValue(event)}
+                                name="apellido"
+                                variant="outlined"
+                                error={Boolean(errors?.lastName)}
+                                helperText={errors?.lastName}
+                                inputProps={{ maxLength: 25 }}
+                                onKeyDown={(e) => { enterKey(e) }}
+                            />
+                            : <span className="spanNormal">{usuario?.apellido || ''}</span>
+                        }
 
                     </RightInputBox>
 
                     <LeftInputBox>
-                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>DNI</span>
-                        {user?.esAdminGeneral() 
-                        ? <TextField
-                            className={classes.inputs}
-                            id="dni" value={usuario?.dni || ''}
-                            onChange={(event) => updateValue(event)}
-                            name="dni"
-                            variant="outlined"
-                            error={Boolean(errors?.dni)}
-                            helperText={errors?.dni}
-                            inputProps={{ maxLength: 8 }}
-                            onInput={ handleOnlyNumbers }
-                            onKeyDown={(e) => { enterKey(e) }}
-                        />
-                        :<span className="spanNormal">{usuario?.dni || ''}</span>
-                        } 
+                        <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"}>DNI</span>
+                        {user?.esAdminGeneral()
+                            ? <TextField
+                                className={classes.inputs}
+                                id="dni" value={usuario?.dni || ''}
+                                onChange={(event) => updateValue(event)}
+                                name="dni"
+                                variant="outlined"
+                                error={Boolean(errors?.dni)}
+                                helperText={errors?.dni}
+                                inputProps={{ maxLength: 8 }}
+                                onInput={handleOnlyNumbers}
+                                onKeyDown={(e) => { enterKey(e) }}
+                            />
+                            : <span className="spanNormal">{usuario?.dni || ''}</span>
+                        }
 
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>E-mail</span>
-                        {user?.esAdminGeneral() 
-                        ? <TextField
-                            className={classes.inputs}
-                            id="correo" value={usuario?.correo || ''}
-                            onChange={(event) => updateValue(event)}
-                            name="correo"
-                            variant="outlined"
-                            type="email"
-                            error={Boolean(errors?.correo)}
-                            helperText={errors?.correo}
-                            inputProps={{ maxLength: 50 }}
-                            onKeyDown={(e) => { enterKey(e) }}
-                        />
-                        :<span className="spanNormal">{usuario?.correo || ''}</span>
-                        } 
+                        <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"}>E-mail</span>
+                        {user?.esAdminGeneral()
+                            ? <TextField
+                                className={classes.inputs}
+                                id="correo" value={usuario?.correo || ''}
+                                onChange={(event) => updateValue(event)}
+                                name="correo"
+                                variant="outlined"
+                                type="email"
+                                error={Boolean(errors?.correo)}
+                                helperText={errors?.correo}
+                                inputProps={{ maxLength: 50 }}
+                                onKeyDown={(e) => { enterKey(e) }}
+                            />
+                            : <span className="spanNormal">{usuario?.correo || ''}</span>
+                        }
 
                     </RightInputBox>
 
                     <LeftInputBox>
-                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Fecha de nacimiento</span>
-                        {user?.esAdminGeneral() 
-                        ? <TextField
-                            className={classes.inputs}
-                            id="fechaNacimiento"
-                            value={usuario?.fechaNacimiento || ''}
-                            onChange={(event) => updateValue(event)}
-                            name="fechaNacimiento"
-                            type="date"
-                            variant="outlined"
-                            error={Boolean(errors?.fecha)}
-                            helperText={errors?.fecha}
-                            onKeyDown={(e) => { enterKey(e) }}
-                            InputProps={{inputProps: { min: fechaMinNacimiento() , max:  fechaMaxNacimiento() } }}
-                        />
-                        :<span className="spanNormal">{usuario?.fechaNacimiento || ''}</span>
-                        } 
+                        <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"}>Fecha de nacimiento</span>
+                        {user?.esAdminGeneral()
+                            ? <TextField
+                                className={classes.inputs}
+                                id="fechaNacimiento"
+                                value={usuario?.fechaNacimiento || ''}
+                                onChange={(event) => updateValue(event)}
+                                name="fechaNacimiento"
+                                type="date"
+                                variant="outlined"
+                                error={Boolean(errors?.fecha)}
+                                helperText={errors?.fecha}
+                                onKeyDown={(e) => { enterKey(e) }}
+                                InputProps={{ inputProps: { min: fechaMinNacimiento(), max: fechaMaxNacimiento() } }}
+                            />
+                            : <span className="spanNormal">{usuario?.fechaNacimiento || ''}</span>
+                        }
 
                     </LeftInputBox>
                     {
                         !perfil &&
-                    
-                    <RightInputBox>
-                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Tipo de usuario</span>
-                        {user?.esAdminGeneral() 
-                            ? <Select
-                            className={classes.textFieldSelect}
-                            id="tipoUsuario"
-                            select
-                            onChange={handleChangeType}
-                            value={usuario?.tipo || ''}
-                            error={Boolean(errors?.tipo)}
-                            helperText={errors?.tipo}
-                            variant="outlined" 
-                            onKeyDown={(e) => { enterKey(e) }}
-                            inputProps={{classes: { select: classes.select }}}
-                            > 
-                            {
-                                tiposDeUsuario.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        {option.label}
-                                    </MenuItem>
-                                ))
+
+                        <RightInputBox>
+                            <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"}>Tipo de usuario</span>
+                            {user?.esAdminGeneral()
+                                ? <Select
+                                    className={classes.textFieldSelect}
+                                    id="tipoUsuario"
+                                    select
+                                    onChange={handleChangeType}
+                                    value={usuario?.tipo || ''}
+                                    error={Boolean(errors?.tipo)}
+                                    helperText={errors?.tipo}
+                                    variant="outlined"
+                                    onKeyDown={(e) => { enterKey(e) }}
+                                    inputProps={{ classes: { select: classes.select } }}
+                                >
+                                    {
+                                        tiposDeUsuario.map((option) => (
+                                            <MenuItem key={option.value} value={option.value}>
+                                                {option.label}
+                                            </MenuItem>
+                                        ))
+                                    }
+                                </Select>
+                                : <span className="spanNormal">{usuario?.tipo || ''}</span>
                             }
-                        </Select>
-                        :<span className="spanNormal">{usuario?.tipo || ''}</span>
-                    } 
-                    </RightInputBox>
+                        </RightInputBox>
                     }
                     {edicion && !creacion && departamentos.length > 0 &&
                         <LeftInputBox>
-                            <span className={classes.spanDisabled}>Piso</span>
+                            <span className={classes.spanDisabled}>Piso y departamento</span>
                             {
                                 departamentos.map((departamento) => (
-                                    <span style={{ marginBottom: 6 }} key={departamento.id} className={classes.inputsDisabled}>{departamento.piso || ''}</span>
+                                    <span style={{ marginBottom: 6 }} key={departamento.id} className={classes.inputsDisabled}>{(departamento.piso + " " + departamento.nroDepartamento) || ''}</span>
                                 ))
                             }
                         </LeftInputBox>
                     }
 
-                    {edicion && !creacion && departamentos.length > 0 &&
-                        <RightInputBox>
-                            <span className={classes.spanDisabled}>Departamento</span>
-                            {
-                                departamentos.map((departamento) => (
-                                    <span style={{ marginBottom: 6 }} key={departamento.id} className={classes.inputsDisabled}>{departamento.nroDepartamento || ''}</span>
-                                ))
-                            }
-                        </RightInputBox>
-                    }
+                    <RightInputBox>
+                        <span className={user?.esAdminGeneral() ? "spanTitle" : "spanTitleGrey"}>Teléfono</span>
+                        {user?.esAdminGeneral()
+                            ? <TextField
+                                className={classes.inputs}
+                                id="telefono" value={usuario?.telefono || ''}
+                                onChange={(event) => updateValue(event)}
+                                name="telefono"
+                                variant="outlined"
+                                error={Boolean(errors?.telefono)}
+                                helperText={errors?.telefono}
+                                inputProps={{ maxLength: 10 }}
+                                onInput={handleOnlyNumbers}
+                                onKeyDown={(e) => { enterKey(e) }}
+                            />
+                            : <span className="spanNormal">{usuario?.telefono || ''}</span>
+                        }
+
+                    </RightInputBox>
 
 
                 </form>

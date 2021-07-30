@@ -95,15 +95,15 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '2.5rem',
   },
   logoCV: {
-    width: "40rem",
+    width: "30rem",
     position: "fixed",
     left: "11rem",
-    top: "7rem"
+    top: "15rem"
   },
   slogan: {
     position: 'fixed',
     left: '12.3rem',
-    top: '20rem',
+    top: '24rem',
     fontSize: '2.4rem',
   },
   textoLogin: {
