@@ -135,7 +135,7 @@ export const Tabla = ({datos,headers,ColumnasCustom, heightEnd, defaultSort, def
       <Table className={classes.table} aria-label="customized table">
            <TableHead className={classes.head}>
               <TableRow>
-                {headers.map((header) => (
+                {headers().map((header) => (
                   <StyledTableCell
                     key={header.id}
                     className={classes.head}

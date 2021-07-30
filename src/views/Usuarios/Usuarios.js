@@ -11,22 +11,42 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
-const headers = [
-  {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
-  {id: "correo", numeric: "false", label:"E-mail"},
-  {id: "dni", numeric: "true", label:"DNI"},
-  {id: "actividad", numeric: "false", label:"Actividad"},
-  {id: "tipo", numeric: "false", label:"Tipo de Cuenta"}
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
 
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+      {id: "dni", numeric: "true", label:"DNI"},
+      {id: "actividad", numeric: "false", label:"Actividad"},
+      {id: "tipo", numeric: "false", label:"Tipo de Cuenta"}
+    ]
+  }else{
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+      {id: "tipo", numeric: "false", label:"Tipo de Cuenta"}
+    ]
+  }
+
+
+  return headers
+}
 
 const ColumnasCustom = (dato) => {
   let history= useHistory()
+  const { height, width } = useWindowDimensions();
+
 
   const getUser = (id) =>{
     history.push(`/usuario/${id}`)
   }
+
 
   return (
   <StyledTableRow key={dato.id} onClick={() => getUser(dato.id)} className="pointer animate__animated animate__fadeIn">
@@ -36,8 +56,12 @@ const ColumnasCustom = (dato) => {
       </div>
     </StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{numeroConPuntos(dato.dni)}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+    {width > tamanioLimite &&
+      <StyledTableCell className="tableNormal" component="th" scope="row">{numeroConPuntos(dato.dni)}</StyledTableCell>
+    }
+    {width > tamanioLimite &&
+      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+    }
     <StyledTableCell className="tableBold" component="th" scope="row">{splitVisual(dato.tipo)}</StyledTableCell>
   </StyledTableRow>
   )
@@ -96,7 +120,7 @@ export const Usuarios = () =>{
               </div>
            </SearchBox>
            {usuarios.length > 0 &&
-            <Tabla datos={usuarios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={usuarios} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { usuarios.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="usuarios"/>

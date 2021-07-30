@@ -10,17 +10,36 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions from '../../hooks/TamanioPantalla';
 
 
-const headers = [
-  {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
-  {id: "servicio", numeric: "false", label:"Servicio"},
-  {id: "telefono", numeric: "false", label:"Teléfono"},
-  {id: "anotacion", numeric: "false", label:"Anotación"},
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > 800){
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
+      {id: "servicio", numeric: "false", label:"Servicio"},
+      {id: "telefono", numeric: "false", label:"Teléfono"},
+      {id: "anotacion", numeric: "false", label:"Anotación"},
+    ]
+  }else{
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
+      {id: "servicio", numeric: "false", label:"Servicio"},
+      {id: "telefono", numeric: "false", label:"Teléfono"},
+    ]
+  }
+
+
+  return headers
+}
 
 const ColumnasCustom = (dato) => {
   let history= useHistory()
+  const { height, width } = useWindowDimensions();
 
   const getTelefonoUtil = (id) =>{
     history.push(`/telefonoUtil/${id}`)
@@ -41,7 +60,9 @@ const ColumnasCustom = (dato) => {
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombre}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{textoSegunLargoDeCadena(dato.anotacion)}</StyledTableCell>
+    { width > 800 &&
+        <StyledTableCell className="tableNormal" component="th" scope="row">{textoSegunLargoDeCadena(dato.anotacion)}</StyledTableCell>
+    }
   </StyledTableRow>
   )
 }
@@ -93,7 +114,7 @@ export const TelefonosUtiles = () =>{
               </div>
            </SearchBox>
            {telefonos.length > 0 &&
-            <Tabla datos={telefonos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={telefonos} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { telefonos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="telefonos útiles"/>
