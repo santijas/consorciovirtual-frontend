@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "400px",
     maxHeigth: "100px!important",
     opacity: "none",
-    
+
   },
   avatar: {
     margin: theme.spacing(0),
@@ -92,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       width: "100%",
       margin: theme.spacing(1),
+    },
+    [theme.breakpoints.down("lg")]: {
+      maxHeight: "580px",
     },
   },
   bold: {
@@ -128,6 +131,13 @@ const useStyles = makeStyles((theme) => ({
       top: "2rem",
       margin: theme.spacing(1),
     },
+    [theme.breakpoints.down("lg")]: {
+      position: "absolute",
+      width: "25rem",
+      left: "7.5rem",
+      top: "9rem",
+      margin: theme.spacing(1),
+    },
   },
   slogan: {
     position: 'absolute',
@@ -136,6 +146,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '2.4rem',
     [theme.breakpoints.down("sm")]: {
       display: "none",
+    },
+    [theme.breakpoints.down("lg")]: {
+      left: '9rem',
+      top: '17rem',
+      fontSize: '1.4rem',
     },
   },
   textoLogin: {
