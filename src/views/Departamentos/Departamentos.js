@@ -30,7 +30,7 @@ import { UserContext } from '../../hooks/UserContext';
 
     return (
       
-      <StyledTableRow key={dato.id} onClick={() => showDepartamento(dato.id)} className="pointer">
+      <StyledTableRow key={dato.id} onClick={() => showDepartamento(dato.id)} className="pointer animate__animated animate__fadeIn">
         <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>

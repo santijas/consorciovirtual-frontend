@@ -176,7 +176,7 @@ export const Login = () => {
       <Box className={classes.image} >
 
         <Box className={classes.container} component={Paper}>
-          <div className={classes.paper}>
+          <div  className={classes.paper} >
 
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />

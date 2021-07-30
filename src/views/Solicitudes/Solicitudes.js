@@ -38,7 +38,7 @@ const ColumnasCustom = (dato) => {
   }
 
   return (
-    <StyledTableRow key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+    <StyledTableRow button key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
           <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>

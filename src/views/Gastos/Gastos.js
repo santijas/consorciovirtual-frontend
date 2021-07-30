@@ -29,7 +29,7 @@ const getGasto = (id) =>{
 }
 
 return (
-<StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer">
+<StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer animate__animated animate__fadeIn">
   <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>

@@ -29,7 +29,7 @@ const ColumnasCustom = (dato) => {
   }
 
   return (
-  <StyledTableRow key={dato.id} onClick={() => getInquilino(dato.id)} className="pointer">
+  <StyledTableRow key={dato.id} onClick={() => getInquilino(dato.id)} className="pointer animate__animated animate__fadeIn">
     <StyledTableCell  component="th" scope="row">
       <div className="contenedorColumna">
         <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>

@@ -37,7 +37,7 @@ const ColumnasCustom = (dato) => {
   }
 
   return (
-  <StyledTableRow key={dato.id} onClick={() => getTelefonoUtil(dato.id)} className="pointer">
+  <StyledTableRow key={dato.id} onClick={() => getTelefonoUtil(dato.id)} className="pointer animate__animated animate__fadeIn">
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombre}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>

@@ -30,7 +30,7 @@ const ColumnasCustom = (dato) => {
 
 
   return (
-  <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer">
+  <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer animate__animated animate__fadeIn">
     <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>

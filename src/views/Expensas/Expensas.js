@@ -39,7 +39,7 @@ const ColumnasCustom = (dato) => {
   }
 
   return (
-  <StyledTableRow key={dato.id} className="pointer" onClick={() => getExpensa(dato.id)}>
+  <StyledTableRow key={dato.id} className="pointer animate__animated animate__fadeIn" onClick={() => getExpensa(dato.id)}>
     <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 

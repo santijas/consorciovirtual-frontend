@@ -34,7 +34,7 @@ const ColumnasCustom = (dato) => {
     }
 
     return (
-        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer animate__animated animate__fadeIn" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
             <StyledTableCell className="tableNormal" component="th" scope="row">
                 <div className="contenedorColumna">
                     <span>{soloFecha(dato.fechaCreacion)}</span>
