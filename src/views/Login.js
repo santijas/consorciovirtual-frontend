@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    height: "100vh"
   },
   image: {
     display: "flex",
@@ -32,14 +33,26 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#F5F5F5",
     backgroundSize: 'cover',
     backgroundPosition: 'center',
-    boxShadow: "1px -2px 5px 3px black",
+    boxShadow: "1px -2px -1px 3px black",
     flexGrow: "2"
   },
   footer: {
+    position: "fixed",
+    paddingBottom: ".5rem",
+    width: "100%",
+    bottom: "0",
     display: "flex",
     justifyContent: "space-around",
     height: "fit-content",
-    flexGrow: "0"
+    flexGrow: "0",
+    backgroundColor: "#ffffffc7",
+    boxShadow: "inset 0px 0px 4px 0px black",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      position: "relative",
+    },
   },
   paper: {
     margin: theme.spacing(20, 4),
@@ -50,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "400px",
     maxHeigth: "100px!important",
     opacity: "none",
+    
   },
   avatar: {
     margin: theme.spacing(0),
@@ -59,7 +73,11 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '100%',
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      margin: theme.spacing(1),
+    },
   },
   submit: {
     margin: theme.spacing(4, 0, 2),
@@ -70,7 +88,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0px 0px 8px 1px rgba(0,0,0,0.50)",
     display: "flex",
     alignItems: "center",
-    margin: "20px 180px 20px 0px"
+    margin: "30px 180px 20px 0px",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      margin: theme.spacing(1),
+    },
   },
   bold: {
     fontWeight: 500,
@@ -96,15 +118,25 @@ const useStyles = makeStyles((theme) => ({
   },
   logoCV: {
     width: "30rem",
-    position: "fixed",
+    position: "absolute",
     left: "11rem",
-    top: "15rem"
+    top: "15rem",
+    [theme.breakpoints.down("sm")]: {
+      position: "absolute",
+      width: "10rem",
+      left: "7.5rem",
+      top: "2rem",
+      margin: theme.spacing(1),
+    },
   },
   slogan: {
-    position: 'fixed',
+    position: 'absolute',
     left: '12.3rem',
     top: '24rem',
     fontSize: '2.4rem',
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
   },
   textoLogin: {
     color: "#159D74",
@@ -203,7 +235,7 @@ export const Login = () => {
     <Box className={classes.root}>
       <Box className={classes.image} >
 
-        <div>
+        <div className={classes.logoContainer}>
           <div className="logo-login animate__animated animate__fadeIn">
             <img src={LogoCV} className={classes.logoCV} />
           </div>
