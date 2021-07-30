@@ -25,6 +25,7 @@ const useStyles = makeStyles({
         textAlign: "left",
         marginBottom: 20,
         cursor: "pointer",
+        width: "fit-content"
     },
     linkModal: {
         color: "#159D74",
