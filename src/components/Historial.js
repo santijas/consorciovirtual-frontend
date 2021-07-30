@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 const useStyles = makeStyles((theme) => ({
     tittle: {
         textAlign: "left",
-        marginTop: 20
+        marginTop: 20,
     },
     spanAvatar: {
         margin: "2px 0 0 10px",
@@ -22,12 +22,20 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: 600,
         fontSize: "12px",
         display: "flex",
-        color: "rgba(0, 0, 0, 0.56)"
+        color: "rgba(0, 0, 0, 0.56)",
+        fontFamily:"ProximaNovaNormal"
     },
     contenedorHistorial: {
         maxHeight: 510,
         height: 510,
         overflowY: "scroll"
+    },
+    sinCambios:{
+        color: "rgba(0, 0, 0, 0.56)",
+        fontSize: "15px",
+        fontFamily:"ProximaNovaNormal",
+        textAlign:"center",
+        margin: "2px 0 0 10px",
     }
 }));
 
@@ -55,7 +63,13 @@ export const Historial = ({ tipo, id, update }) => {
                 Historial de cambios
             </Typography>
             <Box className={classes.contenedorHistorial} display="flex" flexDirection="column" mt={5}>
-                {registrosModificacion.map((registro) => {
+
+                {registrosModificacion.length === 0 ? 
+                <Box display="flex" mb={3} >
+                    <span className={classes.sinCambios}>Sin modificaciones.</span>
+                </Box>
+                :
+                registrosModificacion.map((registro) => {
                     return (
                         <Box display="flex" mb={3} key={registro.id}>
                             <Avatar style={{ backgroundColor: avatarColours(registro.usuarioModificador) }} className={classes.avatar}>{filterFirstLetters(registro.usuarioModificador)}</Avatar>

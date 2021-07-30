@@ -89,7 +89,7 @@ export const Reclamos = () => {
         </div>
       </SearchBox>
       {reclamos.length > 0 &&
-      <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} defaultSort={"nombre"} defaultOrder={"desc"} />
+      <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={110} defaultSort={"nombre"} defaultOrder={"desc"} />
       }
        { reclamos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="reclamos"/>
