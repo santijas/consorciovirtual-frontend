@@ -130,13 +130,9 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
     const crearTelefonoUtil = async () => {
         try {
             if (verificarCamposVacios()) {
-                if (verificarNumeroTelefonico()) {
                     await telefonoUtilService.create(telefonoUtil)
                     setCampoEditado(false)
                     history.push("/telefonosUtiles", { openChildSnack: true, mensajeChild: "Nuevo teléfono útil creado correctamente." })
-                } else {
-                    usarSnack("El teléfono solo puede contener números, espacios y/o guiones medios.", true)
-                }
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -148,14 +144,10 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
     const modificarTelefonoUtil = async () => {
         try {
             if (verificarCamposVacios()) {
-                if (verificarNumeroTelefonico()) {
                     await telefonoUtilService.update(telefonoUtil)
                     setCambiosGuardados(true)
                     setCampoEditado(false)
                     usarSnack("Teléfono útil modificado correctamente", false)
-                } else {
-                    usarSnack("El teléfono solo puede contener números, espacios y/o guiones medios.", true)
-                }
             } else {
                 usarSnack("Campos obligatorios faltantes.", true)
             }
@@ -188,12 +180,15 @@ export const ABMCTelefonoUtil = ({ edicion, creacion }) => {
             setErrors(prev => ({ ...prev, servicio: "Campo obligatorio" }))
         }
         
+        if (telefonoUtil.telefono && !verificarNumeroTelefonico) {
+            setErrors(prev => ({ ...prev, telefono: "El teléfono supera el largo permitido." }))
+        }
 
-        return telefonoUtil.nombre && telefonoUtil.telefono && telefonoUtil.servicio
+        return telefonoUtil.nombre && telefonoUtil.telefono && telefonoUtil.servicio && verificarNumeroTelefonico()
     }
 
     const verificarNumeroTelefonico = () => {
-        return telefonoUtil.length < 16
+        return telefonoUtil.telefono.length < 16
     }
 
     const bodyModal = (

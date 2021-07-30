@@ -112,6 +112,7 @@ export const Departamentos = () =>{
       const fetchSnack = () => {
         if(location.state !== undefined){
           usarSnack(location.state.mensajeChild, false)
+          history.replace()
         }
       }
       fetchSnack()
@@ -127,7 +128,7 @@ export const Departamentos = () =>{
                 <Busqueda holder="Buscá por departamento, propietario, inquilino" busqueda={setTextoBusqueda} />
                 <div>
                 <span className="cantidadObject" > {departamentos.length} departamentos </span>
-                { user?.esAdmin() && <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary> }
+                { user?.esAdminGeneral() && <StyledButtonPrimary onClick={newDepto}>Agregar departamento</StyledButtonPrimary> }
                 </div>
             </SearchBox>
             {

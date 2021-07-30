@@ -127,6 +127,7 @@ export const Reclamos = () => {
     const fetchSnack = () => {
       if(location.state !== undefined){
         usarSnack(location.state.mensajeChild, false)
+        history.replace()
       }
     }
     fetchSnack()

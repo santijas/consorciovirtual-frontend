@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles, Typography } from '@material-ui/core';
 import { expensaService } from '../../services/expensaService';
 import { useHistory, useLocation, useParams, withRouter } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { RootBox } from '../../components/Contenedores';
 import { Box } from '@material-ui/core';
 import { Error, Success } from '../../assets/icons';
 import { StyledButtonPrimary } from '../../components/Buttons';
+import { UserContext } from '../../hooks/UserContext';
 
 
 const useStyles = makeStyles ({
@@ -57,6 +58,7 @@ export const Payment = () =>{
     const classes = useStyles();
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
+    const { user } = useContext(UserContext);
     let history = useHistory()
     const params = useParams()
 
@@ -111,7 +113,7 @@ export const Payment = () =>{
                     </Typography>
                     <div>
                         <span className={classes.span}>Se envió el comprobante de pago a </span>
-                        <span className={classes.spanColor}>santi.ranieri@gmail.com</span>
+                        <span className={classes.spanColor}>{user?.correo}</span>
                     </div>
                     <StyledButtonPrimary className={classes.button} onClick={ redirectExpensas }>Volver a expensas</StyledButtonPrimary>
                 </Box>

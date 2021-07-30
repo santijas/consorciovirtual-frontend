@@ -125,6 +125,7 @@ export const Expensas = () =>{
       const fetchSnack = () => {
         if(location.state !== undefined){
           usarSnack(location.state.mensajeChild, false)
+          history.replace()
         }
       }
       fetchSnack()
