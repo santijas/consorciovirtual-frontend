@@ -11,17 +11,35 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext'; 
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
 
-const headers = [
-  {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
-  {id: "correo", numeric: "false", label:"E-mail"},
-  {id: "dni", numeric: "true", label:"DNI"},
-  {id: "actividad", numeric: "false", label:"Actividad"},
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+      {id: "dni", numeric: "true", label:"DNI"},
+      {id: "actividad", numeric: "false", label:"Actividad"},
+    ]
+  }else{
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+      {id: "dni", numeric: "true", label:"DNI"},
+    ]
+  }
+
+  return headers
+}
 
 
 const ColumnasCustom = (dato) => {
+  const { height, width } = useWindowDimensions();
   let history= useHistory()
 
   const getInquilino = (id) =>{
@@ -37,7 +55,9 @@ const ColumnasCustom = (dato) => {
     </StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{numeroConPuntos(dato.dni)}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+    { width > tamanioLimite &&
+      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+    }
   </StyledTableRow>
   )
 }
@@ -100,7 +120,7 @@ export const Inquilinos = () =>{
               </div>
            </SearchBox>
            {inquilinos.length > 0 &&
-            <Tabla datos={inquilinos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={inquilinos} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { inquilinos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="inquilinos"/>

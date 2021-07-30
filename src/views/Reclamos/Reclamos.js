@@ -13,16 +13,35 @@ import { soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { padLeadingZeros } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
-const headers = [
-  { id: "id", label: "Reclamo" },
-  { id: "autor", label: "Autor" },
-  { id: "asunto", label: "Asunto" },
-  { id: "fechaModificacion", label: "Actividad" },
-  { id: "Estado", label: "Estado" }
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      { id: "id", label: "Reclamo" },
+      { id: "autor", label: "Autor" },
+      { id: "asunto", label: "Asunto" },
+      { id: "fechaModificacion", label: "Actividad" },
+      { id: "Estado", label: "Estado" }
+    ]
+  }else{
+    headers = [
+      { id: "id", label: "Reclamo" },
+      { id: "asunto", label: "Asunto" },
+      { id: "Estado", label: "Estado" }
+    ]
+  }
+
+  return headers
+}
+
 
 const ColumnasCustom = (dato) => {
+  const { height, width } = useWindowDimensions();
   let history = useHistory()
 
   const getReclamo = (id) => {
@@ -37,9 +56,13 @@ const ColumnasCustom = (dato) => {
           <span className="tableNormal">{soloFecha(dato.fecha)}</span>
         </div>
       </StyledTableCell>
+      { width > tamanioLimite &&
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
+      }
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.asunto}</StyledTableCell>
+      { width > tamanioLimite &&
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+      }
       <StyledTableCell className="tableBold" component="th" scope="row" style={dato.estado === 'Resuelto' ? { color: "#159D74" } : {}}>{dato.estado}</StyledTableCell>
     </StyledTableRow>
   )
@@ -90,7 +113,7 @@ export const Reclamos = () => {
         </div>
       </SearchBox>
       {reclamos.length > 0 &&
-      <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={110} defaultSort={"nombre"} defaultOrder={"desc"} />
+      <Tabla datos={reclamos} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={110} defaultSort={"nombre"} defaultOrder={"desc"} />
       }
        { reclamos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="reclamos"/>

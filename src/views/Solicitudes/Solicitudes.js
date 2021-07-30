@@ -13,17 +13,35 @@ import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
 import { padLeadingZeros } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
-const headers = [
-  { id: "id", label: "Solicitud" },
-  { id: "nombreAutor", label: "Autor" },
-  { id: "titulo", label: "Título" },
-  { id: "actividad", label: "Actividad" },
-  { id: "nombreEstado", label: "Estado" }
-]
+
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      { id: "id", label: "Solicitud" },
+      { id: "nombreAutor", label: "Autor" },
+      { id: "titulo", label: "Título" },
+      { id: "actividad", label: "Actividad" },
+      { id: "nombreEstado", label: "Estado" }
+    ]
+  }else{
+    headers = [
+      { id: "id", label: "Solicitud" },
+      { id: "titulo", label: "Título" },
+      { id: "nombreEstado", label: "Estado" }
+    ]
+  }
+
+  return headers
+}
 
 const ColumnasCustom = (dato) => {
-
+  const { height, width } = useWindowDimensions();
   let history = useHistory()
 
   const getSolicitud = (id) => {
@@ -46,9 +64,13 @@ const ColumnasCustom = (dato) => {
           <span className="tableNormal">{soloFecha(dato.fecha)}</span>
         </div>
       </StyledTableCell>
+      { width > tamanioLimite &&
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
+      }
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+      { width > tamanioLimite &&
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+      }
       <StyledTableCell className="tableBold" component="th" scope="row" style={colorEstado(dato.nombreEstado)}>{dato.nombreEstado}</StyledTableCell>
     </StyledTableRow>)
 }
@@ -101,7 +123,7 @@ export const Solicitudes = () => {
         </div>
       </SearchBox>
       {solicitudes.length > 0 &&
-        <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
+        <Tabla datos={solicitudes} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
       }
       {solicitudes.length === 0 && !isLoading &&
         <SearchWithoutResults resultado="solicitudes" />

@@ -11,17 +11,34 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
 
-const headers = [
-  {id: "fecha", numeric: "false", label:"Fecha"},
-  {id: "titulo", numeric: "false", label:"Título"},
-  {id: "autor", numeric: "false", label:"Autor"},
-  {id: "actividad", numeric: "false", label:"Actividad"},
-  {id: "archivo", numeric: "false", label:"Archivo"}
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      {id: "fecha", numeric: "false", label:"Fecha"},
+      {id: "titulo", numeric: "false", label:"Título"},
+      {id: "autor", numeric: "false", label:"Autor"},
+      {id: "actividad", numeric: "false", label:"Actividad"},
+      {id: "archivo", numeric: "false", label:"Archivo"}
+    ]
+  }else{
+    headers = [
+      {id: "fecha", numeric: "false", label:"Fecha"},
+      {id: "titulo", numeric: "false", label:"Título"},
+    ]
+  }
+
+  return headers
+}
 
 const ColumnasCustom = (dato) => {
+  const { height, width } = useWindowDimensions();
   let history= useHistory()
 
   const getDocumento = (id) =>{
@@ -33,9 +50,15 @@ const ColumnasCustom = (dato) => {
   <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer animate__animated animate__fadeIn">
     <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+    { width > tamanioLimite &&
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
+     }
+    { width > tamanioLimite && 
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.modificado}</StyledTableCell>
+    }
+    { width > tamanioLimite &&
     <StyledTableCell className="tableBold" component="th" scope="row">{dato.archivo}</StyledTableCell>
+    }
   </StyledTableRow>
   )
 }
@@ -87,7 +110,7 @@ export const Documentos = () =>{
               </div>
            </SearchBox>
            { documentos.length > 0 &&
-            <Tabla datos={documentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={documentos} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { documentos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="documentos"/>

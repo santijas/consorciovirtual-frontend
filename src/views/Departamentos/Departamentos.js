@@ -10,18 +10,36 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
 
-  const headers = [
-    {id: "piso", label:"Departamento"},
-    {id: "propietario", label:"Propietario"},
-    {id: "inquilino", label:"Inquilino"},
-    {id: "actividad", label:"Actividad"},
-    {id: "estadoCuenta", label:"Estado de cuenta"},
-  ]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      {id: "piso", label:"Departamento"},
+      {id: "propietario", label:"Propietario"},
+      {id: "inquilino", label:"Inquilino"},
+      {id: "actividad", label:"Actividad"},
+      {id: "estadoCuenta", label:"Estado de cuenta"},
+    ]
+  }else{
+    headers = [
+      {id: "piso", label:"Departamento"},
+      {id: "propietario", label:"Propietario"},
+      {id: "estadoCuenta", label:"Estado de cuenta"},
+    ]
+  }
+
+  return headers
+}
+
   
   const ColumnasCustom = (dato) => { 
-    
+    const { height, width } = useWindowDimensions();
     let history= useHistory()
   
     const showDepartamento = (id) =>{
@@ -33,8 +51,12 @@ import { UserContext } from '../../hooks/UserContext';
       <StyledTableRow key={dato.id} onClick={() => showDepartamento(dato.id)} className="pointer animate__animated animate__fadeIn">
         <StyledTableCell className="tableBold" component="th" scope="row">{dato.piso}º {dato.nroDepartamento}</StyledTableCell>
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.propietario}</StyledTableCell>
+        { width > tamanioLimite &&
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.inquilino}</StyledTableCell>
+        }
+        { width > tamanioLimite &&
         <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+        }
         <StyledTableCell className="tableBold" component="th" scope="row">{dato.estadoDeCuenta}</StyledTableCell> 
       </StyledTableRow>
     )
@@ -90,7 +112,7 @@ export const Departamentos = () =>{
             </SearchBox>
             {
               departamentos.length > 0 &&
-            <Tabla datos={departamentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
+            <Tabla datos={departamentos} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"piso"} defaultOrder={"asc"}/>
             }
             { departamentos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="departamentos"/>

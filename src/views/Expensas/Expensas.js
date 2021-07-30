@@ -11,7 +11,31 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
+
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "departamento", label:"Departamento"},
+      {id: "montoAPagar", label:"Monto a pagar"},
+      {id: "estado", label:"Estado"},
+    ]
+  }else{
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "departamento", label:"Departamento"},
+      {id: "estado", label:"Estado"},
+    ]
+  }
+
+  return headers
+}
 
 const useStyles = makeStyles ({
     botonAnular:{
@@ -24,14 +48,8 @@ const useStyles = makeStyles ({
     }
   });
 
-const headers = [
-  {id: "periodo", label:"Periodo"},
-  {id: "departamento", label:"Departamento"},
-  {id: "montoAPagar", label:"Monto a pagar"},
-  {id: "estado", label:"Estado"},
-]
-
 const ColumnasCustom = (dato) => {
+  const { height, width } = useWindowDimensions();
   let history= useHistory()
 
   const getExpensa = (id) =>{
@@ -42,7 +60,9 @@ const ColumnasCustom = (dato) => {
   <StyledTableRow key={dato.id} className="pointer animate__animated animate__fadeIn" onClick={() => getExpensa(dato.id)}>
     <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 
+    { width > tamanioLimite &&
+      <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 
+    }
     <StyledTableCell className="tableBold"  component="th" scope="row">{dato.estado}</StyledTableCell>
   </StyledTableRow>
   )
@@ -103,7 +123,7 @@ export const Expensas = () =>{
               </div>
            </SearchBox>
            {expensas.length > 0 &&
-            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
+            <Tabla datos={expensas} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
           { expensas.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="expensas"/>

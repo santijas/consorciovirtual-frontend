@@ -11,17 +11,36 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
 
-const headers = [
-  {id: "periodo", label:"Periodo"},
-  {id: "titulo", label:"Título"},
-  {id: "tipo", label:"Tipo"},
-  {id: "actividad", label:"Actividad"},
-  {id: "importe", label:"Monto"}
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "titulo", label:"Título"},
+      {id: "tipo", label:"Tipo"},
+      {id: "actividad", label:"Actividad"},
+      {id: "importe", label:"Monto"}
+    ]
+  }else{
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "titulo", label:"Título"},
+      {id: "importe", label:"Monto"}
+    ]
+  }
+
+  return headers
+}
+
 
 const ColumnasCustom = (dato) => {
+const { height, width } = useWindowDimensions();
 let history= useHistory()
 
 const getGasto = (id) =>{
@@ -32,8 +51,12 @@ return (
 <StyledTableRow key={dato.id} onClick={() => getGasto(dato.id)} className="pointer animate__animated animate__fadeIn">
   <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+  { width > tamanioLimite &&
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.tipo}</StyledTableCell>
+  }
+  { width > tamanioLimite &&
   <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+  }
   <StyledTableCell className="tableBold" component="th" scope="row">${numeroConPuntos(dosDecimales(dato.importe))}</StyledTableCell>
 </StyledTableRow>
 )
@@ -89,7 +112,7 @@ export const Gastos = () =>{
            </SearchBox>
 
            {gastos.length > 0 &&
-            <Tabla datos={gastos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
+            <Tabla datos={gastos} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
             { gastos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="gastos"/>

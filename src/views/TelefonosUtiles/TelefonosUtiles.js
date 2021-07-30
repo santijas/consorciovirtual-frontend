@@ -10,7 +10,7 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
-import useWindowDimensions from '../../hooks/TamanioPantalla';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
 
 const Headers = () => {
@@ -18,7 +18,7 @@ const Headers = () => {
 
   let headers
 
-  if(width > 800){
+  if(width > tamanioLimite){
     headers = [
       {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
       {id: "servicio", numeric: "false", label:"Servicio"},
@@ -32,7 +32,6 @@ const Headers = () => {
       {id: "telefono", numeric: "false", label:"Teléfono"},
     ]
   }
-
 
   return headers
 }
@@ -60,7 +59,7 @@ const ColumnasCustom = (dato) => {
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombre}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
     <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>
-    { width > 800 &&
+    { width > tamanioLimite &&
         <StyledTableCell className="tableNormal" component="th" scope="row">{textoSegunLargoDeCadena(dato.anotacion)}</StyledTableCell>
     }
   </StyledTableRow>

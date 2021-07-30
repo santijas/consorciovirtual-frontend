@@ -12,17 +12,37 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { fechaYaPaso, soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import useWindowDimensions, { tamanioLimite } from '../../hooks/TamanioPantalla';
 
 
-const headers = [
-    { id: "fechaCreacion", label: "Fecha" },
-    { id: "titulo", label: "Titulo" },
-    { id: "nombreAutor", label: "Autor" },
-    { id: "fechaModificacion", label: "Actividad" },
-    { id: "fechaVencimiento", label: "Vencimiento" }
-]
+const Headers = () => {
+  const { height, width } = useWindowDimensions();
+
+  let headers
+
+  if(width > tamanioLimite){
+    headers = [
+        { id: "fechaCreacion", label: "Fecha" },
+        { id: "titulo", label: "Titulo" },
+        { id: "nombreAutor", label: "Autor" },
+        { id: "fechaModificacion", label: "Actividad" },
+        { id: "fechaVencimiento", label: "Vencimiento" }
+    ]
+  }else{
+    headers = [
+        { id: "fechaCreacion", label: "Fecha" },
+        { id: "titulo", label: "Titulo" },
+        { id: "fechaVencimiento", label: "Vencimiento" }
+    ]
+  }
+
+
+  return headers
+}
+
 
 const ColumnasCustom = (dato) => {
+    const { height, width } = useWindowDimensions();
     let history = useHistory()
 
     const getAnuncio = (id) => {
@@ -41,8 +61,12 @@ const ColumnasCustom = (dato) => {
                 </div>
             </StyledTableCell>
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+            { width > tamanioLimite &&
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
+            }
+            { width > tamanioLimite &&
             <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+            }
             <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>
                 {anuncioVencido(dato.fechaVencimiento)?  "Vencido" : soloFecha(dato.fechaVencimiento)}
             </StyledTableCell>
@@ -95,7 +119,7 @@ export const Anuncios = () => {
                 </div>
             </SearchBox>
             {anuncios.length > 0 &&
-            <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
+            <Tabla datos={anuncios} headers={Headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
             }
             { anuncios.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="anuncios"/>
