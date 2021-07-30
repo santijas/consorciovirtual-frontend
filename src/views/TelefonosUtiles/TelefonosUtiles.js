@@ -10,16 +10,35 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
 
-const headers = [
-  {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
-  {id: "servicio", numeric: "false", label:"Servicio"},
-  {id: "telefono", numeric: "false", label:"Teléfono"},
-  {id: "anotacion", numeric: "false", label:"Anotación"},
-]
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+  let headers
 
-const ColumnasCustom = (dato) => {
+  if (webSize) {
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
+      {id: "servicio", numeric: "false", label:"Servicio"},
+      {id: "telefono", numeric: "false", label:"Teléfono"},
+      {id: "anotacion", numeric: "false", label:"Anotación"}
+    ]
+  } else if (!mobileSize && tabletSize) {
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre/Empresa"},
+      {id: "servicio", numeric: "false", label:"Servicio"},
+      {id: "telefono", numeric: "false", label:"Teléfono"}
+    ]
+  } else {
+    headers = [
+      {id: "servicio", numeric: "false", label:"Servicio"},
+      {id: "telefono", numeric: "false", label:"Teléfono"}
+    ]
+  }
+  return headers
+}
+
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
   let history= useHistory()
 
   const getTelefonoUtil = (id) =>{
@@ -28,7 +47,7 @@ const ColumnasCustom = (dato) => {
 
   const textoSegunLargoDeCadena = (cadena) => {
     let textoAEntregar
-      if(cadena != null && cadena.length > 20){
+      if(cadena != null && cadena.length > 35){
         textoAEntregar = "Click para ver la antación completa"
       }else{
         textoAEntregar = cadena
@@ -36,14 +55,35 @@ const ColumnasCustom = (dato) => {
     return textoAEntregar
   }
 
-  return (
-  <StyledTableRow key={dato.id} onClick={() => getTelefonoUtil(dato.id)} className="pointer animate__animated animate__fadeIn">
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombre}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{textoSegunLargoDeCadena(dato.anotacion)}</StyledTableCell>
-  </StyledTableRow>
-  )
+  const getCells = () => {
+    if (mobileSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getTelefonoUtil(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (tabletSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getTelefonoUtil(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombre}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (webSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getTelefonoUtil(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombre}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.servicio}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.telefono}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{textoSegunLargoDeCadena(dato.anotacion)}</StyledTableCell>
+      </StyledTableRow>
+      )
+    }
+  }
+
+  return (getCells())
 }
 
 export const TelefonosUtiles = () =>{
@@ -54,6 +94,9 @@ export const TelefonosUtiles = () =>{
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const { user } = useContext(UserContext)
+    let mobileSize = useMediaQuery('(max-width: 400px)')
+    let tabletSize = useMediaQuery('(max-width: 768px)')
+    let webSize = useMediaQuery('(min-width: 769px)')
 
     useEffect( ()  =>  {
       const fetchAll = async (textoBusqueda) => {
@@ -93,7 +136,7 @@ export const TelefonosUtiles = () =>{
               </div>
            </SearchBox>
            {telefonos.length > 0 &&
-            <Tabla datos={telefonos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={telefonos} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { telefonos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="telefonos útiles"/>

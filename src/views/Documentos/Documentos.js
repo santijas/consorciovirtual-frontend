@@ -11,33 +11,72 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
 
-const headers = [
-  {id: "fecha", numeric: "false", label:"Fecha"},
-  {id: "titulo", numeric: "false", label:"Título"},
-  {id: "autor", numeric: "false", label:"Autor"},
-  {id: "actividad", numeric: "false", label:"Actividad"},
-  {id: "archivo", numeric: "false", label:"Archivo"}
-]
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+  let headers
 
-const ColumnasCustom = (dato) => {
+  if (webSize) {
+    headers = [
+      {id: "fecha", numeric: "false", label:"Fecha"},
+      {id: "titulo", numeric: "false", label:"Título"},
+      {id: "autor", numeric: "false", label:"Autor"},
+      {id: "actividad", numeric: "false", label:"Actividad"},
+      {id: "archivo", numeric: "false", label:"Archivo"}
+    ]
+  } else if (!mobileSize && tabletSize) {
+    headers = [
+      {id: "fecha", numeric: "false", label:"Fecha"},
+      {id: "titulo", numeric: "false", label:"Título"},
+      {id: "autor", numeric: "false", label:"Autor"}
+    ]
+  } else {
+    headers = [
+      {id: "fecha", numeric: "false", label:"Fecha"},
+      {id: "titulo", numeric: "false", label:"Título"}
+    ]
+  }
+  return headers
+}
+
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
   let history= useHistory()
 
   const getDocumento = (id) =>{
     history.push(`/documento/${id}`)
   }
 
+  const getCells = () => {
+    if (mobileSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (tabletSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (webSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.modificado}</StyledTableCell>
+        <StyledTableCell className="tableBold" component="th" scope="row">{dato.archivo}</StyledTableCell>
+      </StyledTableRow>
+      )
+    }
+  }
 
-  return (
-  <StyledTableRow key={dato.id} onClick={() => getDocumento(dato.id)} className="pointer animate__animated animate__fadeIn">
-    <StyledTableCell className="tableNormal" component="th" scope="row">{soloFecha(dato.fechaCreacion)}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.autor}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.modificado}</StyledTableCell>
-    <StyledTableCell className="tableBold" component="th" scope="row">{dato.archivo}</StyledTableCell>
-  </StyledTableRow>
-  )
+  return (getCells())
 }
 
 export const Documentos = () =>{
@@ -48,6 +87,9 @@ export const Documentos = () =>{
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const { user } = useContext(UserContext)
+    let mobileSize = useMediaQuery('(max-width: 400px)')
+    let tabletSize = useMediaQuery('(max-width: 768px)')
+    let webSize = useMediaQuery('(min-width: 769px)')
 
     useEffect( ()  =>  {
       const fetchAll = async (textoBusqueda) => {
@@ -87,7 +129,7 @@ export const Documentos = () =>{
               </div>
            </SearchBox>
            { documentos.length > 0 &&
-            <Tabla datos={documentos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={documentos} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { documentos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="documentos"/>

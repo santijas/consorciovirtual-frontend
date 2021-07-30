@@ -13,16 +13,35 @@ import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { soloFecha } from '../../utils/formats';
 import { padLeadingZeros } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
-const headers = [
-  { id: "id", label: "Solicitud" },
-  { id: "nombreAutor", label: "Autor" },
-  { id: "titulo", label: "Título" },
-  { id: "actividad", label: "Actividad" },
-  { id: "nombreEstado", label: "Estado" }
-]
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+  let headers
 
-const ColumnasCustom = (dato) => {
+  if (webSize) {
+    headers = [
+      { id: "id", label: "Solicitud" },
+      { id: "nombreAutor", label: "Autor" },
+      { id: "titulo", label: "Título" },
+      { id: "actividad", label: "Actividad" },
+      { id: "nombreEstado", label: "Estado" }
+    ]
+  } else if (!mobileSize && tabletSize) {
+    headers = [
+      { id: "id", label: "Solicitud" },
+      { id: "titulo", label: "Título" },
+      { id: "nombreEstado", label: "Estado" }
+    ]
+  } else {
+    headers = [
+      { id: "id", label: "Solicitud" },
+      { id: "nombreEstado", label: "Estado" }
+    ]
+  }
+  return headers
+}
+
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
 
   let history = useHistory()
 
@@ -38,19 +57,51 @@ const ColumnasCustom = (dato) => {
     }
   }
 
-  return (
-    <StyledTableRow button key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
-      <StyledTableCell component="th" scope="row">
-        <div className="contenedorColumna">
-          <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
-          <span className="tableNormal">{soloFecha(dato.fecha)}</span>
-        </div>
-      </StyledTableCell>
-      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
-      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
-      <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-      <StyledTableCell className="tableBold" component="th" scope="row" style={colorEstado(dato.nombreEstado)}>{dato.nombreEstado}</StyledTableCell>
-    </StyledTableRow>)
+  const getCells = () => {
+    if (mobileSize) {
+      return (
+        <StyledTableRow button key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? { background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)" } : {}}>
+          <StyledTableCell component="th" scope="row">
+            <div className="contenedorColumna">
+              <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
+              <span className="tableNormal">{soloFecha(dato.fecha)}</span>
+            </div>
+          </StyledTableCell>
+          <StyledTableCell className="tableBold" component="th" scope="row" style={colorEstado(dato.nombreEstado)}>{dato.nombreEstado}</StyledTableCell>
+        </StyledTableRow>
+      )
+    } else if (tabletSize) {
+      return (
+        <StyledTableRow button key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? { background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)" } : {}}>
+          <StyledTableCell component="th" scope="row">
+            <div className="contenedorColumna">
+              <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
+              <span className="tableNormal">{soloFecha(dato.fecha)}</span>
+            </div>
+          </StyledTableCell>
+          <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+          <StyledTableCell className="tableBold" component="th" scope="row" style={colorEstado(dato.nombreEstado)}>{dato.nombreEstado}</StyledTableCell>
+        </StyledTableRow>
+      )
+    } else if (webSize) {
+      return (
+        <StyledTableRow button key={dato.id} onClick={() => getSolicitud(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.nombreEstado === 'Resuelto' || dato.nombreEstado === 'Rechazado' ? { background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)" } : {}}>
+          <StyledTableCell component="th" scope="row">
+            <div className="contenedorColumna">
+              <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
+              <span className="tableNormal">{soloFecha(dato.fecha)}</span>
+            </div>
+          </StyledTableCell>
+          <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
+          <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+          <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+          <StyledTableCell className="tableBold" component="th" scope="row" style={colorEstado(dato.nombreEstado)}>{dato.nombreEstado}</StyledTableCell>
+        </StyledTableRow>
+      )
+    }
+  }
+
+  return (getCells())
 }
 
 export const Solicitudes = () => {
@@ -59,6 +110,9 @@ export const Solicitudes = () => {
   const [textoBusqueda, setTextoBusqueda] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const { user } = useContext(UserContext)
+  let mobileSize = useMediaQuery('(max-width: 400px)')
+  let tabletSize = useMediaQuery('(max-width: 768px)')
+  let webSize = useMediaQuery('(min-width: 769px)')
 
   let history = useHistory()
   let location = useLocation()
@@ -101,7 +155,7 @@ export const Solicitudes = () => {
         </div>
       </SearchBox>
       {solicitudes.length > 0 &&
-        <Tabla datos={solicitudes} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
+        <Tabla datos={solicitudes} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"id"} defaultOrder={"desc"} />
       }
       {solicitudes.length === 0 && !isLoading &&
         <SearchWithoutResults resultado="solicitudes" />

@@ -11,6 +11,7 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext'; 
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
 
 const headers = [
@@ -20,26 +21,80 @@ const headers = [
   {id: "actividad", numeric: "false", label:"Actividad"},
 ]
 
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+  let headers
 
-const ColumnasCustom = (dato) => {
+  if (webSize) {
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+      {id: "dni", numeric: "true", label:"DNI"},
+      {id: "actividad", numeric: "false", label:"Actividad"},
+    ]
+  } else if (!mobileSize && tabletSize) {
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+      {id: "dni", numeric: "true", label:"DNI"},
+    ]
+  } else {
+    headers = [
+      {id: "nombre", numeric: "false", label:"Nombre y Apellido"},
+      {id: "correo", numeric: "false", label:"E-mail"},
+    ]
+  }
+  return headers
+}
+
+
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
   let history= useHistory()
 
   const getInquilino = (id) =>{
     history.push(`/inquilino/${id}`)
   }
 
-  return (
-  <StyledTableRow key={dato.id} onClick={() => getInquilino(dato.id)} className="pointer animate__animated animate__fadeIn">
-    <StyledTableCell  component="th" scope="row">
-      <div className="contenedorColumna">
-        <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
-      </div>
-    </StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{numeroConPuntos(dato.dni)}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
-  </StyledTableRow>
-  )
+  const getCells = () => {
+    if (mobileSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getInquilino(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell  component="th" scope="row">
+          <div className="contenedorColumna">
+            <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
+          </div>
+        </StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (tabletSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getInquilino(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell  component="th" scope="row">
+          <div className="contenedorColumna">
+            <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
+          </div>
+        </StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{numeroConPuntos(dato.dni)}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (webSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getInquilino(dato.id)} className="pointer animate__animated animate__fadeIn">
+        <StyledTableCell  component="th" scope="row">
+          <div className="contenedorColumna">
+            <span className="tableBold">{dato.nombre +" "+ dato.apellido}</span>
+          </div>
+        </StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.correo}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{numeroConPuntos(dato.dni)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
+      </StyledTableRow>
+      )
+    }
+  }
+
+  return (getCells())
 }
 
 export const Inquilinos = () =>{
@@ -50,7 +105,9 @@ export const Inquilinos = () =>{
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const { user } = useContext(UserContext)
-
+    let mobileSize = useMediaQuery('(max-width: 400px)')
+    let tabletSize = useMediaQuery('(max-width: 768px)')
+    let webSize = useMediaQuery('(min-width: 769px)')
 
     useEffect( ()  =>  {
       const fetchAllUsers = async (textoBusqueda) => {
@@ -100,7 +157,7 @@ export const Inquilinos = () =>{
               </div>
            </SearchBox>
            {inquilinos.length > 0 &&
-            <Tabla datos={inquilinos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
+            <Tabla datos={inquilinos} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { inquilinos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="inquilinos"/>

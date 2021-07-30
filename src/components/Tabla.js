@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { TableFooter, TableSortLabel } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
+import { useMediaQuery } from './../hooks/UseMediaQuery';
 
 
 export const StyledTableCell = withStyles((theme) => ({
@@ -103,6 +104,9 @@ export const Tabla = ({datos,headers,ColumnasCustom, heightEnd, defaultSort, def
     const [orderBy, setOrderBy] = useState(defaultSort)
     const pageSize = 5
     const totalItems = datos.length
+    let mobileSize = useMediaQuery('(max-width: 400px)')
+    let tabletSize = useMediaQuery('(max-width: 768px)')
+    let webSize = useMediaQuery('(min-width: 769px)')
 
     let totalPages = Math.ceil(totalItems / pageSize);
     let endIndex =  pageSize - (totalItems - pageSize * (page -1))
@@ -158,7 +162,7 @@ export const Tabla = ({datos,headers,ColumnasCustom, heightEnd, defaultSort, def
             ? typeOrder()
             : (ordenarDatos()))
             .map((dato) => (
-                    ColumnasCustom(dato)
+                    ColumnasCustom(dato, mobileSize, tabletSize, webSize)
               )
             )}
 

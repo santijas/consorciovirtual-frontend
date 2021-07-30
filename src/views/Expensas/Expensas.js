@@ -11,6 +11,7 @@ import useSnack from '../../hooks/UseSnack';
 import { RootBox, SearchBox } from '../../components/Contenedores';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
 
 const useStyles = makeStyles ({
@@ -24,28 +25,67 @@ const useStyles = makeStyles ({
     }
   });
 
-const headers = [
-  {id: "periodo", label:"Periodo"},
-  {id: "departamento", label:"Departamento"},
-  {id: "montoAPagar", label:"Monto a pagar"},
-  {id: "estado", label:"Estado"},
-]
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+  let headers
 
-const ColumnasCustom = (dato) => {
+  if (webSize) {
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "departamento", label:"Departamento"},
+      {id: "montoAPagar", label:"Monto a pagar"},
+      {id: "estado", label:"Estado"},
+    ]
+  } else if (!mobileSize && tabletSize) {
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "departamento", label:"Departamento"},
+      {id: "montoAPagar", label:"Monto a pagar"},
+    ]
+  } else {
+    headers = [
+      {id: "periodo", label:"Periodo"},
+      {id: "departamento", label:"Departamento"},
+    ]
+  }
+  return headers
+}
+
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
   let history= useHistory()
 
   const getExpensa = (id) =>{
     history.push(`/expensa/${id}`)
   }
 
-  return (
-  <StyledTableRow key={dato.id} className="pointer animate__animated animate__fadeIn" onClick={() => getExpensa(dato.id)}>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
-    <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 
-    <StyledTableCell className="tableBold"  component="th" scope="row">{dato.estado}</StyledTableCell>
-  </StyledTableRow>
-  )
+  const getCells = () => {
+    if (mobileSize) {
+      return (
+        <StyledTableRow key={dato.id} className="pointer animate__animated animate__fadeIn" onClick={() => getExpensa(dato.id)}>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (tabletSize) {
+      return (
+        <StyledTableRow key={dato.id} className="pointer animate__animated animate__fadeIn" onClick={() => getExpensa(dato.id)}>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 
+      </StyledTableRow>
+      )
+    } else if (webSize) {
+      return (
+        <StyledTableRow key={dato.id} className="pointer animate__animated animate__fadeIn" onClick={() => getExpensa(dato.id)}>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{formatDate(dato.periodo)}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.departamento}</StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">$ {numeroConPuntos(dato.montoAPagar)}</StyledTableCell> 
+        <StyledTableCell className="tableBold"  component="th" scope="row">{dato.estado}</StyledTableCell>
+      </StyledTableRow>
+      )
+    }
+  }
+
+  return (getCells())
 }
 
 export const Expensas = () =>{
@@ -56,6 +96,9 @@ export const Expensas = () =>{
     const [textoBusqueda, setTextoBusqueda] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const { user } = useContext(UserContext)
+    let mobileSize = useMediaQuery('(max-width: 400px)')
+    let tabletSize = useMediaQuery('(max-width: 768px)')
+    let webSize = useMediaQuery('(min-width: 769px)')
 
     let history = useHistory()
 
@@ -103,7 +146,7 @@ export const Expensas = () =>{
               </div>
            </SearchBox>
            {expensas.length > 0 &&
-            <Tabla datos={expensas} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
+            <Tabla datos={expensas} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"periodo"} defaultOrder={"desc"}/>
            }
           { expensas.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="expensas"/>

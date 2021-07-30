@@ -12,17 +12,36 @@ import { RootBox, SearchBox } from '../../components/Contenedores';
 import { fechaYaPaso, soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { UserContext } from '../../hooks/UserContext';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
 
-const headers = [
-    { id: "fechaCreacion", label: "Fecha" },
-    { id: "titulo", label: "Titulo" },
-    { id: "nombreAutor", label: "Autor" },
-    { id: "fechaModificacion", label: "Actividad" },
-    { id: "fechaVencimiento", label: "Vencimiento" }
-]
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+    let headers
+  
+    if (webSize) {
+      headers = [
+        { id: "fechaCreacion", label: "Fecha" },
+        { id: "titulo", label: "Titulo" },
+        { id: "nombreAutor", label: "Autor" },
+        { id: "fechaModificacion", label: "Actividad" },
+        { id: "fechaVencimiento", label: "Vencimiento" }
+      ]
+    } else if (!mobileSize && tabletSize) {
+      headers = [
+        { id: "titulo", label: "Titulo" },
+        { id: "nombreAutor", label: "Autor" },
+        { id: "fechaVencimiento", label: "Vencimiento" }
+      ]
+    } else {
+      headers = [
+        { id: "titulo", label: "Titulo" },
+        { id: "fechaVencimiento", label: "Vencimiento" }
+      ]
+    }
+    return headers
+  }
 
-const ColumnasCustom = (dato) => {
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
     let history = useHistory()
 
     const getAnuncio = (id) => {
@@ -33,8 +52,29 @@ const ColumnasCustom = (dato) => {
         return fechaYaPaso(fecha)
     }
 
-    return (
-        <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer animate__animated animate__fadeIn" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+    const getCells = () => {
+        if (mobileSize) {
+          return (
+            <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer animate__animated animate__fadeIn" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+            <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+            <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>
+                {anuncioVencido(dato.fechaVencimiento)?  "Vencido" : soloFecha(dato.fechaVencimiento)}
+            </StyledTableCell>
+        </StyledTableRow>
+          )
+        } else if (tabletSize) {
+          return (
+            <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer animate__animated animate__fadeIn" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+            <StyledTableCell className="tableNormal" component="th" scope="row">{dato.titulo}</StyledTableCell>
+            <StyledTableCell className="tableNormal" component="th" scope="row">{dato.nombreAutor}</StyledTableCell>
+            <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>
+                {anuncioVencido(dato.fechaVencimiento)?  "Vencido" : soloFecha(dato.fechaVencimiento)}
+            </StyledTableCell>
+        </StyledTableRow>
+          )
+        } else if (webSize) {
+          return (
+            <StyledTableRow key={dato.id} onClick={() => getAnuncio(dato.id)} className="pointer animate__animated animate__fadeIn" style={anuncioVencido(dato.fechaVencimiento)? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
             <StyledTableCell className="tableNormal" component="th" scope="row">
                 <div className="contenedorColumna">
                     <span>{soloFecha(dato.fechaCreacion)}</span>
@@ -46,7 +86,12 @@ const ColumnasCustom = (dato) => {
             <StyledTableCell className="tableBold" component="th" scope="row"  style={anuncioVencido(dato.fechaVencimiento)? {color: "rgba(255, 0 , 0 , 75%)"} : {}}>
                 {anuncioVencido(dato.fechaVencimiento)?  "Vencido" : soloFecha(dato.fechaVencimiento)}
             </StyledTableCell>
-        </StyledTableRow>)
+        </StyledTableRow>
+          )
+        }
+      }
+    
+      return (getCells())
 }
 
 export const Anuncios = () => {
@@ -57,6 +102,9 @@ export const Anuncios = () => {
     const { user } = useContext(UserContext)
     let history = useHistory()
     let location = useLocation()
+    let mobileSize = useMediaQuery('(max-width: 400px)')
+    let tabletSize = useMediaQuery('(max-width: 768px)')
+    let webSize = useMediaQuery('(min-width: 769px)')
 
     const newAnuncio = () => {
         history.push("/crearanuncio")
@@ -95,7 +143,7 @@ export const Anuncios = () => {
                 </div>
             </SearchBox>
             {anuncios.length > 0 &&
-            <Tabla datos={anuncios} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
+            <Tabla datos={anuncios} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"fecha"} defaultOrder={"desc"} />
             }
             { anuncios.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="anuncios"/>

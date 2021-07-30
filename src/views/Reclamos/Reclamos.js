@@ -13,23 +13,69 @@ import { soloFecha } from '../../utils/formats';
 import { SearchWithoutResults } from '../../components/SearchWithoutResults';
 import { padLeadingZeros } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import { useMediaQuery } from './../../hooks/UseMediaQuery';
 
-const headers = [
-  { id: "id", label: "Reclamo" },
-  { id: "autor", label: "Autor" },
-  { id: "asunto", label: "Asunto" },
-  { id: "fechaModificacion", label: "Actividad" },
-  { id: "Estado", label: "Estado" }
-]
+const getHeaders = (mobileSize, tabletSize, webSize) => {
+  let headers
 
-const ColumnasCustom = (dato) => {
+  if (webSize) {
+    headers = [
+      { id: "id", label: "Reclamo" },
+      { id: "autor", label: "Autor" },
+      { id: "asunto", label: "Asunto" },
+      { id: "fechaModificacion", label: "Actividad" },
+      { id: "Estado", label: "Estado" }
+    ]
+  } else if (!mobileSize && tabletSize) {
+    headers = [
+      { id: "id", label: "Reclamo" },
+      { id: "asunto", label: "Asunto" },
+      { id: "Estado", label: "Estado" }
+    ]
+  } else {
+    headers = [
+      { id: "id", label: "Reclamo" },
+      { id: "Estado", label: "Estado" }
+    ]
+  }
+  return headers
+}
+
+const ColumnasCustom = (dato, mobileSize, tabletSize, webSize) => {
   let history = useHistory()
 
   const getReclamo = (id) => {
     history.push(`/reclamo/${id}`)
   }
 
-  return (
+  const getCells = () => {
+    if (mobileSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getReclamo(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.estado === 'Resuelto' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+              <StyledTableCell component="th" scope="row">
+        <div className="contenedorColumna">
+          <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
+          <span className="tableNormal">{soloFecha(dato.fecha)}</span>
+        </div>
+      </StyledTableCell>
+        <StyledTableCell className="tableBold" component="th" scope="row" style={dato.estado === 'Resuelto' ? { color: "#159D74" } : {}}>{dato.estado}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (tabletSize) {
+      return (
+        <StyledTableRow key={dato.id} onClick={() => getReclamo(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.estado === 'Resuelto' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
+        <StyledTableCell component="th" scope="row">
+          <div className="contenedorColumna">
+            <span className="tableBold">{padLeadingZeros(dato.id, 5)}</span>
+            <span className="tableNormal">{soloFecha(dato.fecha)}</span>
+          </div>
+        </StyledTableCell>
+        <StyledTableCell className="tableNormal" component="th" scope="row">{dato.asunto}</StyledTableCell>
+        <StyledTableCell className="tableBold" component="th" scope="row" style={dato.estado === 'Resuelto' ? { color: "#159D74" } : {}}>{dato.estado}</StyledTableCell>
+      </StyledTableRow>
+      )
+    } else if (webSize) {
+      return (
     <StyledTableRow key={dato.id} onClick={() => getReclamo(dato.id)} className="pointer animate__animated animate__fadeIn" style={dato.estado === 'Resuelto' ? {background: "rgba(198, 198 ,198 , 10%)", boxShadow: "0px 1px 2px rgb(0 0 0 / 20%)"} : {}}>
       <StyledTableCell component="th" scope="row">
         <div className="contenedorColumna">
@@ -42,8 +88,14 @@ const ColumnasCustom = (dato) => {
       <StyledTableCell className="tableNormal" component="th" scope="row">{dato.ultimaModificacion}</StyledTableCell>
       <StyledTableCell className="tableBold" component="th" scope="row" style={dato.estado === 'Resuelto' ? { color: "#159D74" } : {}}>{dato.estado}</StyledTableCell>
     </StyledTableRow>
-  )
+      )
+    }
+  }
+
+  return (getCells())
 }
+
+
 export const Reclamos = () => {
   const [reclamos, setReclamos] = useState([])
   const { openSnackbar, setOpenSnackbar, mensajeSnack, usarSnack } = useSnack();
@@ -52,6 +104,9 @@ export const Reclamos = () => {
   const { user } = useContext(UserContext)
   let history = useHistory()
   let location = useLocation()
+  let mobileSize = useMediaQuery('(max-width: 400px)')
+  let tabletSize = useMediaQuery('(max-width: 768px)')
+  let webSize = useMediaQuery('(min-width: 769px)')
 
 
   const newReclamo = () => {
@@ -90,7 +145,7 @@ export const Reclamos = () => {
         </div>
       </SearchBox>
       {reclamos.length > 0 &&
-      <Tabla datos={reclamos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={110} defaultSort={"nombre"} defaultOrder={"desc"} />
+      <Tabla datos={reclamos} headers={getHeaders(mobileSize, tabletSize, webSize)} ColumnasCustom={ColumnasCustom} heightEnd={110} defaultSort={"nombre"} defaultOrder={"desc"} />
       }
        { reclamos.length === 0 && !isLoading &&
                 <SearchWithoutResults resultado="reclamos"/>
