@@ -107,9 +107,6 @@ body, html {
   font-family:"ProximaNovaNormal"!important;
 }
 
-.Mui-disabled{
-  text-transform: capitalize!important;
-}
 
 .MuiInputBase-formControl .MuiOutlinedInput-input{
   background-color: white;

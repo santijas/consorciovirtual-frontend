@@ -33,6 +33,11 @@ class AnuncioService {
         await axios.put(`${REST_SERVER_URL}/anuncios/eliminar/${id}?idLogueado=${idLogueado}`)
     }
 
+    mandarCorreoNuevoAnuncio(titulo){
+        const idLogueado = JSON.parse(window.localStorage.getItem('loggedUser')).id
+        axios.post(`${REST_SERVER_URL}/enviarCorreo/nuevoAnuncio/${idLogueado}?titulo=${titulo}`)
+    }
+
 }
 
 export const anuncioService = new AnuncioService()

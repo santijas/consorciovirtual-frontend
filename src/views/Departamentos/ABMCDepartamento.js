@@ -15,6 +15,7 @@ import useSnack from '../../hooks/UseSnack';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import { handleOnlyNumbers, handleOnlyNumbersDot } from '../../utils/formats';
 import { UserContext } from '../../hooks/UserContext';
+import { Usuario } from '../../domain/usuario';
 
 const useStyles = makeStyles({
     link: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles({
         textAlign: "left",
         marginBottom: 20,
         cursor: "pointer",
+        width: "fit-content"
     },
     linkModal: {
         color: "#159D74",
@@ -248,6 +250,14 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
         }
     }
 
+    const findUser = (idABuscar) =>{
+        let usuario = Usuario.fromJson(usuarios.find(usuario => usuario.id === idABuscar))
+        if(usuario.id){
+            return usuario.nombre + " " + usuario.apellido
+        }
+        return "Sin inquilino"
+    }
+
     const bodyModalDelete = (
 
         <div style={modalStyle} className={classes.paper}>
@@ -278,17 +288,17 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
                     {!creacion && edicion &&
                         <Typography component="h2" variant="h5" className="tittle">
-                           {user?.esAdmin()? "Modificar departamento" : "Departamento"} 
+                           {user?.esAdminGeneral()? "Modificar departamento" : "Departamento"} 
                         </Typography>
                     }
 
                     <form className={classes.form} noValidate autoComplete="off">
 
                         <LeftInputBox>
-                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Piso</span>
+                            <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Piso</span>
                             
                             
-                            {user?.esAdmin() 
+                            {user?.esAdminGeneral() 
                             ?<TextField 
                             className={classes.inputs} 
                             id="piso" 
@@ -309,9 +319,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
 
                         <RightInputBox>
-                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Numero - Letra Departamento</span>
+                            <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Numero - Letra Departamento</span>
                             
-                            {user?.esAdmin() 
+                            {user?.esAdminGeneral() 
                             ?<TextField 
                             className={classes.inputs} 
                             id="nroDepartamento" 
@@ -329,9 +339,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         </RightInputBox>
 
                         <LeftInputBox>
-                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"} >Torre</span>
+                            <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"} >Torre</span>
                             
-                            {user?.esAdmin() 
+                            {user?.esAdminGeneral() 
                             ?<TextField 
                             className={classes.inputs} 
                             id="torre" 
@@ -347,9 +357,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                         </LeftInputBox>
 
                         <RightInputBox>
-                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Superficie</span>
+                            <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Superficie</span>
                             
-                            {user?.esAdmin() 
+                            {user?.esAdminGeneral() 
                             ?<TextField 
                             className={classes.inputs} 
                             id="metrosCuadrados" 
@@ -373,8 +383,8 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
                         {usuarios && departamento &&
                             <LeftInputBox>
-                                <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Propietario</span>
-                                {departamento && user?.esAdmin() 
+                                <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Propietario</span>
+                                {departamento && user?.esAdminGeneral() 
                                     ?<Select 
                                     className={classes.inputs} 
                                     id="propietario"
@@ -394,16 +404,16 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                             </MenuItem>
                                         ))}
                                     </Select>
-                                    :<span className="spanNormal">{propietarioId || ''}</span>
+                                    :<span className="spanNormal">{ findUser(propietarioId) || ''}</span>
                                 } 
                                     
                             </LeftInputBox>
                         }
 
                         <RightInputBox>
-                            <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Porcentaje de expensas</span>
+                            <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Porcentaje de expensas</span>
                             
-                            {user?.esAdmin() 
+                            {user?.esAdminGeneral() 
                             ?<TextField 
                             className={classes.inputs} 
                             id="porcentajeExpensa" 
@@ -428,9 +438,9 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
 
                         {inquilinos && departamento && edicion && !creacion &&
                             <LeftInputBox>
-                                <span className={user?.esAdmin()? "spanTitle" : "spanTitleGrey"}>Inquilino</span>
+                                <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Inquilino</span>
 
-                                {departamento && user?.esAdmin()?
+                                {departamento && user?.esAdminGeneral()?
                                 <Select 
                                 className={classes.inputInquilino} 
                                 id="inquilino" 
@@ -453,7 +463,7 @@ export const ABMCDepartamento = ({ edicion, creacion }) => {
                                         </MenuItem>
                                     ))}
                                 </Select>
-                                :<span className="spanNormal">{inquilinoId || ''}</span>
+                                :<span className="spanNormal">{findUser(inquilinoId) || ''}</span>
                                 
                             }
                             </LeftInputBox>}

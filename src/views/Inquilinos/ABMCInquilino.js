@@ -16,6 +16,7 @@ import ReactLoading from 'react-loading';
 import { ButtonBox, FormBox, LeftInputBox, RightFormBox, RightInputBox, RootBoxABM } from '../../components/Contenedores';
 import { UserContext } from '../../hooks/UserContext'; 
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import { fechaMaxNacimiento, fechaMinNacimiento, handleOnlyNumbers } from '../../utils/formats';
 
 
 const useStyles = makeStyles ({
@@ -24,6 +25,7 @@ const useStyles = makeStyles ({
         textAlign:"left",
         marginBottom: 20,
         cursor: "pointer",
+        width: "fit-content"
     },
     linkModal:{
         color: "#159D74",
@@ -141,6 +143,7 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     const [departamentos, setDepartamentos] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const { user } = useContext(UserContext)
+    const [errors, setErrors] = useState({})
     const [deptoSeleccionado, setDeptoSeleccionado] = useState('')
 
     let history = useHistory()
@@ -225,16 +228,61 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
     }
 
     const validarModificacionInquilino = () => {
-        return inquilino.nombre && inquilino.apellido && inquilino.dni && inquilino.correo && validarDni()
+        setErrors(null)
+        if (!inquilino.nombre) {
+            setErrors(prev => ({ ...prev, name: "Campo obligatorio" }))
+        }
+
+        if (!inquilino.apellido) {
+            setErrors(prev => ({ ...prev, lastName: "Campo obligatorio" }))
+        }
+
+        if (!inquilino.dni) {
+            setErrors(prev => ({ ...prev, dni: "Campo obligatorio" }))
+        }
+
+        if (inquilino.dni && !validarDni()) {
+            setErrors(prev => ({ ...prev, dni: "El DNI debe contener 7 u 8 digitos." }))
+        }
+
+        if (!inquilino.correo) {
+            setErrors(prev => ({ ...prev, correo: "Campo obligatorio" }))
+        }
+
+        if (inquilino.correo && !validarCorreo()) {
+            setErrors(prev => ({ ...prev, correo: "Introducir un correo electronico correcto." }))
+        }
+
+        if (!inquilino.fechaNacimiento) {
+            setErrors(prev => ({ ...prev, fecha: "Campo obligatorio" }))
+        }
+
+        if (!deptoSeleccionado) {
+            setErrors(prev => ({ ...prev, deptoSeleccionado: "Campo obligatorio" })) 
+        }
+
+        return inquilino.nombre && inquilino.apellido && inquilino.dni && inquilino.correo && (edicion || deptoSeleccionado) && validarDni() && validarCorreo()
     }
 
-    const validarDni = () =>{
-        return inquilino.dni.length === 8
+    const validarDni = () => {
+        return inquilino.dni.length === 8 || inquilino.dni.length === 7
+    }
+
+    const validarCorreo = () => {
+        return /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(inquilino.correo)
     }
 
     const tieneDeptosDeshabitados = () => {
         return departamentos.length != 0
     }
+
+    const enterKey = (e) =>{
+        if (e.key === "Enter") {
+            edicion? modificarInquilino() : crearInquilino()
+        }
+    }
+
+    
 
     const bodyModal = (
       
@@ -254,11 +302,15 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
         const fetchInquilino = async () =>{
             try{
                 let unInquilino
-                creacion?
+                
+                if(creacion){
                     unInquilino = new Usuario()
-                    :
+                }
+
+                if(edicion){
                     unInquilino = await usuarioService.getInquilino(params.id)
-                    console.log(unInquilino)
+                }
+                    
                 setInquilino(unInquilino) 
                 }
             catch(error){
@@ -267,12 +319,11 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
         }
 
         fetchInquilino()
-    },[params.id, creacion])
+    },[params.id, creacion, edicion])
 
     useEffect(  () => {
         const getDeptosDeshabitados = async () => {
-            let deptosDeshabitados = await departamentoService.getByPropietarioIdDeshabitado(user.id)
-            console.log("deptosDeshabitados",deptosDeshabitados)
+            let deptosDeshabitados = await departamentoService.getByPropietarioIdDeshabitado(user?.id)
             setDepartamentos(deptosDeshabitados)
         }
     
@@ -287,7 +338,9 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
                     <Chevron className={classes.chevron}/>
                     Volver a inquilinos
                 </Link>
-            {  ( creacion && tieneDeptosDeshabitados() )?
+
+
+            {   ((tieneDeptosDeshabitados() && creacion) || edicion ) &&
                 <div>
                     { creacion &&
                         <Typography component="h2" variant="h5" className="tittle">
@@ -303,32 +356,90 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
             
                     <form className={classes.form} noValidate autoComplete="off">
                         <LeftInputBox>
-                            <span className={classes.span}>Nombre</span>
-                            <TextField className={classes.inputs} id="nombre" value={inquilino.nombre || ''} onChange={(event) => actualizarValor(event)} name="nombre" variant="outlined" />
+                            <span className="spanTitleGrey">Nombre</span>
+                            <TextField 
+                            className={classes.inputs} 
+                            id="nombre" 
+                            value={inquilino.nombre || ''}
+                            onChange={(event) => actualizarValor(event)} 
+                            name="nombre" 
+                            variant="outlined" 
+                            error={Boolean(errors?.name)}
+                            helperText={errors?.name}
+                            inputProps={{ maxLength: 15 }}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            />
                         </LeftInputBox>
 
                         <RightInputBox>
-                            <span className={classes.span} >Apellido</span>
-                            <TextField className={classes.inputs} id="apellido" value={inquilino.apellido || ''} onChange={(event) => actualizarValor(event)} name="apellido" variant="outlined" />
+                            <span className="spanTitleGrey" >Apellido</span>
+                            <TextField 
+                            className={classes.inputs} 
+                            id="apellido" 
+                            value={inquilino.apellido || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="apellido" 
+                            variant="outlined" 
+                            error={Boolean(errors?.lastName)}
+                            helperText={errors?.lastName}
+                            inputProps={{ maxLength: 25 }}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            />
                         </RightInputBox>
 
                         <LeftInputBox>
-                            <span className={classes.span}>DNI</span>
-                            <TextField className={classes.inputs} id="dni" value={inquilino.dni || ''} onChange={(event) => actualizarValor(event)} name="dni"  variant="outlined" type="number"/>
+                            <span className="spanTitleGrey">DNI</span>
+                            <TextField 
+                            className={classes.inputs} 
+                            id="dni" 
+                            value={inquilino.dni || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="dni"  
+                            variant="outlined" 
+                            type="text"
+                            error={Boolean(errors?.dni)}
+                            helperText={errors?.dni}
+                            inputProps={{ maxLength: 8 }}
+                            onInput={ handleOnlyNumbers }
+                            onKeyDown={(e) => { enterKey(e) }}
+                            />
                         </LeftInputBox>
 
                         <RightInputBox>
-                            <span className={classes.span}>E-mail</span>
-                            <TextField className={classes.inputs} id="correo" value={inquilino.correo || ''} onChange={(event) => actualizarValor(event)} name="correo"  variant="outlined" />
+                            <span className="spanTitleGrey">E-mail</span>
+                            <TextField 
+                            className={classes.inputs} 
+                            id="correo" 
+                            value={inquilino.correo || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="correo"  
+                            variant="outlined" 
+                            error={Boolean(errors?.correo)}
+                            helperText={errors?.correo}
+                            inputProps={{ maxLength: 50 }}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            />
                         </RightInputBox>
 
                         <LeftInputBox>
-                            <span className={classes.span}>Fecha de nacimiento</span>
-                            <TextField className={classes.inputs} id="fechaNacimiento" value={inquilino.fechaNacimiento || ''} onChange={(event) => actualizarValor(event)} name="fechaNacimiento" type="date" variant="outlined" />
+                            <span className="spanTitleGrey">Fecha de nacimiento</span>
+                            <TextField 
+                            className={classes.inputs} 
+                            id="fechaNacimiento" 
+                            value={inquilino.fechaNacimiento || ''} 
+                            onChange={(event) => actualizarValor(event)} 
+                            name="fechaNacimiento" 
+                            type="date" 
+                            variant="outlined" 
+                            error={Boolean(errors?.fecha)}
+                            helperText={errors?.fecha}
+                            onKeyDown={(e) => { enterKey(e) }}
+                            InputProps={{inputProps: { min: fechaMinNacimiento() , max:  fechaMaxNacimiento() } }}
+                            />
                         </LeftInputBox>
 
                         <RightInputBox>
-                            <span className={classes.span}>Departamento</span>
+                            <span className="spanTitleGrey">Departamento</span>
                         { (!edicion && creacion && inquilino)?  
                         <Select 
                         className={classes.inputs} 
@@ -337,6 +448,9 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
                         onChange={ seleccionarDepto } 
                         value={deptoSeleccionado || ''} 
                         variant="outlined" 
+                        error={Boolean(errors?.deptoSeleccionado)}
+                        helperText={errors?.deptoSeleccionado}
+                        onKeyDown={(e) => { enterKey(e) }}
                         inputProps={{classes: { select: classes.select }}}
                         >
                                     {departamentos.map((option) => (
@@ -346,7 +460,7 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
                                 ))}
                             </Select>
                             :
-                            <div class={classes.pisoDepto}>
+                            <div class="spanNormal">
                                 {inquilino.piso} º {inquilino.nroDepartamento} { inquilino.torre? <span> Torre {inquilino.torre } </span>: "" }
                             </div>     
                             }
@@ -354,7 +468,8 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
                         
                     </form> 
                 </div>
-                : 
+                }
+                { creacion && !tieneDeptosDeshabitados() &&
                 <div className={classes.mensajeIcon}>
                     <span className={classes.dot}>
                         <PersonAddDisabledIcon className={classes.icon}></PersonAddDisabledIcon>
@@ -366,11 +481,10 @@ export const ABMCInquilino = ({edicion, creacion}) =>{
             <RightFormBox>
                 { creacion && !isLoading && 
                 <ButtonBox>
-                    { tieneDeptosDeshabitados()?
+                    { tieneDeptosDeshabitados() &&
                         <StyledButtonPrimary className={classes.botones} onClick={() => crearInquilino() } >Crear inquilino</StyledButtonPrimary>
-                        :
-                        <StyledButtonPrimary className={classes.botonesDisabled} disabled >Crear inquilino</StyledButtonPrimary>
                     }
+
                     <StyledButtonSecondary className={classes.botones} onClick={ backToInquilinos }>Cancelar</StyledButtonSecondary>
                 </ButtonBox>
                 }

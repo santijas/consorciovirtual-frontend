@@ -64,12 +64,10 @@ class ChatService {
 
     async getCantidadDeMensajes(userId){
         let cantidadMensajes = await axios.post(`${REST_SERVER_URL}/mensajes/cantidad/${userId}`  )
-        console.log("cantidadMensajesSinLeer: ",cantidadMensajes.data)
         return cantidadMensajes.data
     }
 
     async sendRegistry(mensajeId,userId){
-        console.log("ultimo mensaje leido: ",mensajeId)
         await axios.post(`${REST_SERVER_URL}/mensajes/registro/${userId}/${mensajeId}`  )
     }
 }

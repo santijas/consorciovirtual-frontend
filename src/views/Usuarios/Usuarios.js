@@ -92,7 +92,7 @@ export const Usuarios = () =>{
               <Busqueda holder="Buscá por nombre, apellido, DNI, e-mail o tipo de cuenta" busqueda={setTextoBusqueda} />
               <div>
                <span className="cantidadObject" > {usuarios.length} usuarios </span>
-              <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>
+              { user?.esAdminGeneral() && <StyledButtonPrimary onClick={newUser} >Agregar usuario</StyledButtonPrimary>}
               </div>
            </SearchBox>
            {usuarios.length > 0 &&

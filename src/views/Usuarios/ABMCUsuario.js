@@ -25,6 +25,7 @@ const useStyles = makeStyles({
         textAlign: "left",
         marginBottom: 20,
         cursor: "pointer",
+        width: "fit-content"
     },
     linkModal: {
         color: "#159D74",
@@ -429,9 +430,24 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
         (creacion || edicion) ? "Volver a usuarios" : "Volver atrás"
     )
 
-    const tittleText = (
-        creacion ? "Nuevo usuario" : edicion ? "Modificar usuario" : "Perfil de usuario"
-    )
+    const tittleText = () =>{
+        if(creacion){
+         return "Nuevo usuario"
+        }
+
+        if(edicion && user?.esAdminGeneral()){
+            return "Modificar usuario"
+        }
+
+        if(perfil){
+            return "Perfil de usuario"
+        }
+
+        if(edicion && !user?.esAdminGeneral()){
+            return "Usuario"
+        }
+    }
+
 
     const enterKey = (e) =>{
         if (e.key === "Enter") {
@@ -451,16 +467,17 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                 </Link>
 
                 <Typography component="h2" variant="h5" className="tittle">
-                    {tittleText}
+                    {tittleText()}
                 </Typography>
 
                 <form className={classes.form} noValidate autoComplete="off">
                     <LeftInputBox>
-                        <span className={classes.span}>Nombre</span>
-                        <TextField
+                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Nombre</span>
+                        {user?.esAdminGeneral() 
+                        ? <TextField
                             className={classes.inputs}
                             id="nombre"
-                            value={usuario.nombre || ''}
+                            value={usuario?.nombre || ''}
                             onChange={(event) => updateValue(event)}
                             name="nombre"
                             variant="outlined"
@@ -469,14 +486,17 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             inputProps={{ maxLength: 15 }}
                             onKeyDown={(e) => { enterKey(e) }}
                         />
+                        :<span className="spanNormal">{usuario?.nombre || ''}</span>
+                        } 
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={classes.span} >Apellido</span>
-                        <TextField
+                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"} >Apellido</span>
+                        {user?.esAdminGeneral() 
+                        ? <TextField
                             className={classes.inputs}
                             id="apellido"
-                            value={usuario.apellido || ''}
+                            value={usuario?.apellido || ''}
                             onChange={(event) => updateValue(event)}
                             name="apellido"
                             variant="outlined"
@@ -485,13 +505,17 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             inputProps={{ maxLength: 25 }}
                             onKeyDown={(e) => { enterKey(e) }}
                         />
+                        :<span className="spanNormal">{usuario?.apellido || ''}</span>
+                        } 
+
                     </RightInputBox>
 
                     <LeftInputBox>
-                        <span className={classes.span}>DNI</span>
-                        <TextField
+                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>DNI</span>
+                        {user?.esAdminGeneral() 
+                        ? <TextField
                             className={classes.inputs}
-                            id="dni" value={usuario.dni || ''}
+                            id="dni" value={usuario?.dni || ''}
                             onChange={(event) => updateValue(event)}
                             name="dni"
                             variant="outlined"
@@ -501,13 +525,17 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             onInput={ handleOnlyNumbers }
                             onKeyDown={(e) => { enterKey(e) }}
                         />
+                        :<span className="spanNormal">{usuario?.dni || ''}</span>
+                        } 
+
                     </LeftInputBox>
 
                     <RightInputBox>
-                        <span className={classes.span}>E-mail</span>
-                        <TextField
+                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>E-mail</span>
+                        {user?.esAdminGeneral() 
+                        ? <TextField
                             className={classes.inputs}
-                            id="correo" value={usuario.correo || ''}
+                            id="correo" value={usuario?.correo || ''}
                             onChange={(event) => updateValue(event)}
                             name="correo"
                             variant="outlined"
@@ -517,14 +545,18 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             inputProps={{ maxLength: 50 }}
                             onKeyDown={(e) => { enterKey(e) }}
                         />
+                        :<span className="spanNormal">{usuario?.correo || ''}</span>
+                        } 
+
                     </RightInputBox>
 
                     <LeftInputBox>
-                        <span className={classes.span}>Fecha de nacimiento</span>
-                        <TextField
+                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Fecha de nacimiento</span>
+                        {user?.esAdminGeneral() 
+                        ? <TextField
                             className={classes.inputs}
                             id="fechaNacimiento"
-                            value={usuario.fechaNacimiento || ''}
+                            value={usuario?.fechaNacimiento || ''}
                             onChange={(event) => updateValue(event)}
                             name="fechaNacimiento"
                             type="date"
@@ -534,18 +566,22 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                             onKeyDown={(e) => { enterKey(e) }}
                             InputProps={{inputProps: { min: fechaMinNacimiento() , max:  fechaMaxNacimiento() } }}
                         />
+                        :<span className="spanNormal">{usuario?.fechaNacimiento || ''}</span>
+                        } 
+
                     </LeftInputBox>
                     {
                         !perfil &&
                     
                     <RightInputBox>
-                        <span className={classes.span}>Tipo de usuario</span>
-                        <Select
+                        <span className={user?.esAdminGeneral()? "spanTitle" : "spanTitleGrey"}>Tipo de usuario</span>
+                        {user?.esAdminGeneral() 
+                            ? <Select
                             className={classes.textFieldSelect}
                             id="tipoUsuario"
                             select
                             onChange={handleChangeType}
-                            value={usuario.tipo || ''}
+                            value={usuario?.tipo || ''}
                             error={Boolean(errors?.tipo)}
                             helperText={errors?.tipo}
                             variant="outlined" 
@@ -560,6 +596,8 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                                 ))
                             }
                         </Select>
+                        :<span className="spanNormal">{usuario?.tipo || ''}</span>
+                    } 
                     </RightInputBox>
                     }
                     {edicion && !creacion && departamentos.length > 0 &&
@@ -606,7 +644,7 @@ export const ABMCUsuario = ({ edicion, creacion, perfil }) => {
                         {!campoEditado &&
                             <StyledButtonPrimary className={classes.botonesDisabled} disabled>Guardar cambios</StyledButtonPrimary>
                         }
-                        {edicion &&
+                        {edicion && user?.esAdminGeneral() &&
                             <StyledButtonSecondary className={classes.botones} onClick={popupModal}>Eliminar usuario</StyledButtonSecondary>
                         }
                         {perfil &&

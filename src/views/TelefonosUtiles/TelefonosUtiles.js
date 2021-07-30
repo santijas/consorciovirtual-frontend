@@ -92,7 +92,7 @@ export const TelefonosUtiles = () =>{
               {user?.esAdmin() && <StyledButtonPrimary onClick={newTelefonoUtil} >Agregar teléfono útil</StyledButtonPrimary> }
               </div>
            </SearchBox>
-           {telefonos.length>1 &&
+           {telefonos.length > 0 &&
             <Tabla datos={telefonos} headers={headers} ColumnasCustom={ColumnasCustom} heightEnd={90} defaultSort={"nombre"} defaultOrder={"asc"}/>
            }
             { telefonos.length === 0 && !isLoading &&
