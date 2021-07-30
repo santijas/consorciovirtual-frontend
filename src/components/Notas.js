@@ -68,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
     },
     botonEliminarNota: {
         backgroundColor: "#c3c3c387"
+    },
+    botonAgregar: {
+        padding: "7px 15px"
     }
 }));
 
@@ -150,7 +153,7 @@ export const Notas = ({ notas, setCampoEditado, update, puedeAgregar }) => {
                                 agregarNota()
                             }}}
                         ></TextField>
-                        <StyledButtonPrimary onClick={agregarNota}>Agregar</StyledButtonPrimary>
+                        <StyledButtonPrimary className={classes.botonAgregar} onClick={agregarNota}>Agregar</StyledButtonPrimary>
                     </ListItem>
                 }
             </List>

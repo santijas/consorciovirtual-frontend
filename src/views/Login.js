@@ -5,8 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router';
 import { useState } from 'react'
 import Logo from '../assets/logo.png'
+import LogoCV from '../assets/logoconsov3.svg'
 import { StyledButtonPrimary } from '../components/Buttons'
-import Fondo from '../assets/background.jpg'
+import Fondo from '../assets/new-background.svg'
 import { SnackbarComponent } from '../components/Snackbar.js';
 import useAuth from '../hooks/UseAuth.js';
 import Solicitudes from '../assets/images/Solicitudes.png'
@@ -45,20 +46,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    gap: "1.4rem",
     maxWidth: "400px",
     maxHeigth: "100px!important",
     opacity: "none",
   },
   avatar: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(0),
+    width: "4rem",
+    height: "4rem",
     backgroundColor: "#159D74",
   },
   form: {
     width: '100%',
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(4, 0, 2),
   },
   container: {
     borderRadius: "5px",
@@ -66,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0px 0px 8px 1px rgba(0,0,0,0.50)",
     display: "flex",
     alignItems: "center",
-    margin: "20px 20px 20px 0px"
+    margin: "20px 180px 20px 0px"
   },
   bold: {
     fontWeight: 500,
@@ -80,6 +84,30 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "250px",
     paddingTop: 15
+  },
+  inputForm: {
+    marginBottom: "2rem"
+  },
+  textoLogo: {
+    position: 'fixed',
+    left: '12rem',
+    top: '3rem',
+    fontSize: '2.5rem',
+  },
+  logoCV: {
+    width: "40rem",
+    position: "fixed",
+    left: "11rem",
+    top: "7rem"
+  },
+  slogan: {
+    position: 'fixed',
+    left: '12.3rem',
+    top: '20rem',
+    fontSize: '2.4rem',
+  },
+  textoLogin: {
+    color: "#159D74",
   }
 }));
 
@@ -108,7 +136,7 @@ export const Login = () => {
       setCorreo(user.correo)
       setPassword(user.password)
     }
-    
+
     setUser(null)
 
   }, [])
@@ -134,22 +162,22 @@ export const Login = () => {
     setErrors(null)
 
     if (!correo) {
-        setErrors(prev => ({ ...prev, correo: "Campo obligatorio" }))
+      setErrors(prev => ({ ...prev, correo: "Campo obligatorio" }))
     }
 
     if (!password) {
-        setErrors(prev => ({ ...prev, password: "Campo obligatorio" }))
+      setErrors(prev => ({ ...prev, password: "Campo obligatorio" }))
     }
 
     return correo && password
-}
+  }
 
 
   const handleLogin = async (e) => {
     e.preventDefault()
 
     try {
-      if(validarLogin()){
+      if (validarLogin()) {
         const logueado = await loginUser(correo, password)
         handleRememberStorage()
         redirectTypeUser(logueado)
@@ -175,17 +203,26 @@ export const Login = () => {
     <Box className={classes.root}>
       <Box className={classes.image} >
 
+        <div>
+          <div className="logo-login animate__animated animate__fadeIn">
+            <img src={LogoCV} className={classes.logoCV} />
+          </div>
+          <div className="slogan-login animate__animated animate__fadeIn">
+            <span className={classes.slogan}>Una <b>nueva experiencia</b> en la gestión de tu consorcio.</span>
+          </div>
+        </div>
+
         <Box className={classes.container} component={Paper}>
-          <div  className={classes.paper} >
+          <div className={classes.paper} >
 
             <Avatar className={classes.avatar}>
               <LockOutlinedIcon />
             </Avatar>
-
-            <img src={Logo} className={classes.logo} alt="Consorcio Virtual" />
+            <span className={classes.textoLogin}>Ingresá a la aplicación</span>
 
             <form className={classes.form}>
               <TextField
+                className={classes.inputForm}
                 variant="outlined"
                 margin="normal"
                 required
@@ -200,6 +237,7 @@ export const Login = () => {
                 helperText={errors?.correo}
               />
               <TextField
+                className={classes.inputForm}
                 variant="outlined"
                 margin="normal"
                 required
