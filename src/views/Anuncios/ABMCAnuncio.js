@@ -139,6 +139,11 @@ export const ABMCAnuncio = ({ edicion, creacion }) => {
         try {
             if (validarAnuncio()) {
                 await anuncioService.create(anuncio)
+                try{
+                    anuncioService.mandarCorreoNuevoAnuncio(anuncio.titulo)
+                } catch (error) {
+                   window.alert("No se pudo enviar el correo a todo el consorcio notificando el nuevo anuncio")
+                }                
                 setCampoEditado(false)
                 history.push("/anuncios", { openChildSnack: true, mensajeChild: "Anuncio creado correctamente." })
             } else {
