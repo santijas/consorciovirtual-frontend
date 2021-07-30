@@ -41,6 +41,16 @@ const useStyles = makeStyles((theme) => ({
   },
   softHover: {
     transition: "all .4s",
+  },
+  globoChat:{
+    marginLeft: "10px",
+    backgroundColor: "#159d74",
+    padding: "3px 10px",
+    borderRadius: "4px",
+    color: "white",
+  },
+  numeroGlobo: {
+    marginLeft: "-1px"
   }
 }));
 
@@ -51,6 +61,7 @@ export const NavBar = () => {
   const [selected, setSelected] = useState('usuarios')
   const [mensajesSinLeer, setMensajesSinLeer] = useState(null)
   const { user } = useContext(UserContext);
+
 
 
   const handleSelectMenu = (menu) => {
@@ -67,17 +78,32 @@ export const NavBar = () => {
     return  mensajesSinLeer != null && mensajesSinLeer != 0
   }
 
+  const mensajeGlobo = () => {
+    return (
+      <span className={classes.globoChat}>
+          <span className={classes.numeroGlobo}>{mensajesSinLeer}</span>
+      </span>
+    )
+  }
+
   useEffect(() => {
     setSelected(location.pathname)
   }, [location])
 
   useEffect( ()=>{
-    chatService.connectUsuarioWS(getMensajesSinLeer)
+      chatService.connectUsuarioWS(getMensajesSinLeer)
+      
+      return () => {
+        chatService.closeWebSocket()
+      }
+    },[] )
+    
+    useEffect( () => {
+      if (selected.includes("chat")){
+        setMensajesSinLeer(null)
+    } 
 
-    return () => {
-      chatService.closeWebSocket()
-    }
-  },[] )
+  },[location.pathname])
 
   return (
     <Drawer
@@ -147,7 +173,8 @@ export const NavBar = () => {
 
           <ListItem className={classes.softHover} button key="Chat" onClick={() => handleSelectMenu("/chat")}>
             <ListItemIcon>{selected.includes("chat") ? <ActiveChat className="navicon" /> : <NonActiveChat className="navicon" />}</ListItemIcon>
-            <span className={classes.textItem} ><span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>{ conMensajesNuevos() && !selected.includes("chat") && <span>{mensajesSinLeer}</span> }</span>
+            <span className={classes.textItem} ><span className={`${selected.includes("chat") ? "activecolor activesize" : "font"}`}>Chat</span>{ conMensajesNuevos() && !selected.includes("chat") &&
+              mensajeGlobo() } </span>
           </ListItem>
 
           <ListItem className={classes.softHover} button key="TelefonosUtiles" onClick={() => handleSelectMenu("/telefonosUtiles")}>
